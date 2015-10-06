@@ -27,7 +27,7 @@ class qfile
 						}
 					} else $contents .= "\t\t\"" . $key . "\" => \"" . addslashes($value) . "\",\n";
 				} else {
-					unset($arr);
+					$arr = '';
 					foreach($value as $k => $v) {
 						if(!$int) {
 							if(!is_int($key)) {
@@ -35,8 +35,10 @@ class qfile
 							}
 						} else $arr .= "\"" . $k . "\" => \"" . addslashes($v) . "\","; 
 					}
-					$arr = substr($arr,0,-1);
-					$contents .= "\t\t\"" . $key . "\" => array(" . $arr . "),\n";
+					if($arr) {
+						$arr = substr($arr,0,-1);
+						$contents .= "\t\t\"" . $key . "\" => array(" . $arr . "),\n";
+					}
 				}
 			}
 		}
@@ -67,12 +69,12 @@ class qfile
 	}
 
 	// 특정폴더에 있는 파일 중 일정시간(초)이 지난 파일만 삭제하기
-	public function del_timeover_file($path,$second=3600) {
+	public function del_timeover_file($path,$second=3600,$match='') {
 		$dir = @dir($path);
 		$now = time();
 
 		while($entry = $dir->read()) {
-			if ($entry == "." || $entry == ".." || is_dir($entry)) continue;
+			if ($entry == "." || $entry == ".." || is_dir($entry) || ($match && !preg_match("/".$match."/",$entry))) continue;
 			else {
 				unset($ctime);
 				$file = $path . "/" . $entry;

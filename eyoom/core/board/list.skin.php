@@ -12,24 +12,26 @@
 	// 제목에서 구분자로 회원정보 추출
 	foreach($list as $key => $val) {
 		$level = $list[$key]['wr_1'] ? $eb->level_info($list[$key]['wr_1']):'';
-		if(!$level['anonymous']) {
-			$list[$key]['mb_photo'] = $eb->mb_photo($list[$key]['mb_id']);
-			$list[$key]['gnu_level'] = $level['gnu_level'];
-			$list[$key]['eyoom_level'] = $level['eyoom_level'];
-			$list[$key]['lv_gnu_name'] = $level['gnu_name'];
-			$list[$key]['lv_name'] = $level['name'];
-			$list[$key]['gnu_icon'] = $level['gnu_icon'];
-			$list[$key]['eyoom_icon'] = $level['eyoom_icon'];
-		} else {
-			$list[$key]['mb_id'] = 'anonymous';
-			$list[$key]['wr_name'] = '익명';
-			$list[$key]['email'] = '';
-			$list[$key]['homepage'] = '';
-			$list[$key]['gnu_level'] = '';
-			$list[$key]['gnu_icon'] = '';
-			$list[$key]['eyoom_icon'] = '';
-			$list[$key]['lv_gnu_name'] = '';
-			$list[$key]['lv_name'] = '';
+		if(is_array($level)) {
+			if(!$level['anonymous']) {
+				$list[$key]['mb_photo'] = $eb->mb_photo($list[$key]['mb_id']);
+				$list[$key]['gnu_level'] = $level['gnu_level'];
+				$list[$key]['eyoom_level'] = $level['eyoom_level'];
+				$list[$key]['lv_gnu_name'] = $level['gnu_name'];
+				$list[$key]['lv_name'] = $level['name'];
+				$list[$key]['gnu_icon'] = $level['gnu_icon'];
+				$list[$key]['eyoom_icon'] = $level['eyoom_icon'];
+			} else {
+				$list[$key]['mb_id'] = 'anonymous';
+				$list[$key]['wr_name'] = '익명';
+				$list[$key]['email'] = '';
+				$list[$key]['homepage'] = '';
+				$list[$key]['gnu_level'] = '';
+				$list[$key]['gnu_icon'] = '';
+				$list[$key]['eyoom_icon'] = '';
+				$list[$key]['lv_gnu_name'] = '';
+				$list[$key]['lv_name'] = '';
+			}
 		}
 
 		if($board['bo_use_list_file']) {

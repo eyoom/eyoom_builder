@@ -39,7 +39,7 @@
 				$loop[$k]['wr_content'] = conv_subject($row2['wr_content'], 30, '…');
 				$loop[$k]['href'] = G5_BBS_URL."/board.php?bo_table={$row2['bo_table']}&amp;wr_id={$row2['wr_parent']}";
 			}
-			$loop[$k]['datetime'] = $row['bn_datetime'];
+			$loop[$k]['datetime'] = $row2['bn_datetime'];
 		}
 	}
 

@@ -40,7 +40,7 @@
 	// Eyoom 새글에 등록
 	if ($w == 'c') {
 		// 원글관련 댓글수 증가
-		sql_query(" update {$g5['eyoom_new']} set wr_comment = wr_comment + 1 where wr_id = '$wr_id' ");
+		sql_query(" update {$g5['eyoom_new']} set wr_comment = wr_comment + 1 where bo_table = '{$bo_table}' and wr_id = '{$wr_id}' ");
 		$query = "
 			insert into {$g5['eyoom_new']} set 
 				bo_table	= '{$bo_table}',

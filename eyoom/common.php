@@ -46,7 +46,7 @@
 	// switcher 설정
 	if(preg_match('/community/',$theme)) {
 		$switcher_path = G5_DATA_PATH.'/member/switcher';
-		$switcher_admin = G5_DATA_PATH.'/member/switcher/admin.config.php';
+		$switcher_admin = G5_DATA_PATH.'/member/switcher/'.$config['cf_admin'].'.config.php';
 		if(file_exists($switcher_admin)) {
 			if($eyoom['use_switcher'] == 'on') {
 				if($is_member) {

@@ -222,7 +222,7 @@ class latest extends eyoom
 					$list[$i]['wr_subject'] = '비밀 댓글입니다.';
 					$list[$i]['wr_content'] = '비밀 댓글입니다.';
 				} else {
-					$list[$i]['wr_subject'] = conv_subject($row['wr_content'], $cut_subject, '…');
+					$list[$i]['wr_subject'] = cut_str(strip_tags($row['wr_content']), $cut_content, '…');
 				}
 				$list[$i]['href'] = G5_BBS_URL."/board.php?bo_table={$bo_table}&amp;wr_id={$row['wr_id']}#c_{$row['wr_id']}";
 			} else {

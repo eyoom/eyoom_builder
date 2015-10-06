@@ -245,15 +245,17 @@ class theme extends qfile
 		if(is_array($arr)) {
 			$output .= ',"children":[';
 			foreach($arr as $key => $val) {
-				if(strlen($val['me_code'])<2) continue;
-				unset($blind);
-				if($val['me_use'] == 'n') $blind = " <span style='color:#f30;'><i class='fa fa-eye-slash'></i></span>";
-				$_output[$val['me_order']] .= '{';
-				$_output[$val['me_order']] .= '"id":"'.$val['me_code'].'",';
-				$_output[$val['me_order']] .= '"order":"'.$val['me_order'].'",';
-				$_output[$val['me_order']] .= '"text":"'.$val['me_name'].$blind.'"';
-				if(is_array($val) && count($val)>3) $_output[$val['me_order']] .= $this->eyoom_menu_json($val);
-				$_output[$val['me_order']] .= '}';
+				if(is_array($val)) {
+					if(strlen($val['me_code'])<2) continue;
+					unset($blind);
+					if($val['me_use'] == 'n') $blind = " <span style='color:#f30;'><i class='fa fa-eye-slash'></i></span>";
+					$_output[$val['me_order']] .= '{';
+					$_output[$val['me_order']] .= '"id":"'.$val['me_code'].'",';
+					$_output[$val['me_order']] .= '"order":"'.$val['me_order'].'",';
+					$_output[$val['me_order']] .= '"text":"'.$val['me_name'].$blind.'"';
+					if(is_array($val) && count($val)>3) $_output[$val['me_order']] .= $this->eyoom_menu_json($val);
+					$_output[$val['me_order']] .= '}';
+				}
 			}
 			@ksort($_output);
 			$output .= @implode(',',$_output);

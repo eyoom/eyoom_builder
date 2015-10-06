@@ -59,6 +59,7 @@
 		"it"			=> $it,
 		"use"			=> $use,
 		"qa"			=> $qa,
+		"switcher"		=> $switcher,
 	));
 
 ?>
