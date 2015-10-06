@@ -7,13 +7,13 @@
 		$pop_division = 'shop';
 	}
 
+	$_device = G5_IS_MOBILE ? 'mobile': 'pc';
+
 	$sql = "
-		select * from {$g5['new_win_table']} 
+		select * from {$g5['new_win_table']}
 		where 
-			'".G5_TIME_YMDHIS."' between nw_begin_time and 
-			nw_end_time and 
-			nw_device IN ( 'both', 'pc' ) 
-			and nw_division IN ( 'both', '".$pop_division."' )
+			'".G5_TIME_YMDHIS."' between nw_begin_time and nw_end_time
+			and nw_device IN ( 'both', '".$_device."' ) and nw_division IN ( 'both', '".$pop_division."' )
 		order by nw_id asc 
 	";
 	$result = sql_query($sql, false);

@@ -9,7 +9,7 @@
 	}
 
 	define('_PAGE_',true);
-	include_once('../_head.php');
+	if(!$act) include_once('../_head.php');
 	include_once($page_skin_path.'/index.php');
-	include_once('../_tail.php');
+	if(!$act) include_once('../_tail.php');
 ?>

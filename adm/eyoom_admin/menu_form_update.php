@@ -44,6 +44,7 @@ switch($_POST['mode']) {
 				me_pid		= '{$subme_info['me_pid']}',
 				me_link		= '{$subme_info['me_link']}',
 				me_target	= '{$_POST['subme_target']}',
+				me_side		= '{$_POST['subme_side']}',
 				me_use		= '{$_POST['subme_use']}',
 				me_use_nav	= '{$me_use_nav}'
 			";
@@ -84,6 +85,7 @@ switch($_POST['mode']) {
 				me_pid		= '{$me_info['me_pid']}',
 				me_link		= '{$me_info['me_link']}',
 				me_target	= '{$_POST['me_target']}',
+				me_side		= '{$_POST['me_side']}',
 				me_use		= '{$_POST['me_use']}',
 				me_use_nav	= '{$me_use_nav}'
 			";

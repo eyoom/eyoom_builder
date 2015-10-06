@@ -39,6 +39,7 @@
 				<div><a href="./board_list.php?thema=<?php echo $arr[$i];?>" <?php if($_theme == $arr[$i] && $sub_key=='200') echo "class='active'";?>>게시판설정</a></div>
 				<div><a href="./menu_list.php?thema=<?php echo $arr[$i];?>" <?php if($_theme == $arr[$i] && $sub_key=='300') echo "class='active'";?>>이윰메뉴설정</a></div>
 				<div><a href="./banner_list.php?thema=<?php echo $arr[$i];?>" <?php if($_theme == $arr[$i] && $sub_key=='400') echo "class='active'";?>>배너/광고</a></div>
+				<div class="btn_refresh"><a href="javascript:;" class="refresh_latest" onclick="return refresh_latest('<?php echo $_theme?>');">최신글정리</a></div>
 				<div class="btn_clone"><a href="./theme_clone.php?thema=<?php echo $arr[$i];?>" class="clone_theme" onclick="return false;">복사</a></div>
 				<div class="btn_delete"><a href="./theme_delete.php?thema=<?php echo $arr[$i];?>" class="delete_theme" onclick="return false;">삭제</a></div>
 				<div class="btn_chname"><a href="./theme_alias.php?thema=<?php echo $arr[$i];?>" class="alias_theme" onclick="return false;">별칭설정</a></div>
@@ -79,8 +80,20 @@ $(function(){
 	});
 });
 function set_theme(theme) {
-	$("#mode").val('theme');
-	$("#theme").val(theme);
-	document.ftheme.submit();
+	if(confirm("정말로 [" + theme + "]테마를 홈으로 사용하시겠습니까?")) {
+		$("#mode").val('theme');
+		$("#theme").val(theme);
+		document.ftheme.submit();
+	} else return;
+}
+function refresh_latest() {
+	if(confirm("이윰 최신글을 정리합니다.\n게시물의 수에 따라 시간이 소요될 수 있습니다.\n\n계속 진행하시겠습니까?")) {
+		var url = "./theme_latest_refresh.php";
+		$.post(url, function(data) {
+			if(data.result == 'yes') {
+				alert('정상적으로 정리하였습니다.');
+			}
+		},"json");
+	} else return false;
 }
 </script>

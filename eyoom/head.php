@@ -27,8 +27,15 @@
 
 	// 서브페이지 메뉴정보, 타이틀 및 Path 정보
 	if(!defined('_INDEX_'))	{
-		$sidemenu = $thema->submenu_create($menu_flag);
+		if($menu_flag = 'eyoom') $sidemenu = $thema->submenu_create($menu_flag);
 		$subinfo = $thema->subpage_info($menu);
+	} else {
+		// 팝업창  
+		if($eyoom['use_gnu_newwin'] == 'n') {
+			@include_once(EYOOM_CORE_PATH.'/newwin/newwin.inc.php');
+		} else {
+			@include_once(G5_BBS_PATH.'/newwin.inc.php');
+		}
 	}
 
 	// 접속자 정보

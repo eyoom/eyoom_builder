@@ -735,5 +735,30 @@ class latest extends eyoom
 		}
 		$this->latest_print($skin, $list, 'single', 'latest');
 	}
+
+	// 최근 출석체크 내용 추출하기
+	public function latest_attendance($skin, $option) {
+		global $g5, $eb;
+
+		$opt = $this->get_option($option);
+
+		// 오늘의 1등
+		$atd['today'] = sql_fetch("select atd_mb_id, atd_wr_name from {$g5['eyoom_attendance']} where atd_datetime like '".date('Y-m-d')."%' order by ranking asc limit 1", false);
+
+		// 개근 1등 
+		$atd['going'] = sql_fetch("select max(atd_count) as count, atd_mb_id, atd_wr_name, atd_datetime, sum(ranking) as rank from {$g5['eyoom_attendance']} where (1) group by atd_mb_id order by count desc, rank asc limit 1", false);
+
+		// 1등 횟수
+		$atd['first'] = sql_fetch("select count(*) as count, atd_mb_id, atd_wr_name, sum(ranking) as rank from {$g5['eyoom_attendance']} where ranking=1 group by atd_mb_id order by count desc, rank asc limit 1", false);
+
+		$i=0;
+		foreach($atd as $key => $row) {
+			$list[$i] = $row;
+			$list[$i]['key'] = $key;
+			$list[$i]['mb_photo'] = $eb->mb_photo($row['atd_mb_id']);
+			$i++;
+		}
+		$this->latest_print($skin, $list, 'single', 'latest');
+	}
 }
 ?>

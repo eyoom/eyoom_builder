@@ -43,12 +43,16 @@
 	$g5['eyoom_banner']		= G5_TABLE_PREFIX.'eyoom_banner';
 	$g5['eyoom_menu']		= G5_TABLE_PREFIX.'eyoom_menu';
 	$g5['eyoom_link']		= G5_TABLE_PREFIX.'eyoom_link';
+	$g5['eyoom_attendance'] = G5_TABLE_PREFIX.'eyoom_attendance'; 
 
 	// Eyoom 환경설정파일
 	$eyoom = array();
 	define('eyoom_config',G5_DATA_PATH."/eyoom.config.php");
 	if(@file_exists(eyoom_config)) {
 		@include_once(eyoom_config);
+
+		// 베이직테마 환경변수
+		$eyoom_basic = $eyoom;
 
 		// Eyoom Class Object Initialization
 		include_once(EYOOM_CLASS_PATH.'/class.init.php');

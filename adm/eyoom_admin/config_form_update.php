@@ -14,7 +14,7 @@ switch($mode) {
 		$eyoom_config_file = $_POST['theme'] == 'basic' || !$_POST['theme'] ? '../../data/eyoom.config.php':'../../data/eyoom.'.$_POST['theme'].'.config.php';
 		include($eyoom_config_file);
 
-		foreach($eyoom as $key => $val) {
+		foreach($eyoom_basic as $key => $val) {
 			if($key == 'bootstrap') {
 				$val = !$_POST[$key] ? '1':$_POST[$key];
 			}
@@ -42,6 +42,15 @@ switch($mode) {
 			if($key == 'use_sideview') {
 				$val = !$_POST[$key] ? 'y':$_POST[$key];
 			}
+			if($key == 'use_main_side_layout') {
+				$val = !$_POST[$key] ? 'y':$_POST[$key];
+			}
+			if($key == 'use_sub_side_layout') {
+				$val = !$_POST[$key] ? 'y':$_POST[$key];
+			}
+			if($key == 'pos_side_layout') {
+				$val = !$_POST[$key] ? 'right':$_POST[$key];
+			}
 			if($key == 'push_reaction') {
 				$val = !$_POST[$key] ? 'y':$_POST[$key];
 			}
@@ -60,9 +69,13 @@ switch($mode) {
 			if($key == 'language') {
 				$val = !$_POST[$key] ? 'kr':$_POST[$key];
 			}
-			$eyoom_config[$key] = $val;
+			if($key == 'theme') {
+				$val = $eyoom[$key];
+			}
+			$eyoom_config[$key] = $val ? $val : $eyoom[$key];
 		}
 		if(!$eyoom_config['language']) $eyoom_config['language'] = $_POST['language'];
+		if($eyoom['theme'] != 'basic') $eyoom_config['theme_key'] = $eyoom['theme_key'];
 
 		$qfile->save_file('eyoom',$eyoom_config_file,$eyoom_config);
 		$msg = "설정을 사용테마에 적용하였습니다.";

@@ -5,7 +5,7 @@
 	define('_EYOOM_COMMON_',true);
 
 	// Version
-	define('_EYOOM_VESION_','EyoomBuilder_1.1.1');
+	define('_EYOOM_VESION_','EyoomBuilder_1.1.2');
 
 	// GNUBOARD5 Library
 	include_once(G5_LIB_PATH.'/common.lib.php');
@@ -21,6 +21,9 @@
 	$eyoomer = array();
 	if($member['mb_id']) {
 		$eyoomer = $eb->get_user_info($member['mb_id']);
+
+		// 그누레벨 자동조정
+		if(!$is_admin) $eb->set_gnu_level($eyoomer['level']);
 
 		// 오늘 처음 로그인 이라면 로그인 레벨포인트 적용
 		if (substr($member['mb_today_login'], 0, 10) != G5_TIME_YMD) {

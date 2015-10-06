@@ -69,7 +69,7 @@ $frm_submit = '
         </colgroup>
         <tbody>
         <tr>
-            <th scope="row"><label for="theme">아웃로그인 스킨</label></th>
+            <th scope="row"><label for="outlogin_skin">아웃로그인 스킨</label></th>
             <td>
                 <?php
                 $arr = $eb->get_skin_dir('outlogin',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
@@ -90,7 +90,7 @@ $frm_submit = '
 				unset($arr);
                 ?>
             </td>
-            <th scope="row"><label for="de_admin_company_saupja_no">현재접속자 스킨</label></th>
+            <th scope="row"><label for="connect_skin">현재접속자 스킨</label></th>
             <td>
                 <?php
                 $arr = $eb->get_skin_dir('connect',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
@@ -113,7 +113,7 @@ $frm_submit = '
             </td>
         </tr>
 		<tr>
-			<th scope="row"><label for="de_admin_company_saupja_no">인기검색어 스킨</label></th>
+			<th scope="row"><label for="popular_skin">인기검색어 스킨</label></th>
             <td>
                 <?php
                 $arr = $eb->get_skin_dir('popular',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
@@ -134,7 +134,7 @@ $frm_submit = '
 				unset($arr);
                 ?>
             </td>
-            <th scope="row"><label for="theme">설문조사 스킨</label></th>
+            <th scope="row"><label for="poll_skin">설문조사 스킨</label></th>
             <td>
                 <?php
                 $arr = $eb->get_skin_dir('poll',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
@@ -157,7 +157,7 @@ $frm_submit = '
             </td>
         </tr>
 		<tr>
-            <th scope="row"><label for="de_admin_company_saupja_no">방문자통계 스킨</label></th>
+            <th scope="row"><label for="visit_skin">방문자통계 스킨</label></th>
             <td>
                 <?php
                 $arr = $eb->get_skin_dir('visit',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
@@ -178,7 +178,7 @@ $frm_submit = '
 				unset($arr);
                 ?>
             </td>
-			<th scope="row"><label for="de_admin_company_saupja_no">새글 스킨</label></th>
+			<th scope="row"><label for="new_skin">새글 스킨</label></th>
             <td>
                 <?php
                 $arr = $eb->get_skin_dir('new',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
@@ -201,7 +201,7 @@ $frm_submit = '
             </td>
         </tr>
 		<tr>
-            <th scope="row"><label for="theme">멤버쉽(회원) 스킨</label></th>
+            <th scope="row"><label for="member_skin">멤버쉽(회원) 스킨</label></th>
             <td>
                 <?php
                 $arr = $eb->get_skin_dir('member',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
@@ -222,7 +222,7 @@ $frm_submit = '
 				unset($arr);
                 ?>
             </td>
-            <th scope="row"><label for="de_admin_company_saupja_no">FAQ 스킨</label></th>
+            <th scope="row"><label for="faq_skin">FAQ 스킨</label></th>
             <td>
                 <?php
                 $arr = $eb->get_skin_dir('faq',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
@@ -245,7 +245,7 @@ $frm_submit = '
             </td>
         </tr>
 		<tr>
-			<th scope="row"><label for="de_admin_company_saupja_no">1:1문의 스킨</label></th>
+			<th scope="row"><label for="qa_skin">1:1문의 스킨</label></th>
             <td>
                 <?php
                 $arr = $eb->get_skin_dir('qa',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
@@ -266,7 +266,7 @@ $frm_submit = '
 				unset($arr);
                 ?>
             </td>
-            <th scope="row"><label for="theme">검색 스킨</label></th>
+            <th scope="row"><label for="search_skin">검색 스킨</label></th>
             <td>
                 <?php
                 $arr = $eb->get_skin_dir('search',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
@@ -289,7 +289,7 @@ $frm_submit = '
             </td>
         </tr>
 		<tr>
-			<th scope="row"><label for="de_admin_company_saupja_no">쇼핑몰 스킨</label></th>
+			<th scope="row"><label for="shop_skin">쇼핑몰 스킨</label></th>
             <td>
                 <?php
                 $arr = $eb->get_skin_dir('shop',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
@@ -311,7 +311,7 @@ $frm_submit = '
                 ?>
 
             </td>
-			<th scope="row"><label for="de_admin_company_saupja_no">팝업 스킨</label></th>
+			<th scope="row"><label for="newwin_skin">팝업 스킨</label></th>
             <td>
                 <?php
                 $arr = $eb->get_skin_dir('newwin',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
@@ -334,7 +334,7 @@ $frm_submit = '
             </td>
         </tr>
 		<tr>
-            <th scope="row"><label for="theme">마이페이지 스킨</label></th>
+            <th scope="row"><label for="mypage_skin">마이페이지 스킨</label></th>
             <td>
                 <?php
                 $arr = $eb->get_skin_dir('mypage',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
@@ -351,7 +351,7 @@ $frm_submit = '
 				unset($arr);
                 ?>
             </td>
-            <th scope="row"><label for="de_admin_company_saupja_no">서명 스킨</label></th>
+            <th scope="row"><label for="signature_skin">서명 스킨</label></th>
             <td>
                 <?php
                 $arr = $eb->get_skin_dir('signature',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
@@ -370,7 +370,7 @@ $frm_submit = '
             </td>
         </tr>
 		<tr>
-            <th scope="row"><label for="de_admin_company_saupja_no">내글반응 스킨</label></th>
+            <th scope="row"><label for="respond_skin">내글반응 스킨</label></th>
             <td>
                 <?php
                 $arr = $eb->get_skin_dir('respond',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
@@ -387,7 +387,7 @@ $frm_submit = '
 				unset($arr);
                 ?>
             </td>
-			<th scope="row"><label for="de_admin_company_saupja_no">푸시알림 스킨</label></th>
+			<th scope="row"><label for="push_skin">푸시알림 스킨</label></th>
             <td>
                 <?php
                 $arr = $eb->get_skin_dir('push',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
@@ -432,7 +432,7 @@ $frm_submit = '
             </td>
         </tr>
         <tr>
-            <th scope="row"><label for="theme">그누레벨 아이콘 </label></th>
+            <th scope="row"><label for="level_icon_gnu">그누레벨 아이콘 </label></th>
             <td>
                 <?php
 				if($_eyoom['use_level_icon_gnu'] == 'y') $checked['use_level_icon_gnu'] = 'checked="checked"';
@@ -453,7 +453,7 @@ $frm_submit = '
 			</td>
 		</tr>
 		<tr>
-            <th scope="row"><label for="theme">이윰레벨 아이콘 </label></th>
+            <th scope="row"><label for="level_icon_eyoom">이윰레벨 아이콘 </label></th>
             <td>
                 <?php
 				if($_eyoom['use_level_icon_eyoom'] == 'y') $checked['use_level_icon_eyoom'] = 'checked="checked"';
@@ -474,36 +474,57 @@ $frm_submit = '
 			</td>
 		</tr>
 		<tr>
-            <th scope="row"><label for="bo_use_sideview">회원 사이드뷰</label></th>
+            <th scope="row"><label for="use_sideview">회원 사이드뷰</label></th>
             <td>
                 <label for="use_sideview1"><input type="radio" name="use_sideview" id="use_sideview1" value="y" <?php if($_eyoom['use_sideview'] == 'y') echo "checked";?>> 사용</label>
 				<label for="use_sideview2"><input type="radio" name="use_sideview" id="use_sideview2" value="n" <?php if($_eyoom['use_sideview'] == 'n') echo "checked";?>> 사용하지 않음</label>
             </td>
         </tr>
 		<tr>
-            <th scope="row"><label for="theme">푸시알람 </label></th>
+            <th scope="row"><label for="push_reaction">푸시알람 </label></th>
             <td>
 				<label for="push_reaction1"><input type="radio" name="push_reaction" id="push_reaction1" value="y" <?php if($_eyoom['push_reaction'] == 'y') echo "checked";?>> 사용</label>
 				<label for="push_reaction2"><input type="radio" name="push_reaction" id="push_reaction2" value="n" <?php if($_eyoom['push_reaction'] == 'n') echo "checked";?>> 사용하지 않음</label>
 			</td>
 		</tr>
 		<tr>
-            <th scope="row"><label for="theme">푸시체크 반복시간 </label></th>
+            <th scope="row"><label for="push_time">푸시체크 반복시간 </label></th>
             <td>
 				<input type="text" name="push_time" value="<?php echo $_eyoom['push_time'];?>" id="push_time" style="width:80px;" class="frm_input"> <span class="exp">1000 -> 1초</span>
 			</td>
 		</tr>
 		<tr>
-            <th scope="row"><label for="theme">프로필 사진 사이즈 </label></th>
+            <th scope="row"><label for="photo_width">프로필 사진 사이즈 </label></th>
             <td>
 				가로 : <input type="text" name="photo_width" value="<?php echo $_eyoom['photo_width'];?>" id="photo_width" class="frm_input" style="width:80px;">px, 세로 : <input type="text" name="photo_height" value="<?php echo $_eyoom['photo_height'];?>" id="photo_height" class="frm_input" style="width:80px;">px  <span class="exp">자동으로 이미지 사이즈를 지정한 사이즈로 썸네일화 합니다.</span>
 			</td>
 		</tr>
 		<tr>
-            <th scope="row"><label for="theme">마이홈 커버사진 가로사이즈 </label></th>
+            <th scope="row"><label for="cover_width">마이홈 커버사진 가로사이즈 </label></th>
             <td>
 				<input type="text" name="cover_width" value="<?php echo $_eyoom['cover_width'];?>" id="cover_width" class="frm_input" style="width:80px;">px
 			</td>
+		</tr>
+		<tr>
+            <th scope="row"><label for="use_main_side_layout">사이드 레이아웃[메인] </label></th>
+            <td>
+                <label for="use_main_side_layout1"><input type="radio" name="use_main_side_layout" id="use_main_side_layout1" value="y" <?php if($_eyoom['use_main_side_layout'] == 'y') echo "checked";?>> 사용</label>
+				<label for="use_main_side_layout2"><input type="radio" name="use_main_side_layout" id="use_main_side_layout2" value="n" <?php if($_eyoom['use_main_side_layout'] == 'n') echo "checked";?>> 사용하지 않음</label>
+            </td>
+		</tr>
+		<tr>
+            <th scope="row"><label for="use_sub_side_layout">사이드 레이아웃[서브] </label></th>
+            <td>
+                <label for="use_sub_side_layout1"><input type="radio" name="use_sub_side_layout" id="use_sub_side_layout1" value="y" <?php if($_eyoom['use_sub_side_layout'] == 'y') echo "checked";?>> 사용</label>
+				<label for="use_sub_side_layout2"><input type="radio" name="use_sub_side_layout" id="use_sub_side_layout2" value="n" <?php if($_eyoom['use_sub_side_layout'] == 'n') echo "checked";?>> 사용하지 않음</label>
+            </td>
+		</tr>
+		<tr>
+            <th scope="row"><label for="pos_side_layout">사이드 레이아웃 위치 </label></th>
+            <td>
+                <label for="pos_side_layout1"><input type="radio" name="pos_side_layout" id="pos_side_layout1" value="left" <?php if($_eyoom['pos_side_layout'] == 'left') echo "checked";?>> 왼쪽</label>
+				<label for="pos_side_layout2"><input type="radio" name="pos_side_layout" id="pos_side_layout2" value="right" <?php if($_eyoom['pos_side_layout'] == 'right') echo "checked";?>> 오른쪽</label>
+            </td>
 		</tr>
 		</table>
 		<input type="hidden" name="push_sound" id="push_sound" value="push_sound_01.mp3">

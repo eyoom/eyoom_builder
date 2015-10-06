@@ -453,7 +453,7 @@ class theme extends qfile
 					$info['me_link'] = $url['path'].'board.php?bo_table='.$link['bo_table'].'&amp;wr_id='.$link['wr_id'];
 					unset($link);
 				} else {
-					if(in_array($key,array('bo_table','gr_id','co_id','ca_id','pid','theme','faq','fm_id','sca'))) {
+					if(in_array($key,array('bo_table','gr_id','co_id','ca_id','pid','theme','faq','fm_id','sca','sfl'))) {
 						switch($key) {
 							case "bo_table"	: $info['me_type'] = 'board'; break;
 							case "gr_id"	: $info['me_type'] = 'group'; break;
@@ -465,6 +465,7 @@ class theme extends qfile
 							case "fm_id"	: $info['me_type'] = 'faq'; break;
 							case "qalist"	: $info['me_type'] = 'qalist'; break;
 							case "sca"		: $info['me_type'] = 'category'; break;
+							case "sfl"		: $info['me_type'] = 'search'; break;
 						}
 						$info['me_pid']  = $val;
 						$info['me_link'] = $url['path']."?".$url['query'];
@@ -525,10 +526,11 @@ class theme extends qfile
 		global $g5, $tpl, $it_id, $is_admin, $ca_id, $eyoom, $lang_theme;
 		$url = $this->compare_host_from_link($_SERVER['REQUEST_URI']);
 		$info = $this->get_meinfo_link($url);
-		$where = " me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}' and me_use='y' ";
+		//$where = " me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}' and me_use='y' ";
+		$where = " me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}' ";
 		if($it_id) $where .= " and me_link='{$info['me_link']}' ";
 
-		$sql = "select * from {$g5['eyoom_menu']} where $where";
+		$sql = "select * from {$g5['eyoom_menu']} where $where order by me_code desc";
 		$data = sql_fetch($sql,false);
 
 		if($data['me_id']) {
@@ -543,6 +545,7 @@ class theme extends qfile
 			$page_info['title'] = $data['me_name'];
 			$page_info['path'] = "<li><a href='".G5_URL."'>Home</a></li>".$path;
 			$page_info['subtitle'] = $me_path[0];
+			$page_info['sidemenu'] = $data['me_side'];
 		} else {
 			if($it_id || $ca_id) $page_info = $this->shop_subpage_info();
 			else $page_info = $this->get_default_page();

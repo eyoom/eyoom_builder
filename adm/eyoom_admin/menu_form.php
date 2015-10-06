@@ -15,6 +15,7 @@ $depth = strlen($me_code)/3;
 if($theme && $me_code) {
 	$sql = "select * from {$g5['eyoom_menu']} where me_theme='{$theme}' and me_code='{$me_code}'";
 	$meinfo = sql_fetch($sql, false);
+	if($meinfo['me_side'] == 'y') $checked['me_side1'] = 'checked'; else $checked['me_side2'] = 'checked';
 	if($meinfo['me_use'] == 'y') $checked['me_use1'] = 'checked'; else $checked['me_use2'] = 'checked';
 	if($meinfo['me_use_nav'] == 'y' || !$meinfo['me_use_nav']) $checked['me_use_nav1'] = 'checked'; else $checked['me_use_nav2'] = 'checked';
 	if(!$meinfo['me_path']) {
@@ -113,6 +114,13 @@ $frm_submit = '
 				</td>
 			</tr>
 			<tr>
+				<th scope="row"><label for="me_side">사이드 레이아웃</label></th>
+				<td>
+					<label for="me_side1"><input type="radio" name="me_side" id="me_side1" value="y" <?php echo $checked['me_side1'];?>> 보이기</label>
+					<label for="me_side2"><input type="radio" name="me_side" id="me_side2" value="n" <?php echo $checked['me_side2'];?>> 감추기</label>
+				</td>
+			</tr>
+			<tr>
 				<th scope="row"><label for="me_use">출력여부</label></th>
 				<td>
 					<label for="me_use1"><input type="radio" name="me_use" id="me_use1" value="y" <?php echo $checked['me_use1'];?>> 보이기</label>
@@ -190,6 +198,13 @@ $frm_submit = '
 					  <option value="self" selected>현재창</option>
 					</select>
 					<span class="exp">예) <?php echo G5_BBS_URL;?>/board.php?bo_table=free</span>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="subme_side">사이드 레이아웃</label></th>
+				<td>
+					<label for="subme_side1"><input type="radio" name="subme_side" id="subme_side1" value="y" checked> 보이기</label>
+					<label for="subme_side2"><input type="radio" name="subme_side" id="subme_side2" value="n"> 감추기</label>
 				</td>
 			</tr>
 			<tr>

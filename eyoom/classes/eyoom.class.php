@@ -38,7 +38,7 @@ class eyoom extends qfile
 				if($i==2) break; // GET변수는 3개까지만 허용
 				$i++;
 			}
-			if($index || $dummy_id == 'home' || $dummy_id == 'auto_login') {
+			if($index || $dummy_id == 'home' || $dummy_id == 'auto_login' || $dummy_id == 'device') {
 				// 홈으로 이동
 				$this->go_index_page();
 			} else {
@@ -447,14 +447,11 @@ class eyoom extends qfile
 				sql_query($sql, false);
 			}
 
-			// 그누레벨 자동조정
-			if(!$is_admin && $level != $eyoomer['level']) $this->set_gnu_level($level);
-
 		} else return false;
 	}
 
 	// 그누레벨 자동업/다운
-	private function set_gnu_level($level) {
+	public function set_gnu_level($level) {
 		global $g5, $levelset, $member;
 		$gnulevel = array();
 		for($i=2;$i<=$levelset['max_use_gnu_level'];$i++) {

@@ -14,7 +14,10 @@
 	}
 	$_config_file = $_theme == 'basic' || !$_theme ? G5_DATA_PATH.'/eyoom.config.php':G5_DATA_PATH.'/eyoom.'.$_theme.'.config.php';
 	@include($_config_file);
-	$_eyoom = $eyoom;
+	foreach($eyoom_basic as $key => $val) {
+		$_eyoom[$key] = $eyoom[$key] ? $eyoom[$key]: $val;
+	}
+	$_eyoom['theme'] = $eyoom[$key];
 	$_tpl_name = $_eyoom['bootstrap'] ? 'bs':'pc';
 	unset($eyoom);
 
