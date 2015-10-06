@@ -1,6 +1,12 @@
 <?php
  	if (!defined('_GNUBOARD_')) exit;
 
+	// 게시판 이윰설정 링크생성
+	$eyoom_href = "";
+	// 최고관리자 또는 그룹관리자라면
+	if ($member['mb_id'] && ($is_admin == 'super' || $group['gr_admin'] == $member['mb_id']))
+		$eyoom_href = G5_ADMIN_URL.'/eyoom_admin/board_form.php?bo_table='.$bo_table.'&thema='.$theme;
+
 	// 선택옵션으로 인해 셀합치기가 가변적으로 변함
 	$colspan = 5;
 

@@ -1,5 +1,5 @@
 <?php
-$sub_menu = '800300';
+$sub_menu = '800400';
 include_once('./_common.php');
 include_once(EYOOM_PATH.'/common.php');
 auth_check($auth[$sub_menu], "r");
@@ -29,7 +29,7 @@ $frm_submit = '
 
 <?php include './theme_manager.php'; // 테마 메니저 ?>
 
-<h2 class="h2_frm">[<b style='color:#f30;'><?php echo $_theme;?></b> 테마] 커뮤니티 메뉴설정 <span class='exp'>테마별로 다른 메뉴를 구성하실 수 있습니다.</span></h2>
+<h2 class="h2_frm">[<b style='color:#f30;'><?php echo $_theme;?></b> 테마] 쇼핑몰 메뉴설정 <span class='exp'>테마별로 다른 메뉴를 구성하실 수 있습니다.</span></h2>
 </form>
 <section id="anc_scf_info">
     <div class="tbl_frm01 tbl_wrap">
@@ -49,12 +49,12 @@ $frm_submit = '
 				</div>
 				<div style="margin:10px 0;"></div>
 				<div class="easyui-panel" style="padding:5px">
-					<ul id="menu" class="easyui-tree" data-options="url:'./menu_json.php?thema=<?php echo $_theme;?>',method:'get',animate:true,lines:true"></ul>
+					<ul id="menu" class="easyui-tree" data-options="url:'./menu_json.php?thema=<?php echo $_theme;?>&me_code=<?php echo $_id?>&me_shop=1',method:'get',animate:true,lines:true"></ul>
 				</div>
 			</td>
 			<td valign="top">
 				<h2 class="h2_frm"><b style='color:#f30;'>메뉴 등록/수정/삭제</b> <span class='exp' style='margin-left:10px;color:#777;font-weight:normal;font-size:11px;'>입력후 반드시 아래 적용하기 버튼을 누르세요</span></h2>
-				<iframe id="ifrm_menu" name="ifrm_menu" src="menu_form.php?thema=<?php echo $_theme;?><?php if($me_id) echo "&id=".$me_id;?>" scrolling="no" style="overflow-x:hidden;overflow:auto;width:100%;min-height:840px" frameborder=0></iframe>
+				<iframe id="ifrm_menu" name="ifrm_menu" src="shopmenu_form.php?thema=<?php echo $_theme;?><?php if($me_id) echo "&id=".$me_id;?>" scrolling="no" style="overflow-x:hidden;overflow:auto;width:100%;min-height:840px" frameborder=0></iframe>
 			</td>
 		</tr>
 		</tbody>
@@ -81,7 +81,7 @@ $frm_submit = '
 				});
 			},
 			onClick: function(source){
-				var url='menu_form.php?thema=<?php echo $_theme;?>&id='+source.id;
+				var url='shopmenu_form.php?thema=<?php echo $_theme;?>&id='+source.id;
 				document.getElementById("ifrm_menu").contentWindow.location.href = url;
 			}
 		});

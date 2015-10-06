@@ -169,6 +169,7 @@ CREATE TABLE IF NOT EXISTS `g5_eyoom_board` (
   `bo_use_anonymous` char(1) NOT NULL DEFAULT '2',
   `bo_use_infinite_scroll` char(1) NOT NULL DEFAULT '2',
   `bo_use_point_explain` char(1) NOT NULL default '1',
+  `bo_cmtpoint_target` char(1) NOT NULL default '1',
   `bo_firstcmt_point` int(7) NOT NULL default '0',
   `bo_firstcmt_point_type` char(1) NOT NULL default '1',
   `bo_bomb_point` int(7) NOT NULL default '0',

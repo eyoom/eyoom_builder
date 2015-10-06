@@ -1,4 +1,4 @@
-<?php
+<?php 
 	include_once('./_common.php');
 	include_once(EYOOM_PATH.'/common.php');
 
@@ -30,6 +30,10 @@
 				$count = count($respond[$mb_id]);
 				sql_query("update {$g5['eyoom_member']} set respond = '{$count}' where mb_id = '{$mb_id}' ");
 			}
+			break;
+
+		case 'dbupdate':
+			include('./eyoom_sql.php');
 			break;
 	}
 	$tocken = 'yes';

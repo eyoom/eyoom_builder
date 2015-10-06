@@ -425,10 +425,17 @@ $frm_submit = '
         </colgroup>
         <tbody>
 		<tr>
-            <th scope="row"><label for="use_eyoom_menu">이윰메뉴</label></th>
+            <th scope="row"><label for="use_eyoom_menu">커뮤니티 메뉴</label></th>
             <td>
                 <label for="use_eyoom_menu1"><input type="radio" name="use_eyoom_menu" id="use_eyoom_menu1" value="y" <?php if($_eyoom['use_eyoom_menu'] == 'y') echo "checked";?>> 이윰메뉴 사용</label>
 				<label for="use_eyoom_menu2"><input type="radio" name="use_eyoom_menu" id="use_eyoom_menu2" value="n" <?php if($_eyoom['use_eyoom_menu'] == 'n') echo "checked";?>> 그누메뉴 사용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="use_eyoom_menu">쇼핑몰 메뉴</label></th>
+            <td>
+                <label for="use_eyoom_shopmenu1"><input type="radio" name="use_eyoom_shopmenu" id="use_eyoom_shopmenu1" value="y" <?php if($_eyoom['use_eyoom_shopmenu'] == 'y') echo "checked";?>> 이윰메뉴 사용</label>
+				<label for="use_eyoom_shopmenu2"><input type="radio" name="use_eyoom_shopmenu" id="use_eyoom_shopmenu2" value="n" <?php if($_eyoom['use_eyoom_shopmenu'] == 'n') echo "checked";?>> 그누메뉴 사용</label>
             </td>
         </tr>
         <tr>

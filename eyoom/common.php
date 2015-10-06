@@ -5,7 +5,7 @@
 	define('_EYOOM_COMMON_',true);
 
 	// Version
-	define('_EYOOM_VESION_','EyoomBuilder_1.1.6');
+	define('_EYOOM_VESION_','EyoomBuilder_1.1.7');
 
 	// GNUBOARD5 Library
 	include_once(G5_LIB_PATH.'/common.lib.php');
@@ -61,8 +61,13 @@
 
 		// 무한스크롤 기능을 사용하면 wmode를 활성화
 		if($eyoom_board['bo_use_infinite_scroll'] == 1) {
-			$_wmode = true;
-			if($wmode) define('_WMODE_',true);
+			$user_agent = $eb->user_agent();
+			if($user_agent != 'ios') {
+				$_wmode = true;
+				if($wmode) define('_WMODE_',true);
+			} else {
+				$eyoom_board['bo_use_infinite_scroll'] = 2;
+			}
 		}
 
 		// 베이직스킨이 아니면 목록에서 이미지 보이게 처리
@@ -86,7 +91,7 @@
 		}
 		if(!$_switcher[$theme]) {
 			if(preg_match('/community/',$theme)) {
-				$_switcher['community'] = array(
+				$_switcher[$theme] = array(
 					"sw_color"	=> "default",
 					"sw_fixed"	=> "",
 					"sw_boxed"	=> "",
@@ -95,7 +100,7 @@
 				);
 			}
 			if(preg_match('/dynamic/',$theme)) {
-				$_switcher['dynamic'] = array(
+				$_switcher[$theme] = array(
 					"sw_color"		=> "default",
 					"sw_fixed"		=> "fixed",
 					"sw_boxed"		=> "boxed",

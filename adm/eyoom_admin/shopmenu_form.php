@@ -1,5 +1,5 @@
 <?php
-$sub_menu = '800300';
+$sub_menu = '800400';
 include_once('./_common.php');
 include_once(G5_EDITOR_LIB);
 include_once(EYOOM_PATH.'/common.php');
@@ -13,7 +13,7 @@ $me_code = $_GET['id'];
 $depth = strlen($me_code)/3;
 
 if($theme && $me_code) {
-	$sql = "select * from {$g5['eyoom_menu']} where me_theme='{$theme}' and me_code='{$me_code}' and me_shop = '2'";
+	$sql = "select * from {$g5['eyoom_menu']} where me_theme='{$theme}' and me_code='{$me_code}' and me_shop = '1'";
 	$meinfo = sql_fetch($sql, false);
 	if($meinfo['me_side'] == 'y') $checked['me_side1'] = 'checked'; else $checked['me_side2'] = 'checked';
 	if($meinfo['me_use'] == 'y') $checked['me_use1'] = 'checked'; else $checked['me_use2'] = 'checked';
@@ -44,7 +44,7 @@ $frm_submit = '
 		<input type="hidden" name="mode" id="mode" value="update">
 		<input type="hidden" name="theme" id="theme" value="<?php echo $theme;?>">
 		<input type="hidden" name="me_code" id="me_code" value="<?php echo $me_code;?>">
-		<input type="hidden" name="me_shop" id="me_shop" value="2">
+		<input type="hidden" name="me_shop" id="me_shop" value="1">
 		<section id="anc_scf_info">
 		<div class="tbl_frm01 tbl_wrap">
 		<?php
@@ -58,7 +58,7 @@ $frm_submit = '
 			<tbody>
 			<tr>
 				<th scope="row"><label for="theme">메뉴위치</label></th>
-				<td>커뮤니티 메뉴 루트</td>
+				<td>쇼핑몰 메뉴 루트</td>
 			</tr>
 			</table>
 

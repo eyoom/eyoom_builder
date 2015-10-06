@@ -62,10 +62,11 @@
 		define('G5_ROOT', $g5_root);
 
 		// 테마 설정
-		$_user  = array();
-		$theme  = $eyoom['theme'];
-		$bs		= $eyoom['bootstrap'];
-		$language = $eyoom['language'];
+		$_user			= array();
+		$theme			= $eyoom['theme'];
+		$shop_theme		= $eyoom['shop_theme'];
+		$bs				= $eyoom['bootstrap'];
+		$language		= $eyoom['language'];
 
 		// GET값으로 테마 및 부트스트랩 지정할 경우
 		if(isset($_GET['theme']) || isset($_GET['bs'])) {
@@ -163,6 +164,22 @@
 		if(G5_USE_SHOP && $path['dirname'] == G5_SHOP_DIR && $eyoom['use_gnu_shop'] == 'n') {
 			if($eyoom_shop_core = $tpl->eyoom_control()) {
 				define('_SHOP_',true);
+
+				// 샵테마를 별도로 지정하고 있는가?
+				if($shop_theme && !$preview && $shop_theme!=$theme) {
+					unset($tpl, $eyoom);
+					$theme = $shop_theme;
+					if($shop_theme == 'basic') {
+						include(G5_DATA_PATH."/eyoom.config.php");
+					} else {
+						include(G5_DATA_PATH."/eyoom.".$shop_theme.".config.php");
+					}
+
+					// 템플릿명 결정
+					$tpl_name = G5_IS_MOBILE ? 'mo':'pc';
+					if($eyoom['bootstrap'])  $tpl_name = 'bs';
+					$tpl = new Template($shop_theme);
+				}
 				@include_once(EYOOM_INC_PATH.'/hookedfile.header.php');
 				include_once($eyoom_shop_core);
 				exit;

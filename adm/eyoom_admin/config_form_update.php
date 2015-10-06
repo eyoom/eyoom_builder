@@ -39,6 +39,9 @@ switch($mode) {
 			if($key == 'use_eyoom_menu') {
 				$val = !$_POST[$key] ? 'y':$_POST[$key];
 			}
+			if($key == 'use_eyoom_shopmenu') {
+				$val = !$_POST[$key] ? 'n':$_POST[$key];
+			}
 			if($key == 'use_sideview') {
 				$val = !$_POST[$key] ? 'y':$_POST[$key];
 			}

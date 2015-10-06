@@ -576,7 +576,11 @@ class eyoom extends qfile
 		// 첫댓글 포인트
 		if($eyoom_board['bo_firstcmt_point'] > 0 && !$cmt_amt && $member['mb_id'] != $wr['mb_id']) {
 			$point['firstcmt'] = $eyoom_board['bo_firstcmt_point_type'] == 1 ? $this->random_num($eyoom_board['bo_firstcmt_point']-1)+1 : $eyoom_board['bo_firstcmt_point'];
-			insert_point($member['mb_id'], $point['firstcmt'], $board['bo_subject'].' wr_id='.$wr_id.' 게시물 첫 댓글 포인트', '@firstcmt', $member['mb_id'], $board['bo_subject'].'|'.$wr_id.'|'.$comment_id);
+			if($eyoom_board['bo_cmtpoint_target'] == '1') {
+				insert_point($member['mb_id'], $point['firstcmt'], $board['bo_subject'].' wr_id='.$wr_id.' 게시물 첫 댓글 포인트', '@firstcmt', $member['mb_id'], $board['bo_subject'].'|'.$wr_id.'|'.$comment_id);
+			} else if($eyoom_board['bo_cmtpoint_target'] == '2') {
+				$this->level_point($point['firstcmt']);
+			}
 		}
 
 		// 지뢰폭탄 포인트 - 게시판 여유필드 wr_2를 사용
@@ -586,7 +590,11 @@ class eyoom extends qfile
 				foreach($bomb as $key => $val) {
 					if($val == $cmt_amt) {
 						$point['bomb'][$key] = $eyoom_board['bo_bomb_point_type'] == 1 ? $this->random_num($eyoom_board['bo_bomb_point']-1)+1 : $eyoom_board['bo_bomb_point'];
-						insert_point($member['mb_id'], $point['bomb'][$key], $board['bo_subject'].' wr_id='.$wr_id.' 게시물 지뢰폭탄 포인트', '@bomb', $member['mb_id'], $board['bo_subject'].'|'.$wr_id.'|'.$comment_id.'|'.$key);
+						if($eyoom_board['bo_cmtpoint_target'] == '1') {
+							insert_point($member['mb_id'], $point['bomb'][$key], $board['bo_subject'].' wr_id='.$wr_id.' 게시물 지뢰폭탄 포인트', '@bomb', $member['mb_id'], $board['bo_subject'].'|'.$wr_id.'|'.$comment_id.'|'.$key);
+						} else if($eyoom_board['bo_cmtpoint_target'] == '2') {
+							$this->level_point($point['bomb'][$key]);
+						}						
 					}
 				}
 			}
@@ -598,7 +606,11 @@ class eyoom extends qfile
 			$random = $this->random_num($max-1);
 			if($random%$max == 0) {
 				$point['lucky'] = $eyoom_board['bo_lucky_point_type'] == 1 ? $this->random_num($eyoom_board['bo_lucky_point']-1)+1 : $eyoom_board['bo_lucky_point'];
-				insert_point($member['mb_id'], $point['lucky'], $board['bo_subject'].' wr_id='.$wr_id.' 게시물 행운의 포인트', '@lucky', $member['mb_id'], $board['bo_subject'].'|'.$wr_id.'|'.$comment_id);
+				if($eyoom_board['bo_cmtpoint_target'] == '1') {
+					insert_point($member['mb_id'], $point['lucky'], $board['bo_subject'].' wr_id='.$wr_id.' 게시물 행운의 포인트', '@lucky', $member['mb_id'], $board['bo_subject'].'|'.$wr_id.'|'.$comment_id);
+				} else if($eyoom_board['bo_cmtpoint_target'] == '2') {
+					$this->level_point($point['lucky']);
+				}
 			}
 		}
 		if(is_array($point)) return $point;
@@ -1074,6 +1086,21 @@ class eyoom extends qfile
 		$s_no = mysql_insert_id();
 		$t = $this->base62_encode($s_no);
 		return G5_BBS_URL . "/?t=".$t;
+	}
+
+	// Device의 OS검색
+	public function user_agent(){
+		$iPod	 = strpos($_SERVER['HTTP_USER_AGENT'],"iPod");
+		$iPhone  = strpos($_SERVER['HTTP_USER_AGENT'],"iPhone");
+		$iPad	 = strpos($_SERVER['HTTP_USER_AGENT'],"iPad");
+		$android = strpos($_SERVER['HTTP_USER_AGENT'],"Android");
+		if($iPad||$iPhone||$iPod){
+			return 'ios';
+		}else if($android){
+			return 'android';
+		}else{
+			return 'pc';
+		}
 	}
 
 }

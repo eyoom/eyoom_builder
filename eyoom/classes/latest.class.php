@@ -51,6 +51,22 @@ class latest extends eyoom
 		}
 	}
 
+	// 랜덤으로 게시물 추출
+	public function latest_random($skin, $option) {
+		$where = 1;
+		$opt = $this->get_option($option.'||bo_direct=y');
+		$where .= $opt['where'];
+		$where .= " and wr_id = wr_parent";
+		$orderby = " rand() ";
+		$list = $this->latest_assign($where, $opt['count'], $opt['cut_subject'], $opt['cut_content'], $orderby, $opt['bo_direct']);
+		if($print === null) $print = true;
+		if($print) {
+			$this->latest_print($skin, $list,'single','latest');
+		} else {
+			return $list;
+		}
+	}
+
 	// 최신글 추출
 	public function latest_write($skin, $option, $print=true) {
 		$where = 1;
@@ -143,7 +159,8 @@ class latest extends eyoom
 			if($optset['period']) {
 				$start = date("YmdHis", strtotime("-".$optset['period']." day"));
 				$end = date("YmdHis");
-				$where .= " and bn_datetime between date_format(".$start.", '%Y-%m-%d 00:00:00') and date_format(".$end.", '%Y-%m-%d 23:59:59')";
+				if($optset['bo_direct'] == 'y') $date_field = 'wr_datetime'; else $date_field = 'bn_datetime';
+				$where .= " and {$date_field} between date_format(".$start.", '%Y-%m-%d 00:00:00') and date_format(".$end.", '%Y-%m-%d 23:59:59')";
 			}
 
 			// 비밀글 추출여부
@@ -609,7 +626,7 @@ class latest extends eyoom
 		$opt = $this->get_misc_option($option);
 
 		$where .= $opt['where'];
-		$where .= " and wr_mb_id='{$member['mb_id']}' and re_chk = 0 ";
+		$where .= " and wr_mb_id='{$member['mb_id']}' ";
 
 		$orderby = " regdt desc ";
 		$list = $this->latest_respond_assign($where, $opt['count'], $opt['cut_subject'], $orderby);
@@ -654,7 +671,7 @@ class latest extends eyoom
 		global $g5, $eb;
 
 		if(!$orderby) $orderby = " regdt desc ";
-		$count = sql_fetch("select count(*) as cnt from {$g5['eyoom_respond']} where $where");
+		$count = sql_fetch("select count(*) as cnt from {$g5['eyoom_respond']} where $where and re_chk = 0");
 		$this->respond = $count['cnt'] ? $count['cnt'] : 0;
 
 		$sql = "select * from {$g5['eyoom_respond']} where $where order by $orderby limit $max";
@@ -670,6 +687,7 @@ class latest extends eyoom
 			$list[$i]['href'] = G5_BBS_URL.'/respond_chk.php?rid='.$row['rid'];
 			$list[$i]['datetime'] = $row['regdt'];
 			$list[$i]['mb_photo'] = $eb->mb_photo($row['mb_id']);
+			$list[$i]['is_read'] = $row['re_chk']=='0' ? false:true;
 		}
 		return $list;
 	}
@@ -683,7 +701,7 @@ class latest extends eyoom
 		$opt = $this->get_misc_option($option);
 
 		$where .= $opt['where'];
-		$where .= " and a.me_recv_mb_id = '{$member['mb_id']}' and me_read_datetime = '0000-00-00 00:00:00' ";
+		$where .= " and a.me_recv_mb_id = '{$member['mb_id']}' ";
 
 		$orderby = " a.me_id desc ";
 		$list = $this->latest_memo_assign($where, $opt['count'], $opt['cut_subject'], $orderby);
@@ -704,6 +722,7 @@ class latest extends eyoom
 			$list[$i]['href']	= G5_BBS_URL.'/memo_view.php?me_id='.$row['me_id'].'&amp;kind=recv';
 			$list[$i]['memo'] = conv_subject($row['me_memo'], $cut_subject, '…');
 			$list[$i]['mb_photo'] = $eb->mb_photo($row['mb_id']);
+			$list[$i]['is_read'] = $row['me_read_datetime']=='0000-00-00 00:00:00' ? false:true;
 		}
 		return $list;
 	}

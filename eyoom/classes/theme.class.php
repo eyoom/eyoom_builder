@@ -220,8 +220,9 @@ class theme extends qfile
 
 	// 이윰메뉴 
 	private function eyoom_menu_create() {
+		global $me_shop;
 		// 메뉴정보 가져오기
-		$menu_package = $this->eyoom_menu();
+		$menu_package = $this->eyoom_menu($me_shop);
 		if(!$menu_package) return false;
 		$menu = $this->eyoom_menu_assign($menu_package);
 		return $menu;
@@ -303,10 +304,12 @@ class theme extends qfile
 	}
 
 	// 이윰메뉴 5단계까지 구현
-	public function eyoom_menu() {
+	public function eyoom_menu($me_shop=2) {
 		global $g5, $admin_mode, $theme;;
 
 		if(!$admin_mode) $addwhere = " and me_use = 'y' and me_use_nav = 'y' ";
+		if(!$me_shop) $me_shop = 2;
+		$addwhere .= " and me_shop = '".$me_shop."' ";
 		$sql = "select * from {$g5['eyoom_menu']} where me_theme='{$theme}' {$addwhere} order by me_code asc, me_order asc";
 		$res = sql_query($sql, false);
 		for($i=0;$row=sql_fetch_array($res);$i++) {
@@ -367,7 +370,7 @@ class theme extends qfile
 	public function eyoom_submenu($data) {
 		global $g5, $theme;
 
-		if(!$data) $data = $this->eyoom_pagemenu_info($theme);
+		if(!$data) $data = $this->eyoom_pagemenu_info();
 		if(!$admin_mode) $addwhere = " and me_use = 'y' "; // 감추기 기능 연동 - fm25님이 제보해 주셨습니다.
 		$me_code = str_split($data['me_code'],3);
 		$sql = "select * from {$g5['eyoom_menu']} where me_theme='{$theme}' and me_code like '{$me_code[0]}%' and length(me_code) > 3 {$addwhere} order by me_code asc, me_order asc";
@@ -634,14 +637,20 @@ class theme extends qfile
 
 	// 이미 존재하는 기능페이지 정보
 	private function get_default_page() {
-		global $is_member, $type, $eyoom, $lang_theme;
+		global $is_member, $type, $eyoom, $lang_theme, $board;
 		$temp_sname = explode('/',$_SERVER['SCRIPT_NAME']);
 		list($key,$ext) = explode('.',$temp_sname[count($temp_sname)-1]);
+		parse_str($_SERVER['QUERY_STRING'],$query);
+		if($key == 'board' && $query['sfl'] && $query['stx']) $key = 'bo_search';
 
 		switch($key) {
 			case 'new'		: $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[990] : '새글모음'; break;
 			case 'respond'	: $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[647] : '내글반응'; break;
 			case 'search'	: $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[675] : '전체검색'; break;
+			case 'bo_search'	: 
+				$title = $eyoom['theme_lang_type']=='m' ? $lang_theme[606] : '검색결과';
+				$cate_name = $board['bo_subject'];
+				break;
 			case 'faq'		: $title = $eyoom['theme_lang_type']=='m' ? 'FAQ' : '자주하시는 질문'; break;
 			case 'qalist'	:
 			case 'qawrite'	:

@@ -16,11 +16,13 @@ if($eyoom_board['bo_use_hotgul'] == '1') $checked['bo_use_hotgul'] = true; else 
 if($eyoom_board['bo_use_anonymous'] == '1') $checked['bo_use_anonymous'] = true; else $checked['bo_use_anonymous'] = false;
 if($eyoom_board['bo_use_infinite_scroll'] == '1') $checked['bo_use_infinite_scroll'] = true; else $checked['bo_use_infinite_scroll'] = false;
 if($eyoom_board['bo_use_point_explain'] == '1') $checked['bo_use_point_explain'] = true; else $checked['bo_use_point_explain'] = false;
+if($eyoom_board['bo_cmtpoint_target'] == '2') $checked['bo_cmtpoint_target2'] = true; else $checked['bo_cmtpoint_target1'] = true;
 
 $frm_submit = '
 <div class="btn_confirm01 btn_confirm">
     <input type="submit" value="확인" class="btn_submit" accesskey="s">
     <a href="./board_list.php?thema='.$_theme.'">목록</a>
+	<a href="'.G5_BBS_URL.'/board.php?bo_table='.$board['bo_table'].'" class="btn_frmline">게시판 바로가기</a>
 </div>
 ';
 ?>
@@ -148,6 +150,23 @@ $frm_submit = '
                 <label for="chk_grp_point_explain">그룹적용</label>
                 <input type="checkbox" name="chk_all_point_explain" value="1" id="chk_all_point_explain">
                 <label for="chk_all_point_explain">전체적용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="bo_use_point_explain">댓글포인트 적용대상</label></th>
+            <td>
+				<label for="bo_cmtpoint_target1">
+					<input type="radio" name="bo_cmtpoint_target" value="1" id="bo_cmtpoint_target1" <?php echo $checked['bo_cmtpoint_target1']?'checked':''; ?>> 그누보드 포인트로 적립
+				</label>
+				<label for="bo_cmtpoint_target2">
+					<input type="radio" name="bo_cmtpoint_target" value="2" id="bo_cmtpoint_target2" <?php echo $checked['bo_cmtpoint_target2']?'checked':''; ?>> 이윰레벨 포인트로 적립
+				</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_cmtpoint_target" value="1" id="chk_grp_cmtpoint_target">
+                <label for="chk_grp_cmtpoint_target">그룹적용</label>
+                <input type="checkbox" name="chk_all_cmtpoint_target" value="1" id="chk_all_cmtpoint_target">
+                <label for="chk_all_cmtpoint_target">전체적용</label>
             </td>
         </tr>
 		<tr>

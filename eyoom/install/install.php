@@ -45,6 +45,7 @@ if($ins_theme == 'p') {
 // eyoom 기본설정
 $eyoom = array(
 	"theme" => $theme_name,
+	"shop_theme" => "",
 	"theme_selector" => "n",
 	"bootstrap" => "1",
 	"outlogin_skin" => "basic",

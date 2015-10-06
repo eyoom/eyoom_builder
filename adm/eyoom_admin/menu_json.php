@@ -5,14 +5,17 @@ include_once(EYOOM_PATH.'/common.php');
 auth_check($auth[$sub_menu], "r");
 
 $theme = $_GET['thema'];
+$me_shop = $_GET['me_shop'];
+if(!$me_shop) $me_shop = 2;
+$root_text = $me_shop == 1 ? '쇼핑몰 메뉴':'커뮤니티 메뉴';
 $admin_mode = true;
-$eyoom_menu = $thema->eyoom_menu($theme);
+$eyoom_menu = $thema->eyoom_menu($me_shop);
 
 $output  = '';
 $output .= '[{';
 $output .= '
 	"id":"1",
-	"text":"커뮤니티 메뉴",
+	"text":"'.$root_text.'",
 	"children":[
 ';
 if(is_array($eyoom_menu)) {

@@ -1,6 +1,7 @@
 <?php
 	include(eyoom_config);
 	$theme = $eyoom['theme'];
+	$shop_theme = $eyoom['shop_theme'];
 	$_theme = $_GET['thema'];
 	if(!$_theme) $_theme = $theme;
 	$config_file = G5_DATA_PATH.'/eyoom.'.$theme.'.config.php';

@@ -19,6 +19,7 @@ $set = "
 if(preg_match('/(community|dynamic)/',$theme)) {
 $set .= ",
 	bo_use_point_explain	= '{$_POST['bo_use_point_explain']}',
+	bo_cmtpoint_target		= '{$_POST['bo_cmtpoint_target']}',
 	bo_firstcmt_point		= '{$_POST['bo_firstcmt_point']}',
 	bo_firstcmt_point_type	= '{$_POST['bo_firstcmt_point_type']}',
 	bo_bomb_point			= '{$_POST['bo_bomb_point']}',
@@ -42,6 +43,7 @@ if (is_checked('chk_grp_hotgul'))			$grp_fields .= " , bo_use_hotgul = '{$_POST[
 if (is_checked('chk_grp_anonymous'))		$grp_fields .= " , bo_use_anonymous = '{$_POST['bo_use_anonymous']}' ";
 if (is_checked('chk_grp_infinite_scroll'))	$grp_fields .= " , bo_use_infinite_scroll = '{$_POST['bo_use_infinite_scroll']}' ";
 if (is_checked('chk_grp_point_explain'))	$grp_fields .= " , bo_use_point_explain = '{$_POST['bo_use_point_explain']}' ";
+if (is_checked('chk_grp_cmtpoint_target'))	$grp_fields .= " , bo_cmtpoint_target = '{$_POST['bo_cmtpoint_target']}' ";
 if (is_checked('chk_grp_firstcmt_point')) {
 	$grp_fields .= " , bo_firstcmt_point		= '{$_POST['bo_firstcmt_point']}' ";
 	$grp_fields .= " , bo_firstcmt_point_type	= '{$_POST['bo_firstcmt_point_type']}' ";
@@ -70,6 +72,7 @@ if (is_checked('chk_all_hotgul'))			$all_fields .= " , bo_use_hotgul = '{$_POST[
 if (is_checked('chk_all_anonymous'))		$all_fields .= " , bo_use_anonymous = '{$_POST['bo_use_anonymous']}' ";
 if (is_checked('chk_all_infinite_scroll'))	$all_fields .= " , bo_use_infinite_scroll = '{$_POST['bo_use_infinite_scroll']}' ";
 if (is_checked('chk_all_point_explain'))	$all_fields .= " , bo_use_point_explain = '{$_POST['bo_use_point_explain']}' ";
+if (is_checked('chk_all_cmtpoint_target'))	$all_fields .= " , bo_cmtpoint_target = '{$_POST['bo_cmtpoint_target']}' ";
 if (is_checked('chk_all_firstcmt_point'))	{
 	$all_fields .= " , bo_firstcmt_point		= '{$_POST['bo_firstcmt_point']}' ";
 	$all_fields .= " , bo_firstcmt_point_type	= '{$_POST['bo_firstcmt_point_type']}' ";
