@@ -78,7 +78,7 @@ $frm_submit = '
         <td>
             <label for="bo_skin_<?php echo $i; ?>" class="sound_only">스킨</label>
 			<?php 
-				$arr = $eb->get_skin_dir('board',EYOOM_THEME_PATH.'/'.$_theme.'/skin_bs');
+				$arr = $eb->get_skin_dir('board',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
 				$checked1 = $_board[$i]['use_gnu_skin'] == 'n' ? 'checked="checked"':'';
 				$checked2 = $_board[$i]['use_gnu_skin'] == 'y' ? 'checked="checked"':'';
 				if($arr) {

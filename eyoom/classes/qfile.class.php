@@ -70,16 +70,18 @@ class qfile
 
 	// 특정폴더에 있는 파일 중 일정시간(초)이 지난 파일만 삭제하기
 	public function del_timeover_file($path,$second=3600,$match='') {
-		$dir = @dir($path);
-		$now = time();
+		if(is_dir($path)) {
+			$dir = @dir($path);
+			$now = time();
 
-		while($entry = $dir->read()) {
-			if ($entry == "." || $entry == ".." || is_dir($entry) || ($match && !preg_match("/".$match."/",$entry))) continue;
-			else {
-				unset($ctime);
-				$file = $path . "/" . $entry;
-				$ctime = filectime($file);
-				if(($now-$ctime)>$second) @unlink($file);
+			while($entry = $dir->read()) {
+				if ($entry == "." || $entry == ".." || is_dir($entry) || ($match && !preg_match("/".$match."/",$entry))) continue;
+				else {
+					unset($ctime);
+					$file = $path . "/" . $entry;
+					$ctime = filectime($file);
+					if(($now-$ctime)>$second) @unlink($file);
+				}
 			}
 		}
 	}

@@ -3,6 +3,7 @@ class eyoom extends qfile
 {
 	protected	$tpl_name;
 	protected	$member_path;
+	protected	$chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 	public function __construct() {
 		global $eyoom;
@@ -654,7 +655,6 @@ class eyoom extends qfile
 	}
 
 	public function syntaxhighlighter($content) {
-		$content = preg_replace("/<span.*?>(.*?)<\/span>/is","\n\\1",$content);
 		$content = preg_replace("/{CODE\s*\:([^}]*)}/i","<pre class=\"brush: \\1;\">",$content);
 		$content = preg_replace("/{\/CODE}/i","</pre>",$content);
 		$content = preg_replace_callback("/<pre[^>]*>(.*?)<\/pre>/s",array($this,'syntaxhighlighter_remove_tag'),$content);
@@ -974,5 +974,103 @@ class eyoom extends qfile
 
 		return $result_array;
 	}
+
+	// 10진수를 62진수 변환 - PHP스쿨 마냐님 소스 : http://www.phpschool.com/link/tipntech/79695 참조
+	public function base62_encode($val, $base=62) {
+		// can't handle numbers larger than 2^31-1 = 2147483647
+		$str = '';
+		do {
+			$i = $val % $base;
+			$str = $this->chars[$i] . $str;
+			$val = ($val - $i) / $base;
+		} while($val > 0);
+		return $str;
+	}
+
+	// 62진수를 10진수로 변환 - PHP스쿨 마냐님 소스 : http://www.phpschool.com/link/tipntech/79695 참조
+	public function base62_decode($str, $base=62) {
+		$len = strlen($str);
+		$val = 0;
+		$arr = array_flip(str_split($this->chars));
+		for($i = 0; $i < $len; ++$i) {
+			$val += $arr[$str[$i]] * pow($base, $len-$i-1);
+		}
+		return $val;
+	}
+
+	// 짧은주소에서 게시판 기본정보 추출하기
+	public function short_url_data($t) {
+		global $g5;
+
+		$s_no = (int)$this->base62_decode($t);
+		if(!$s_no || !is_int($s_no)) {
+			return false;
+		} else {
+			$link = sql_fetch("select * from {$g5['eyoom_link']} where s_no = '{$s_no}' limit 1", false);
+			if($link) {
+				if (isset($link['wr_id'])) {
+					$data['wr_id'] = (int)$link['wr_id'];
+				} else {
+					$data['wr_id'] = 0;
+				}
+
+				if(isset($link['bo_table'])) {
+					$data['bo_table'] = preg_replace('/[^a-z0-9_]/i', '', trim($link['bo_table']));
+					$data['bo_table'] = substr($data['bo_table'], 0, 20);
+				} else {
+					$data['bo_table'] = '';
+				}
+
+				$write = array();
+				$write_table = "";
+				if ($data['bo_table']) {
+					$data['board'] = sql_fetch(" select * from {$g5['board_table']} where bo_table = '{$data['bo_table']}' ");
+					if ($data['board']['bo_table']) {
+						set_cookie("ck_bo_table", $data['board']['bo_table'], 86400 * 1);
+						$data['gr_id'] = $data['board']['gr_id'];
+						$write_table = $g5['write_prefix'] . $data['bo_table']; // 게시판 테이블 전체이름
+						if (isset($data['wr_id']) && $data['wr_id']) {
+							$data['write'] = sql_fetch(" select * from $write_table where wr_id = '{$data['wr_id']}' ");
+						}
+					}
+				}
+
+				if ($data['gr_id']) {
+					$data['group'] = sql_fetch(" select * from {$g5['group_table']} where gr_id = '{$data['gr_id']}' ");
+				}
+				$data['theme'] = $link['theme'];
+
+				return $data;
+
+			} else {
+				return false;
+			}
+		}
+	}
+
+	// 짧은주소로 가져오기
+	public function get_short_url() {
+		global $g5, $bo_table, $wr_id, $theme;
+		if(!$bo_table || !$wr_id || !$theme) {
+			return false;
+		} else {
+			$link = sql_fetch("select * from {$g5['eyoom_link']} where bo_table = '{$bo_table}' and wr_id = '{$wr_id}' and theme = '{$theme}' ", false);
+			if($link['bo_table']) {
+				$t = $this->base62_encode($link['s_no']);
+				return G5_BBS_URL . "/?t=".$t;
+			} else return false;
+		}
+	}
+
+	// 짧은주소 생성하기
+	public function make_short_url() {
+		global $g5, $bo_table, $wr_id, $theme;
+		$sql = "insert into {$g5['eyoom_link']} set bo_table='{$bo_table}', wr_id = '{$wr_id}', theme = '{$theme}'";
+		sql_query($sql,false);
+		$s_no = mysql_insert_id();
+		$t = $this->base62_encode($s_no);
+		return G5_BBS_URL . "/?t=".$t;
+	}
+
 }
 ?>

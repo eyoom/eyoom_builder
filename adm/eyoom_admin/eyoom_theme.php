@@ -15,6 +15,7 @@
 	$_config_file = $_theme == 'basic' || !$_theme ? G5_DATA_PATH.'/eyoom.config.php':G5_DATA_PATH.'/eyoom.'.$_theme.'.config.php';
 	@include($_config_file);
 	$_eyoom = $eyoom;
+	$_tpl_name = $_eyoom['bootstrap'] ? 'bs':'pc';
 	unset($eyoom);
 
 	// 게시판 설정 다시 가져오기

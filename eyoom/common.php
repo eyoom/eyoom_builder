@@ -5,7 +5,7 @@
 	define('_EYOOM_COMMON_',true);
 
 	// Version
-	define('_EYOOM_VESION_','EyoomBuilder_1.1.0');
+	define('_EYOOM_VESION_','EyoomBuilder_1.1.1');
 
 	// GNUBOARD5 Library
 	include_once(G5_LIB_PATH.'/common.lib.php');
@@ -110,7 +110,7 @@
 			<meta property="og:id" content="'.G5_URL.'" />
 			<meta property="og:url" content="'.G5_BBS_URL.'/board.php?bo_table='.$bo_table.'&amp;wr_id='.$wr_id.'" />
 			<meta property="og:type" content="article" />
-			<meta property="og:title" content="'.$head_title.'" />
+			<meta property="og:title" content="'.preg_replace('/"/','',$head_title).'" />
 			<meta property="og:site_name" content="'.$config['cf_title'].'" />
 			<meta property="og:description" content="'.cut_str(trim(str_replace(array("\r\n","\r","\n"),'',strip_tags(preg_replace("/\?/","",$write['wr_content'])))),200, '…').'"/>
 			<meta property="og:image" content="'.$first_image['src'].'" />

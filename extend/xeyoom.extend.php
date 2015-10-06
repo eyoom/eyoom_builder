@@ -42,6 +42,7 @@
 	$g5['eyoom_board']		= G5_TABLE_PREFIX.'eyoom_board';
 	$g5['eyoom_banner']		= G5_TABLE_PREFIX.'eyoom_banner';
 	$g5['eyoom_menu']		= G5_TABLE_PREFIX.'eyoom_menu';
+	$g5['eyoom_link']		= G5_TABLE_PREFIX.'eyoom_link';
 
 	// Eyoom 환경설정파일
 	$eyoom = array();
@@ -80,6 +81,21 @@
 		if(isset($_config['bootstrap'])) $bs = $_config['bootstrap'];
 		unset($_user, $_config);
 
+		// 짧은주소 적용
+		if(defined('_LINK_')) {
+			$link = array();
+			$link = $eb->short_url_data($t);
+			$bo_table = $link['bo_table'];
+			$write_table = $link['write_table'];
+			$wr_id = $link['wr_id'];
+			$board = $link['board'];
+			$gr_id = $link['gr_id'];
+			$group = $link['group'];
+			$write = $link['write'];
+			$theme = $link['theme'];
+			unset($link);
+		}
+
 		// 테마 환경설정파일
 		define('config_file',G5_DATA_PATH."/eyoom.".$theme.".config.php");
 		if(@file_exists(config_file)) {
@@ -113,11 +129,11 @@
 				$eyoom['language'] = 'kr';
 			}
 			$g5['language'] = $eyoom['language'];
-			$language_theme_file = G5_DATA_PATH.'/language/theme.'.$theme.'.'.$g5['language'].'.php';
+			$language_theme_file = G5_DATA_PATH.'/language/theme.'.$g5['language'].'.php';
 			if(file_exists($language_theme_file)) {
 				include_once($language_theme_file);
 			}
-			$language_alert_file = G5_DATA_PATH.'/language/alert.'.$theme.'.'.$g5['language'].'.php';
+			$language_alert_file = G5_DATA_PATH.'/language/alert.'.$g5['language'].'.php';
 			if(file_exists($language_alert_file)) {
 				include_once($language_alert_file);
 			}

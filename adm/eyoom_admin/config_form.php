@@ -72,7 +72,7 @@ $frm_submit = '
             <th scope="row"><label for="theme">아웃로그인 스킨</label></th>
             <td>
                 <?php
-                $arr = $eb->get_skin_dir('outlogin',EYOOM_THEME_PATH.'/'.$_theme.'/skin_bs');
+                $arr = $eb->get_skin_dir('outlogin',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
 				$checked['use_gnu_outlogin1'] = $_eyoom['use_gnu_outlogin'] == 'n' ? 'checked="checked"':'';
 				$checked['use_gnu_outlogin2'] = $_eyoom['use_gnu_outlogin'] == 'y' ? 'checked="checked"':'';
 				if($arr) {
@@ -93,7 +93,7 @@ $frm_submit = '
             <th scope="row"><label for="de_admin_company_saupja_no">현재접속자 스킨</label></th>
             <td>
                 <?php
-                $arr = $eb->get_skin_dir('connect',EYOOM_THEME_PATH.'/'.$_theme.'/skin_bs');
+                $arr = $eb->get_skin_dir('connect',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
 				$checked['use_gnu_connect1'] = $_eyoom['use_gnu_connect'] == 'n' ? 'checked="checked"':'';
 				$checked['use_gnu_connect2'] = $_eyoom['use_gnu_connect'] == 'y' ? 'checked="checked"':'';
 				if($arr) {
@@ -116,7 +116,7 @@ $frm_submit = '
 			<th scope="row"><label for="de_admin_company_saupja_no">인기검색어 스킨</label></th>
             <td>
                 <?php
-                $arr = $eb->get_skin_dir('popular',EYOOM_THEME_PATH.'/'.$_theme.'/skin_bs');
+                $arr = $eb->get_skin_dir('popular',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
 				$checked['use_gnu_popular1'] = $_eyoom['use_gnu_popular'] == 'n' ? 'checked="checked"':'';
 				$checked['use_gnu_popular2'] = $_eyoom['use_gnu_popular'] == 'y' ? 'checked="checked"':'';
 				if($arr) {
@@ -137,7 +137,7 @@ $frm_submit = '
             <th scope="row"><label for="theme">설문조사 스킨</label></th>
             <td>
                 <?php
-                $arr = $eb->get_skin_dir('poll',EYOOM_THEME_PATH.'/'.$_theme.'/skin_bs');
+                $arr = $eb->get_skin_dir('poll',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
 				$checked['use_gnu_poll1'] = $_eyoom['use_gnu_poll'] == 'n' ? 'checked="checked"':'';
 				$checked['use_gnu_poll2'] = $_eyoom['use_gnu_poll'] == 'y' ? 'checked="checked"':'';
 				if($arr) {
@@ -160,7 +160,7 @@ $frm_submit = '
             <th scope="row"><label for="de_admin_company_saupja_no">방문자통계 스킨</label></th>
             <td>
                 <?php
-                $arr = $eb->get_skin_dir('visit',EYOOM_THEME_PATH.'/'.$_theme.'/skin_bs');
+                $arr = $eb->get_skin_dir('visit',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
 				$checked['use_gnu_visit1'] = $_eyoom['use_gnu_visit'] == 'n' ? 'checked="checked"':'';
 				$checked['use_gnu_visit2'] = $_eyoom['use_gnu_visit'] == 'y' ? 'checked="checked"':'';
 				if($arr) {
@@ -181,7 +181,7 @@ $frm_submit = '
 			<th scope="row"><label for="de_admin_company_saupja_no">새글 스킨</label></th>
             <td>
                 <?php
-                $arr = $eb->get_skin_dir('new',EYOOM_THEME_PATH.'/'.$_theme.'/skin_bs');
+                $arr = $eb->get_skin_dir('new',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
 				$checked['use_gnu_new1'] = $_eyoom['use_gnu_new'] == 'n' ? 'checked="checked"':'';
 				$checked['use_gnu_new2'] = $_eyoom['use_gnu_new'] == 'y' ? 'checked="checked"':'';
 				if($arr) {
@@ -204,7 +204,7 @@ $frm_submit = '
             <th scope="row"><label for="theme">멤버쉽(회원) 스킨</label></th>
             <td>
                 <?php
-                $arr = $eb->get_skin_dir('member',EYOOM_THEME_PATH.'/'.$_theme.'/skin_bs');
+                $arr = $eb->get_skin_dir('member',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
 				$checked['use_gnu_member1'] = $_eyoom['use_gnu_member'] == 'n' ? 'checked="checked"':'';
 				$checked['use_gnu_member2'] = $_eyoom['use_gnu_member'] == 'y' ? 'checked="checked"':'';
 				if($arr) {
@@ -225,7 +225,7 @@ $frm_submit = '
             <th scope="row"><label for="de_admin_company_saupja_no">FAQ 스킨</label></th>
             <td>
                 <?php
-                $arr = $eb->get_skin_dir('faq',EYOOM_THEME_PATH.'/'.$_theme.'/skin_bs');
+                $arr = $eb->get_skin_dir('faq',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
 				$checked['use_gnu_faq1'] = $_eyoom['use_gnu_faq'] == 'n' ? 'checked="checked"':'';
 				$checked['use_gnu_faq2'] = $_eyoom['use_gnu_faq'] == 'y' ? 'checked="checked"':'';
 				if($arr) {
@@ -248,7 +248,7 @@ $frm_submit = '
 			<th scope="row"><label for="de_admin_company_saupja_no">1:1문의 스킨</label></th>
             <td>
                 <?php
-                $arr = $eb->get_skin_dir('qa',EYOOM_THEME_PATH.'/'.$_theme.'/skin_bs');
+                $arr = $eb->get_skin_dir('qa',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
 				$checked['use_gnu_qa1'] = $_eyoom['use_gnu_qa'] == 'n' ? 'checked="checked"':'';
 				$checked['use_gnu_qa2'] = $_eyoom['use_gnu_qa'] == 'y' ? 'checked="checked"':'';
 				if($arr) {
@@ -269,7 +269,7 @@ $frm_submit = '
             <th scope="row"><label for="theme">검색 스킨</label></th>
             <td>
                 <?php
-                $arr = $eb->get_skin_dir('search',EYOOM_THEME_PATH.'/'.$_theme.'/skin_bs');
+                $arr = $eb->get_skin_dir('search',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
 				$checked['use_gnu_search1'] = $_eyoom['use_gnu_search'] == 'n' ? 'checked="checked"':'';
 				$checked['use_gnu_search2'] = $_eyoom['use_gnu_search'] == 'y' ? 'checked="checked"':'';
 				if($arr) {
@@ -292,7 +292,7 @@ $frm_submit = '
 			<th scope="row"><label for="de_admin_company_saupja_no">쇼핑몰 스킨</label></th>
             <td>
                 <?php
-                $arr = $eb->get_skin_dir('shop',EYOOM_THEME_PATH.'/'.$_theme.'/skin_bs');
+                $arr = $eb->get_skin_dir('shop',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
 				$checked['use_gnu_shop1'] = $_eyoom['use_gnu_shop'] == 'n' ? 'checked="checked"':'';
 				$checked['use_gnu_shop2'] = $_eyoom['use_gnu_shop'] == 'y' ? 'checked="checked"':'';
 				if($arr) {
@@ -314,7 +314,7 @@ $frm_submit = '
 			<th scope="row"><label for="de_admin_company_saupja_no">팝업 스킨</label></th>
             <td>
                 <?php
-                $arr = $eb->get_skin_dir('newwin',EYOOM_THEME_PATH.'/'.$_theme.'/skin_bs');
+                $arr = $eb->get_skin_dir('newwin',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
 				$checked['use_gnu_newwin1'] = $_eyoom['use_gnu_newwin'] == 'n' ? 'checked="checked"':'';
 				$checked['use_gnu_newwin2'] = $_eyoom['use_gnu_newwin'] == 'y' ? 'checked="checked"':'';
 				if($arr) {
@@ -337,7 +337,7 @@ $frm_submit = '
             <th scope="row"><label for="theme">마이페이지 스킨</label></th>
             <td>
                 <?php
-                $arr = $eb->get_skin_dir('mypage',EYOOM_THEME_PATH.'/'.$_theme.'/skin_bs');
+                $arr = $eb->get_skin_dir('mypage',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
 				if($arr) {
 					echo '<select name="mypage_skin" id="mypage_skin" required class="required">';
 					for ($i=0; $i<count($arr); $i++) {
@@ -354,7 +354,7 @@ $frm_submit = '
             <th scope="row"><label for="de_admin_company_saupja_no">서명 스킨</label></th>
             <td>
                 <?php
-                $arr = $eb->get_skin_dir('signature',EYOOM_THEME_PATH.'/'.$_theme.'/skin_bs');
+                $arr = $eb->get_skin_dir('signature',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
 				if($arr) {
 					echo '<select name="signature_skin" id="signature_skin" required class="required">';
 					for ($i=0; $i<count($arr); $i++) {
@@ -373,7 +373,7 @@ $frm_submit = '
             <th scope="row"><label for="de_admin_company_saupja_no">내글반응 스킨</label></th>
             <td>
                 <?php
-                $arr = $eb->get_skin_dir('respond',EYOOM_THEME_PATH.'/'.$_theme.'/skin_bs');
+                $arr = $eb->get_skin_dir('respond',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
 				if($arr) {
 					echo '<select name="respond_skin" id="respond_skin" required class="required">';
 					for ($i=0; $i<count($arr); $i++) {
@@ -390,7 +390,7 @@ $frm_submit = '
 			<th scope="row"><label for="de_admin_company_saupja_no">푸시알림 스킨</label></th>
             <td>
                 <?php
-                $arr = $eb->get_skin_dir('push',EYOOM_THEME_PATH.'/'.$_theme.'/skin_bs');
+                $arr = $eb->get_skin_dir('push',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
 				if($arr) {
 					echo '<select name="push_skin" id="push_skin" required class="required">';
 					for ($i=0; $i<count($arr); $i++) {

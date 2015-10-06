@@ -2,6 +2,11 @@
 include_once('./_common.php');
 include_once(G5_PATH.'/head.sub.php');
 @include_once(G5_BBS_PATH.'/language.php');
+
+// url 체크
+check_url_host($url1);
+check_url_host($url2);
+check_url_host($url3);
 ?>
 
 <script>

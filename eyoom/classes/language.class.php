@@ -12,7 +12,7 @@ class language extends qfile
 	public function alert_message($msg,$lang) {
 		global $theme, $lang_alert;
 		$code = trim($this->get_langcode($msg));
-		$alert_file	= G5_DATA_PATH.'/language/alert.'.$theme.'.'.$lang.'.php';
+		$alert_file	= G5_DATA_PATH.'/language/alert.'.$lang.'.php';
 		if(file_exists($alert_file)) {
 			if($code) {
 				return $lang_alert[$code];
@@ -26,7 +26,7 @@ class language extends qfile
 	// 입력된 메세지를 CODE로 변환
 	protected function get_langcode($msg) {
 		global $theme;
-		$alert_kr_file	= G5_DATA_PATH.'/language/alert.'.$theme.'.kr.php';
+		$alert_kr_file	= G5_DATA_PATH.'/language/alert.kr.php';
 		if(file_exists($alert_kr_file)) {
 			include($alert_kr_file);
 			return array_search($msg, $lang_alert);

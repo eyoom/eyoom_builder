@@ -21,6 +21,11 @@
 		sql_query("update {$g5['eyoom_new']} set wr_hit = '{$parent['wr_hit']}', wr_comment = '{$parent['wr_comment']}' where $where and bo_table='{$bo_table}'");
     }
 
+	// 짤은주소 체크 및 생성
+	if(!($short_url = $eb->get_short_url())) {
+		$short_url = $eb->make_short_url();
+	}
+
 	// 첨부파일 정보 가져오기
 	if ($view['file']['count']) {
 		$cnt = 0;
@@ -89,7 +94,7 @@
 	if($board['bo_use_sns']) {
 		$sns_msg = urlencode(str_replace('\"', '"', $view['subject']));
 
-		$longurl = urlencode('http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+		$longurl = urlencode($short_url);
 		$sns_send  = EYOOM_CORE_URL.'/board/sns_send.php?longurl='.$longurl;
 		$sns_send .= '&amp;title='.$sns_msg;
 
@@ -103,7 +108,7 @@
 	// wr_1에 작성자의 레벨정보 입력
 	if($is_member) $wr_1 = $member['mb_level']."|".$eyoomer['level'];
 
-	include_once('./view_comment.php');
+	include_once(G5_BBS_PATH.'/view_comment.php');
 
 	$tpl->define(array(
 		'cmt_pc'	=> 'skin_pc/board/' . $eyoom_board['bo_skin'] . '/view_comment.skin.html',

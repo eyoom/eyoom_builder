@@ -240,3 +240,18 @@ CREATE TABLE IF NOT EXISTS `g5_eyoom_theme` (
   `tm_time` varchar(20) NOT NULL,
   UNIQUE KEY `tm_name` (`tm_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `g5_eyoom_link`
+--
+
+DROP TABLE IF EXISTS `g5_eyoom_link`;
+CREATE TABLE IF NOT EXISTS `g5_eyoom_link` (
+  `s_no` int(11) unsigned NOT NULL auto_increment,
+  `bo_table` varchar(20) collate utf8_unicode_ci NOT NULL,
+  `wr_id` int(11) unsigned NOT NULL default '0',
+  `theme` varchar(40) collate utf8_unicode_ci NOT NULL,
+  PRIMARY KEY  (`s_no`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;

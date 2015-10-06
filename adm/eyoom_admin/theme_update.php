@@ -6,6 +6,7 @@ auth_check($auth[$sub_menu], "r");
 
 $eyoom_config_file = '../../data/eyoom.config.php';
 include($eyoom_config_file);
+if(preg_match('/mlang/',$_POST['theme'])) $eyoom['theme_lang_type'] = 'm';
 
 $eyoom_config = array();
 $eyoom_config['theme'] = $_POST['theme'];
@@ -18,4 +19,3 @@ if($unique_theme_id = get_cookie('unique_theme_id')) {
 goto_url('./'.$_POST['ref']);
 
 ?>
-

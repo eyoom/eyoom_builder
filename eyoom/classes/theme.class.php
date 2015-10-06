@@ -440,24 +440,35 @@ class theme extends qfile
 
 	// 메뉴 링크로 부터 메뉴속성 추출하기
 	public function get_meinfo_link($url) {
+		global $eb;
+
 		if($url['query']) {
 			parse_str($url['query'],$query);
 			foreach($query as $key => $val) {
-				if(in_array($key,array('bo_table','gr_id','co_id','ca_id','pid','theme','faq','fm_id','sca'))) {
-					switch($key) {
-						case "bo_table"	: $info['me_type'] = 'board'; break;
-						case "gr_id"	: $info['me_type'] = 'group'; break;
-						case "co_id"	: $info['me_type'] = 'page'; break;
-						case "ca_id"	: $info['me_type'] = 'shop'; break;
-						case "pid"		: $info['me_type'] = 'pid'; break;
-						case "theme"	: $info['me_type'] = 'theme'; break;
-						case "faq"		: $info['me_type'] = 'faq'; break;
-						case "fm_id"	: $info['me_type'] = 'faq'; break;
-						case "qalist"	: $info['me_type'] = 'qalist'; break;
-						case "sca"		: $info['me_type'] = 'category'; break;
+				// 잛은글 주소라면
+				if($key == 't') {
+					$link = $eb->short_url_data($val);
+					$info['me_type'] = 'board';
+					$info['me_pid'] = $link['bo_table'];
+					$info['me_link'] = $url['path'].'board.php?bo_table='.$link['bo_table'].'&amp;wr_id='.$link['wr_id'];
+					unset($link);
+				} else {
+					if(in_array($key,array('bo_table','gr_id','co_id','ca_id','pid','theme','faq','fm_id','sca'))) {
+						switch($key) {
+							case "bo_table"	: $info['me_type'] = 'board'; break;
+							case "gr_id"	: $info['me_type'] = 'group'; break;
+							case "co_id"	: $info['me_type'] = 'page'; break;
+							case "ca_id"	: $info['me_type'] = 'shop'; break;
+							case "pid"		: $info['me_type'] = 'pid'; break;
+							case "theme"	: $info['me_type'] = 'theme'; break;
+							case "faq"		: $info['me_type'] = 'faq'; break;
+							case "fm_id"	: $info['me_type'] = 'faq'; break;
+							case "qalist"	: $info['me_type'] = 'qalist'; break;
+							case "sca"		: $info['me_type'] = 'category'; break;
+						}
+						$info['me_pid']  = $val;
+						$info['me_link'] = $url['path']."?".$url['query'];
 					}
-					$info['me_pid']  = $val;
-					$info['me_link'] = $url['path']."?".$url['query'];
 				}
 			}
 		} else if($url['path']) {
