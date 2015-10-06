@@ -7,7 +7,7 @@ auth_check($auth[$sub_menu], "r");
 
 $levelset_config = G5_DATA_PATH.'/eyoom.levelset.php';
 $levelset = $_POST['levelset'];
-if(!$levelset['use_eyoom_level']) $levelset['use_eyoom_level'] = 'n';
+
 $levelset['max_use_gnu_level'] = $_POST['max_use_gnu_level'];
 $levelset['cnt_gnu_level_2'] = $_POST['cnt_gnu_level_2'];
 $levelset['cnt_gnu_level_3'] = $_POST['cnt_gnu_level_3'];

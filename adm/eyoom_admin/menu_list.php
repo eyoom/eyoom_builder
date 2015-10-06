@@ -82,7 +82,7 @@ $frm_submit = '
 			},
 			onClick: function(source){
 				var url='menu_form.php?thema=<?php echo $_theme;?>&id='+source.id;
-				document.ifrm_menu.location.href = url;
+				document.getElementById("ifrm_menu").contentWindow.location.href = url;
 			}
 		});
 	});

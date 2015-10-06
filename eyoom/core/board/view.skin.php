@@ -9,17 +9,17 @@
 	$user = $eb->get_user_info($mb['mb_id'])+$mb;
 	$lvuser = $eb->user_level_info($user);
 
-	// 읽는사람 포인트 주기
+	// 읽는사람 포인트 주기 및 이윰뉴 테이블의 히트수/댓글수 일치 시키기
     $spv_name = 'spv_board_'.$bo_table.'_'.$wr_id;
     if (!get_session($spv_name) && $is_member) {
 		$eb->level_point($levelset['read']);
         set_session($spv_name, TRUE);
-    }
 
-	// g5_GNUBOARD_new 테이블에 wr_hit 적용
-	$where = "wr_id = '{$wr_id}' ";
-	$hit = sql_fetch("select wr_hit from {$write_table} where $where");
-	sql_query("update {$g5['eyoom_new']} set wr_hit = '{$hit['wr_hit']}' where $where and bo_table='{$bo_table}'");
+		// 이윰뉴 테이블에 wr_hit 적용
+		$where = "wr_id = '{$wr_id}' ";
+		$parent = sql_fetch("select wr_hit, wr_comment from {$write_table} where $where");
+		sql_query("update {$g5['eyoom_new']} set wr_hit = '{$parent['wr_hit']}', wr_comment = '{$parent['wr_comment']}' where $where and bo_table='{$bo_table}'");
+    }
 
 	// 첨부파일 정보 가져오기
 	if ($view['file']['count']) {
@@ -73,7 +73,8 @@
 		$facebook_url = $sns_send.'&amp;sns=facebook';
 		$twitter_url  = $sns_send.'&amp;sns=twitter';
 		$gplus_url    = $sns_send.'&amp;sns=gplus';
-		
+		$kakaostory_url   = $sns_send.'&amp;sns=kakaostory';
+		$band_url   = $sns_send.'&amp;sns=band';
 	}
 
 	// wr_1에 작성자의 레벨정보 입력

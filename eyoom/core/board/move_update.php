@@ -1,5 +1,5 @@
 <?php
-	include_once('../_common.php');
+	if (!defined('_GNUBOARD_')) exit;
 
 	// 게시판 관리자 이상 복사, 이동 가능
 	if ($is_admin != 'board' && $is_admin != 'group' && $is_admin != 'super')
@@ -203,24 +203,21 @@
 		sql_query(" update {$g5['board_table']} set bo_count_write = bo_count_write - '$save_count_write', bo_count_comment = bo_count_comment - '$save_count_comment' where bo_table = '$bo_table' ");
 	}
 
-	// 사용자 프로그램
-	@include_once(EYOOM_USER_PATH.'/board/move_update.skin.php');
-
 	$msg = '해당 게시물을 선택한 게시판으로 '.$act.' 하였습니다.';
 	$opener_href = './board.php?bo_table='.$bo_table.'&amp;page='.$page.'&amp;'.$qstr;
 
-	echo <<<HEREDOC
-	<meta http-equiv="content-type" content="text/html; charset=utf-8">
-	<script>
-	alert("$msg");
-	opener.document.location.href = "$opener_href";
-	window.close();
-	</script>
-	<noscript>
-	<p>
-		"$msg"
-	</p>
-	<a href="$opener_href">돌아가기</a>
-	</noscript>
-	HEREDOC;
-	?>
+	echo "
+		<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">
+		<script>
+		alert(\"".$msg."\");
+		opener.document.location.href = \"".$opener_href."\";
+		window.close();
+		</script>
+		<noscript>
+		<p>
+			\"".$msg."\"
+		</p>
+		<a href=\"".$opener_href."\">돌아가기</a>
+		</noscript>
+	";
+?>

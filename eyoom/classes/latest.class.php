@@ -6,8 +6,8 @@ class latest extends eyoom
 
 	// 새글 새댓글 최신글 동시에 추출하기
 	public function latest_newpost($skin, $option) {
-		$list['write'] = $this->latest_write($skin, $option);
-		$list['comment'] = $this->latest_comment($skin, $option);
+		$list['write'] = $this->latest_write($skin, $option, false);
+		$list['comment'] = $this->latest_comment($skin, $option, false);
 		$this->latest_print($skin, $list, 'multiple', 'newpost');
 	}
 
@@ -25,23 +25,29 @@ class latest extends eyoom
 	}
 
 	// 이윰 최신글 추출
-	public function latest_eyoom($skin, $option) {
+	public function latest_eyoom($skin, $option, $print=true) {
 		$where = 1;
 		$opt = $this->get_option($option);
 		$where .= $opt['where'];
 		$where .= " and wr_id = wr_parent";
 		$orderby = $opt['best']=='y'? " wr_hit desc ":"";
 		$list = $this->latest_assign($where, $opt['count'], $opt['cut_subject'], $opt['cut_content'], $orderby, $opt['bo_direct']);
-		$this->latest_print($skin, $list,'single','latest');
+		if($print === null) $print = true;
+		if($print) {
+			$this->latest_print($skin, $list,'single','latest');
+		} else {
+			return $list;
+		}
 	}
 
 	// 최신글 추출
-	public function latest_write($skin, $option, $print=false) {
+	public function latest_write($skin, $option, $print=true) {
 		$where = 1;
 		$opt = $this->get_option($option);
 		$where .= $opt['where'];
 		$where .= " and wr_id = wr_parent";
 		$list = $this->latest_assign($where, $opt['count'], $opt['cut_subject'], $opt['cut_content']);
+		if($print === null) $print = true;
 		if($print) {
 			$this->latest_print($skin, $list);
 		} else {
@@ -50,12 +56,13 @@ class latest extends eyoom
 	}
 
 	// 최신 댓글 추출
-	public function latest_comment($skin, $option, $print=false) {
+	public function latest_comment($skin, $option, $print=true) {
 		$where = 1;
 		$opt = $this->get_option($option);
 		$where .= $opt['where'];
 		$where .= " and wr_id <> wr_parent";
 		$list = $this->latest_assign($where, $opt['count'], $opt['cut_subject'], $opt['cut_content']);
+		if($print === null) $print = true;
 		if($print) {
 			$this->latest_print($skin, $list);
 		} else {
@@ -82,6 +89,7 @@ class latest extends eyoom
 		global $g5;
 		if($option) {
 			$optset = $this->option_query($option);
+			$where  = $optset['where'] ? $this->latest_where($optset['where']):'';
 
 			// 특정게시판만 가져오기
 			if($optset['bo_table']) {
@@ -180,6 +188,17 @@ class latest extends eyoom
 			return $opt;
 
 		} else return false;
+	}
+
+	private function latest_where($expression) {
+		$where = $expression;
+		$where = preg_replace("/\s+/i","",$where);
+		$where = preg_replace("/:/i","=",$where);
+		$where = preg_replace("/&/i"," and ",$where);
+		$where = preg_replace("/\|/i"," or ",$where);
+		$where = preg_replace("/\"/i","'",$where);
+		$where = " and " . $where;
+		return $where;
 	}
 
 	// 최신글 정보 DB에서 가져오기
@@ -291,10 +310,14 @@ class latest extends eyoom
 	}
 
 	// 회원 랭킹 
-	public function latest_ranking($skin, $option) {
+	public function latest_ranking($skin, $option, $type='') {
 		global $g5, $config, $tpl, $tpl_name, $eb;
 		$where = 1;
-		$opt = $this->get_option($option);
+		if(!$type) $opt = $this->get_option($option);
+		else {
+			$opt['count'] = $option;
+			$opt['type'] = $type;
+		}
 
 		switch($opt['type']) {
 			// 오늘의 포인트 랭킹
@@ -342,12 +365,62 @@ class latest extends eyoom
 				}
 				break;
 		}
+		if(!$type){
+			$tpl->define_template("ranking",$skin,'ranking.skin.html');
+			$tpl->assign('list',$list);
+			$tpl->print_($tpl_name);
+		} else {
+			return $list;
+		}
+	}
 
-		$tpl->define_template("ranking",$skin,'ranking.skin.html');
-		$tpl->assign('list',$list);
+	// 랭킹 SET
+	public function latest_rankset($skin,$count) {
+		global $tpl, $tpl_name;
+
+		$list['rank_today'] = $this->latest_ranking($skin, $count, 'today_point');
+		$list['rank_total'] = $this->latest_ranking($skin, $count, 'total_point');
+		$list['rank_level'] = $this->latest_ranking($skin, $count, 'level_point');
+		$tpl->define_template("ranking",$skin,'rankset.skin.html');
+		$tpl->assign($list);
 		$tpl->print_($tpl_name);
 	}
 
+	// 베스트 SET
+	public function latest_bestset($skin,$option,$bo_table='') {
+		global $tpl, $tpl_name;
+
+		$opt = '';
+		$optset = $this->option_query($option);
+		$title = $optset['title'] ? $optset['title']:'';
+		$_option['today'] = "best=y||period=1";
+		$_option['week'] = "best=y||period=7";
+		$_option['month'] = "best=y||period=30";
+
+		$opt .= $optset['count'] ? "||count=".$optset['count']:"||count=10";
+		$opt .= $optset['cut_subject'] ? "||cut_subject=".$optset['cut_subject']:"||cut_subject=30";
+		if($bo_table) {
+			$opt .= "||bo_table=".$bo_table;
+		} else {
+			$opt .= $optset['bo_include'] ? "||bo_include=".$optset['bo_include']:"";
+			$opt .= $optset['bo_exclude'] ? "||bo_exclude=".$optset['bo_exclude']:"";
+			$opt .= $optset['gr_id'] ? "||gr_id=".$optset['gr_id']:"";
+		}
+		$opt .= $optset['where'] ? "||where=".$optset['where']:"";
+
+		$_option['today'] .= $opt;
+		$_option['week'] .= $opt;
+		$_option['month'] .= $opt;
+
+		$list['today'] = $this->latest_eyoom($skin, $_option['today'], false);
+		$list['week'] = $this->latest_eyoom($skin, $_option['week'], false);
+		$list['month'] = $this->latest_eyoom($skin, $_option['month'], false);
+		$tpl->define_template("best",$skin,'bestset.skin.html');
+		$tpl->assign($list);
+		$tpl->assign('title',$title);
+		$tpl->print_($tpl_name);
+	}
+	
 	// 쇼핑몰 상품 추출하기
 	public function latest_item($skin, $option) {
 		global $g5, $config, $tpl, $tpl_name, $eb;
@@ -376,6 +449,7 @@ class latest extends eyoom
 		global $g5;
 		if($option) {
 			$optset = $this->option_query($option);
+			$where  = $optset['where'] ? $this->latest_where($optset['where']):'';
 
 			// 기간설정 period=20 오늘부터 20일전 데이타
 			if($optset['period']) {

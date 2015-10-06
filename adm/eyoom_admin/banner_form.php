@@ -9,6 +9,7 @@ include './eyoom_theme.php';
 $banner_config = G5_DATA_PATH.'/banner/banner.'.$_theme.'.config.php';
 if(file_exists($banner_config)) {
 	@include_once($banner_config);
+	if(is_array($bn_loccd)) ksort($bn_loccd);
 } else {
 	alert("배너위치를 지정해 주셔야 합니다.");
 }

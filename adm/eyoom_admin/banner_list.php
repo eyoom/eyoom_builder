@@ -5,7 +5,14 @@ include_once('./_common.php');
 auth_check($auth[$sub_menu], 'r');
 
 include './eyoom_theme.php';
-@include_once(G5_DATA_PATH.'/banner/banner.'.$_theme.'.config.php');
+$banner_folder = G5_DATA_PATH.'/banner';
+if(@is_dir($banner_folder)) {
+	@include_once($banner_folder.'/banner.'.$_theme.'.config.php');
+} else {
+	@mkdir($banner_folder, G5_DIR_PERMISSION);
+	@chmod($banner_folder, G5_DIR_PERMISSION);
+}
+if(is_array($bn_loccd)) ksort($bn_loccd);
 
 $sql_common = " from {$g5['eyoom_banner']} ";
 

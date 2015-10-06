@@ -107,6 +107,10 @@ class Template extends Template_
 		if($this->pattern_match_url("/bbs\/group/i")) {
 			return EYOOM_CORE_PATH.'/board/'.$path['filename'];
 		}
+		// SNS 연동
+		if($this->pattern_match_url("/bbs\/sns_send/i")) {
+			return EYOOM_CORE_PATH.'/board/'.$path['filename'];
+		}
 		// 새글삭제하기 - File Hooking
 		if($this->pattern_match_url("/bbs\/new_delete/i")) {
 			return EYOOM_CORE_PATH.'/new/'.$path['filename'];

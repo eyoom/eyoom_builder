@@ -37,7 +37,7 @@ class eyoom extends qfile
 				if($i==2) break; // GET변수는 3개까지만 허용
 				$i++;
 			}
-			if($index || $dummy_id == 'home') {
+			if($index || $dummy_id == 'home' || $dummy_id == 'auto_login') {
 				// 홈으로 이동
 				$this->go_index_page();
 			} else {
@@ -331,6 +331,7 @@ class eyoom extends qfile
 	public function get_user_info($mb_id='') {
 		global $g5;
 
+		if(!$mb_id) return false;
 		$single = false;
 		if(is_array($mb_id)) {
 			$where = "find_in_set(a.mb_id,'".implode(',',$mb_id)."')";
@@ -505,7 +506,7 @@ class eyoom extends qfile
 	// $levels : "그누레벨|이윰레벨" 형식
 	public function level_info($levels) {
 		global $eyoom, $levelset, $levelinfo, $theme;
-		if($levelset['use_eyoom_level'] == 'y') {
+		if($levels) {
 			list($gnu_level,$eyoom_level) = explode('|',$levels);
 			$level['gnu_name'] = $levelset['gnu_alias_'.$gnu_level];
 			$level['name'] = $levelinfo[$eyoom_level]['name'];
@@ -588,6 +589,8 @@ class eyoom extends qfile
 	}
 
 	public function syntaxhighlighter($content) {
+		$content = preg_replace("/<span.*?>(.*?)<\/span>/is","\n\\1",$content);
+		$content = preg_replace("/\\t/i","&nbsp;&nbsp;&nbsp;&nbsp;",$content);
 		$content = preg_replace("/{CODE\s*\:([^}]*)}/i","<pre class=\"brush: \\1;\">",$content);
 		$content = preg_replace("/{\/CODE}/i","</pre>",$content);
 		$content = preg_replace_callback("/<pre[^>]*>(.*?)<\/pre>/s",array($this,'syntaxhighlighter_remove_tag'),$content);

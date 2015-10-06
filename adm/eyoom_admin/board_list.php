@@ -8,7 +8,7 @@ include './eyoom_theme.php';
 
 $sql = "select * from {$g5['board_table']} as a left join {$g5['group_table']} as b on a.gr_id = b.gr_id where 1 order by a.gr_id, a.bo_table asc";
 $result = sql_query($sql);
-unset($_board);
+$_board = $bo_table = array();
 for($i=0; $bbs=sql_fetch_array($result); $i++) {
 	$tmp = sql_fetch("select bo_table, bo_skin, use_gnu_skin from {$g5['eyoom_board']} where bo_table='{$bbs['bo_table']}' and bo_theme='{$_theme}'",false);
 	if(!$tmp['bo_table']) {
@@ -23,7 +23,7 @@ for($i=0; $bbs=sql_fetch_array($result); $i++) {
 }
 
 // 그누보드에서 삭제된 게시판 삭제
-sql_query("delete from {$g5['eyoom_board']} where find_in_set(bo_table,'".implode(',',$bo_table)."') = 0 ",false);
+if($i > 0) sql_query("delete from {$g5['eyoom_board']} where find_in_set(bo_table,'".implode(',',$bo_table)."') = 0 ",false);
 
 $g5['title'] = '게시판설정';
 include_once('../admin.head.php');
