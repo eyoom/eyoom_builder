@@ -27,8 +27,8 @@
 	}
 
 	// Eyoom Board 설정
-	if($board['bo_table']) {
-		$eyoom_board = $eb->eyoom_board_info($board['bo_table'], $theme);
+	if($bo_table) {
+		$eyoom_board = $eb->eyoom_board_info($bo_table, $theme);
 		if(!$eyoom_board) {
 			$eyoom_board['bo_table']				= $board['bo_table'];
 			$eyoom_board['bo_theme']				= $theme;
@@ -37,6 +37,26 @@
 			$eyoom_board['bo_use_profile_photo']	= 1;
 			$eyoom_board['bo_sel_date_type']		= 1;
 			$eyoom_board['bo_use_hotgul']			= 1;
+			$eyoom_board['bo_use_anonymous']		= 2;
+		}
+		// 익명글쓰기 체크
+		$is_anonymous = $eyoom_board['bo_use_anonymous'] == 1 ? true:false;
+	}
+
+	// switcher 설정
+	if(preg_match('/community/',$theme)) {
+		$switcher_path = G5_DATA_PATH.'/member/switcher';
+		$switcher_admin = G5_DATA_PATH.'/member/switcher/admin.config.php';
+		if(file_exists($switcher_admin)) {
+			if($eyoom['use_switcher'] == 'on') {
+				if($is_member) {
+					$switcher_member = $switcher_path.'/'.$member['mb_id'].'.config.php';
+					if(file_exists($switcher_member)) @include $switcher_member;
+					else @include $switcher_admin;
+				} else {
+					@include $switcher_admin;
+				}
+			} else @include $switcher_admin;
 		}
 	}
 

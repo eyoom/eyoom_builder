@@ -108,12 +108,13 @@ class eyoom extends qfile
 	public function eyoom_board_info($bo_table, $theme) {
 		global $g5;
 		$sql = "select a.*,b.bo_subject,c.gr_subject from {$g5['eyoom_board']} as a left join {$g5['board_table']} as b on a.bo_table = b.bo_table left join {$g5['group_table']} as c on b.gr_id = c.gr_id where a.bo_table='{$bo_table}' and a.bo_theme='{$theme}'";
+		$board_info = sql_fetch($sql,false);
 		return sql_fetch($sql);
 	}
 
 	// 내글반응 - 내글반응 등록 및 업데이트
 	public function respond($respond = array()) {
-		global $g5, $member;
+		global $g5, $member, $anonymous;
 
 		if(!is_array($respond)) return;
 		foreach($respond as $key => $val) {
@@ -122,14 +123,23 @@ class eyoom extends qfile
 		}
 		if($wr_mb_id == $member['mb_id']) return;
 
+		// 익명글
+		if(!$anonymous) {
+			$mb_id = $member['mb_id'];
+			$mb_nick = $member['mb_nick'];
+		} else {
+			$mb_id = 'anonymous';
+			$mb_nick = '익명';
+		}
+
 		$set = "
 			bo_table	= '$bo_table',
 			pr_id		= '$pr_id',
 			wr_id		= '$wr_id',
 			wr_cmt		= '$wr_cmt',
 			wr_mb_id	= '$wr_mb_id',
-			mb_id		= '" . $member['mb_id'] . "',
-			mb_name		= '" . $member['mb_nick'] . "',
+			mb_id		= '" . $mb_id . "',
+			mb_name		= '" . $mb_nick . "',
 			re_type		= '$type',
 			wr_subject	= '" . addslashes(get_text($wr_subject)) . "',
 		";
@@ -164,7 +174,7 @@ class eyoom extends qfile
 
 		// 푸시등록
 		$user = sql_fetch("select onoff_push_respond from {$g5['eyoom_member']} where mb_id = '{$wr_mb_id}'");
-		if($user['onoff_push_respond'] == 'on') $this->set_push("respond",$rid,$wr_mb_id,$member['mb_nick'],$type);
+		if($user['onoff_push_respond'] == 'on') $this->set_push("respond",$rid,$wr_mb_id,$mb_nick,$type);
 
 	}
 
@@ -507,30 +517,35 @@ class eyoom extends qfile
 	public function level_info($levels) {
 		global $eyoom, $levelset, $levelinfo, $theme;
 		if($levels) {
-			list($gnu_level,$eyoom_level) = explode('|',$levels);
-			$level['gnu_name'] = $levelset['gnu_alias_'.$gnu_level];
-			$level['name'] = $levelinfo[$eyoom_level]['name'];
-			$level['gnu_level'] = $gnu_level;
-			$level['eyoom_level'] = $eyoom_level;
+			list($gnu_level,$eyoom_level,$anonymous) = explode('|',$levels);
+			if($anonymous == 'y') {
+				$level['anonymous'] = true;
+				return $level;
+			} else {
+				$level['gnu_name'] = $levelset['gnu_alias_'.$gnu_level];
+				$level['name'] = $levelinfo[$eyoom_level]['name'];
+				$level['gnu_level'] = $gnu_level;
+				$level['eyoom_level'] = $eyoom_level;
 
-			$icon_path = EYOOM_THEME_PATH.'/'.$theme.'/image/level_icon';
-			$icon_dir = EYOOM_THEME_URL.'/'.$theme.'/image/level_icon';
-			if($eyoom['use_level_icon_gnu'] == 'y') {
-				if($gnu_level == 10) $_gnu_level = 'admin';
-				else $_gnu_level = $gnu_level;
-				$gnu_path = $icon_path.'/gnuboard/'.$eyoom['level_icon_gnu'].'/'.$_gnu_level.'.gif';
-				if(file_exists($gnu_path)) $level['gnu_icon'] = $icon_dir.'/gnuboard/'.$eyoom['level_icon_gnu'].'/'.$_gnu_level.'.gif';
-			}
-			if($eyoom['use_level_icon_eyoom'] == 'y') {
-				if($gnu_level == 10) $_eyoom_level = 'admin';
-				else $_eyoom_level = $eyoom_level;
-				$eyoom_path = $icon_path.'/eyoom/'.$eyoom['level_icon_eyoom'].'/'.$_eyoom_level.'.gif';
-				if(file_exists($eyoom_path)) {
-					$level['eyoom_icon'] = $icon_dir.'/eyoom/'.$eyoom['level_icon_eyoom'].'/'.$_eyoom_level.'.gif';
-					$level['grade_icon'] = $icon_dir.'/grade/'.$eyoom['level_icon_eyoom'].'/g'.$_eyoom_level.'.gif';
+				$icon_path = EYOOM_THEME_PATH.'/'.$theme.'/image/level_icon';
+				$icon_dir = EYOOM_THEME_URL.'/'.$theme.'/image/level_icon';
+				if($eyoom['use_level_icon_gnu'] == 'y') {
+					if($gnu_level == 10) $_gnu_level = 'admin';
+					else $_gnu_level = $gnu_level;
+					$gnu_path = $icon_path.'/gnuboard/'.$eyoom['level_icon_gnu'].'/'.$_gnu_level.'.gif';
+					if(file_exists($gnu_path)) $level['gnu_icon'] = $icon_dir.'/gnuboard/'.$eyoom['level_icon_gnu'].'/'.$_gnu_level.'.gif';
 				}
+				if($eyoom['use_level_icon_eyoom'] == 'y') {
+					if($gnu_level == 10) $_eyoom_level = 'admin';
+					else $_eyoom_level = $eyoom_level;
+					$eyoom_path = $icon_path.'/eyoom/'.$eyoom['level_icon_eyoom'].'/'.$_eyoom_level.'.gif';
+					if(file_exists($eyoom_path)) {
+						$level['eyoom_icon'] = $icon_dir.'/eyoom/'.$eyoom['level_icon_eyoom'].'/'.$_eyoom_level.'.gif';
+						$level['grade_icon'] = $icon_dir.'/grade/'.$eyoom['level_icon_eyoom'].'/g'.$_eyoom_level.'.gif';
+					}
+				}
+				return $level;
 			}
-			return $level;
 		} else return false;
 	}
 

@@ -43,6 +43,7 @@ class Template extends Template_
 			'side_mo'	=> 'layout/side_mo.html',
 			'side_bs'	=> 'layout/side_bs.html',
 			'tail_sub'	=> 'layout/tail_sub.html',
+			'switcher'	=> 'layout/switcher.html',
 			'index_pc'	=> 'main/index_pc.html',
 			'index_mo'	=> 'main/index_mo.html',
 			'index_bs'	=> 'main/index_bs.html',

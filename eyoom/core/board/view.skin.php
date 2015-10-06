@@ -57,10 +57,28 @@
 	}
 	$view_content = $eb->eyoom_content($view['content']);
 	
+	// 작성자 레벨정보 가져오기	
+	if($view['wr_1']) {
+		$lv = $eb->level_info($view['wr_1']);
+	} else {
+		$lv['gnu_level'] = '';
+		$lv['gnu_icon'] = '';
+		$lv['eyoom_icon'] = '';
+		$lv['gnu_name'] = '';
+		$lv['name'] = '';
+	}
 
-	// 작성자 프로필 사진
-	$view['mb_photo'] = $eb->mb_photo($view['mb_id']);
-	$lv = $view['wr_1'] ? $eb->level_info($view['wr_1']):'';
+	// 익명글 기능
+	if(!$lv['anonymous']) {
+		// 작성자 프로필 사진
+		$view['mb_photo'] = $eb->mb_photo($view['mb_id']);
+	} else {
+		$view['mb_photo'] = '';
+		$view['mb_id'] = 'anonymous';
+		$view['wr_name'] = '익명';
+		$view['wr_email'] = '';
+		$view['wr_homepage'] = '';
+	}
 
 	// sns 버튼들
 	if($board['bo_use_sns']) {

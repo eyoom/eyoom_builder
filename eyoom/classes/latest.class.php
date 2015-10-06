@@ -217,7 +217,6 @@ class latest extends eyoom
 		for($i=0; $row = sql_fetch_array($result); $i++) {
 			$list[$i] = $row;
 			$bo_table = $direct!='y' ? $row['bo_table']:$this->bo_table;
-			$list[$i]['mb_photo'] = $eb->mb_photo($row['mb_id']);
 			if(!$row['wr_subject']) {
 				if(preg_match('/secret/',$row['wr_option']) && !$is_admin && $member['mb_id']!=$row['mb_id']) {
 					$list[$i]['wr_subject'] = '비밀 댓글입니다.';
@@ -242,7 +241,29 @@ class latest extends eyoom
 			}
 
 			$list[$i]['wr_hit'] = $row['wr_hit'];
-			$list[$i]['datetime'] = $row['bn_datetime'];
+			$list[$i]['datetime'] = $direct == 'y' ? $row['wr_datetime'] : $row['bn_datetime'];
+			if($direct == 'y') {
+				$list[$i]['datetime'] = $row['wr_datetime'];
+				$wr_1 = $row['wr_1'];
+			} else {
+				$list[$i]['datetime'] = $row['bn_datetime'];
+				$wr_1 = $row['mb_level'];
+			}
+			$level = $wr_1 ? $eb->level_info($wr_1):'';
+			if(!$level['anonymous']) {
+				$list[$i]['mb_photo'] = $eb->mb_photo($list[$i]['mb_id']);
+			} else {
+				$list[$i]['mb_photo'] = '';
+				$list[$i]['mb_id'] = 'anonymous';
+				$list[$i]['mb_nick'] = '익명';
+				$list[$i]['email'] = '';
+				$list[$i]['homepage'] = '';
+				$list[$i]['gnu_level'] = '';
+				$list[$i]['gnu_icon'] = '';
+				$list[$i]['eyoom_icon'] = '';
+				$list[$i]['lv_gnu_name'] = '';
+				$list[$i]['lv_name'] = '';
+			}
 		}
 		return $list;
 	}
@@ -259,12 +280,18 @@ class latest extends eyoom
 				if(is_array($images)) {
 					for($k=0;$k<count($images['bf']);$k++) {
 						if(!$images['bf'][$k]) continue;
-						else $img = $images['bf'][$k];
+						else {
+							$img = $images['bf'][$k];
+							break;
+						}
 					}
 					if(!$img) {
 						for($j=0;$j<count($images['url']);$j++) {
 							if(!$images['url'][$j]) continue;
-							else $img = $images['url'][$j];
+							else {
+								$img = $images['url'][$j];
+								break;
+							}
 						}
 					}
 					$imgfile = G5_PATH.$img;
@@ -417,7 +444,10 @@ class latest extends eyoom
 		$list['month'] = $this->latest_eyoom($skin, $_option['month'], false);
 		$tpl->define_template("best",$skin,'bestset.skin.html');
 		$tpl->assign($list);
-		$tpl->assign('title',$title);
+		$tpl->assign(array(
+			'title' => $title,
+			'bo_table' => $bo_table,
+		));
 		$tpl->print_($tpl_name);
 	}
 	

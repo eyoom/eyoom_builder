@@ -73,6 +73,7 @@ $eyoom = array(
 	"use_gnu_newwin" => "n",
 	"use_eyoom_menu" => "y",
 	"use_sideview" => "y",
+	"use_switcher" => "off",
 	"level_icon_gnu" => "basic",
 	"use_level_icon_gnu" => "n",
 	"level_icon_eyoom" => "basic",

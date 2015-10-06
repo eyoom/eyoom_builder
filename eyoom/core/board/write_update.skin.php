@@ -10,6 +10,7 @@
 		$respond['wr_id']		= $wr_id;
 		$respond['wr_subject']	= $wr_subject;
 		$respond['wr_mb_id']	= $wr['mb_id'];
+		if($_POST['anonymous'] == 'y') $anonymous = true;
 		$eb->respond($respond);
 	}
 
@@ -81,6 +82,7 @@
 			wr_subject	= '{$wr_subject}',
 			wr_content	= '{$content}',
 			wr_option	= '{$html},{$secret},{$mail}',
+			mb_level	= '{$wr_1}',
 			wr_image	= '{$wr_image}',
 			wr_video	= '{$wr_video}',
 			wr_sound	= '{$wr_sound}'

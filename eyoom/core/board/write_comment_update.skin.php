@@ -22,7 +22,7 @@
 		$respond['wr_cmt']		= $comment_id;
 		$respond['wr_subject']	= $wr_subject;
 		$respond['wr_mb_id']	= $wr_mb_id;
-
+		if($_POST['anonymous'] == 'y') $anonymous = true;
 		$eb->respond($respond);
 	}
 
@@ -78,6 +78,7 @@
 				wr_parent	= '{$wr_id}',
 				wr_content	= '{$wr_content}',
 				wr_option	= '{$wr_secret}',
+				mb_level	= '{$wr_1}',
 				wr_image	= '{$wr_image}',
 				wr_video	= '{$wr_video}',
 				wr_sound	= '{$wr_sound}'

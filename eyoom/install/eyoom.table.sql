@@ -154,6 +154,7 @@ CREATE TABLE IF NOT EXISTS `g5_eyoom_board` (
   `bo_use_profile_photo` char(1) NOT NULL DEFAULT '1',
   `bo_sel_date_type` enum('1','2') NOT NULL DEFAULT '1',
   `bo_use_hotgul` char(1) NOT NULL DEFAULT '1',
+  `bo_use_anonymous` char(1) NOT NULL DEFAULT '2',
   PRIMARY KEY (`bo_id`),
   KEY `bo_table` (`bo_table`),
   KEY `bo_theme` (`bo_theme`)

@@ -16,11 +16,17 @@
 		//sql_query(" OPTIMIZE TABLE `{$g5['eyoom_new']}` ");
 	}
 
-	// 설정일이 지난 내글반응글 삭제
 	if($config['cf_new_del'] > 0) {
+
+		// 설정일이 지난 내글반응글 삭제
 		$sql = " delete from {$g5['eyoom_respond']} where (TO_DAYS('".G5_TIME_YMDHIS."') - TO_DAYS(regdt)) > '{$config['cf_new_del']}' ";
 		sql_query($sql);
 		sql_query(" OPTIMIZE TABLE `{$g5['eyoom_respond']}` ");
+
+		// 이윰멤버 테이블 자동정리
+		$sql = " delete from {$g5['eyoom_member']} where mb_id='' ";
+		sql_query($sql);
+		sql_query(" OPTIMIZE TABLE `{$g5['eyoom_member']}` ");
 	}
 
 ?>

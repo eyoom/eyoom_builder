@@ -13,6 +13,7 @@ if($eyoom_board['bo_sel_date_type'] == '1') $checked['bo_sel_date_type1'] = true
 if($eyoom_board['bo_sel_nameview'] == '1') $checked['bo_sel_nameview1'] = true; else $checked['bo_sel_nameview2'] = true;
 if($eyoom_board['bo_use_level_icon'] == '1') $checked['bo_use_level_icon'] = true; else $checked['bo_use_level_icon'] = false;
 if($eyoom_board['bo_use_hotgul'] == '1') $checked['bo_use_hotgul'] = true; else $checked['bo_use_hotgul'] = false;
+if($eyoom_board['bo_use_anonymous'] == '1') $checked['bo_use_anonymous'] = true; else $checked['bo_use_anonymous'] = false;
 
 $frm_submit = '
 <div class="btn_confirm01 btn_confirm">
@@ -85,6 +86,18 @@ $frm_submit = '
                 <label for="chk_grp_hotgul">그룹적용</label>
                 <input type="checkbox" name="chk_all_hotgul" value="1" id="chk_all_hotgul">
                 <label for="chk_all_hotgul">전체적용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="bo_use_anonymous">익명글쓰기</label></th>
+            <td>
+				<label for="bo_use_anonymous"><input type="checkbox" name="bo_use_anonymous" value="1" id="bo_use_anonymous" <?php echo $checked['bo_use_anonymous']?'checked':''; ?>> 사용</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_anonymous" value="1" id="chk_grp_anonymous">
+                <label for="chk_grp_anonymous">그룹적용</label>
+                <input type="checkbox" name="chk_all_anonymous" value="1" id="chk_all_anonymous">
+                <label for="chk_all_anonymous">전체적용</label>
             </td>
         </tr>
         </tbody>

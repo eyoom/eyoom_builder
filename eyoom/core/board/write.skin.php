@@ -1,5 +1,5 @@
-<?php 
-	if (!defined('_GNUBOARD_')) exit;
+<?php
+ 	if (!defined('_GNUBOARD_')) exit;
 
 	$uid = get_uniqid();
 
@@ -7,6 +7,12 @@
 	if($is_member) {
 		if($w==''||$w=='r') {
 			$wr_1 = $member['mb_level']."|".$eyoomer['level'];
+		} else if($w=='u' && $wr_1 && $is_anonymous) {
+			list($gnu_level,$eyoom_level,$anonymous) = explode('|',$wr_1);
+			$wr_1 = $gnu_level."|".$eyoom_level;
+			if($anonymous == 'y') {
+				$anonymous_checked = 'checked="checked"';
+			}
 		}
 	}
 

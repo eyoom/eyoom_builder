@@ -1,4 +1,5 @@
-<?php 
+<?php
+ 
 	if (!defined('_GNUBOARD_')) exit;
 
 	unset($comment);
@@ -22,12 +23,28 @@
 		$comment[$i]['content1'] = get_text($list[$i]['content1'], 0);
 
 		$level = $list[$i]['wr_1'] ? $eb->level_info($list[$i]['wr_1']):'';
-		$comment[$i]['gnu_level'] = $level['gnu_level'];
-		$comment[$i]['eyoom_level'] = $level['eyoom_level'];
-		$comment[$i]['lv_gnu_name'] = $level['gnu_name'];
-		$comment[$i]['lv_name'] = $level['name'];
-		$comment[$i]['gnu_icon'] = $level['gnu_icon'];
-		$comment[$i]['eyoom_icon'] = $level['eyoom_icon'];
+		if(!$level['anonymous']) {
+			$comment[$i]['mb_photo'] = $eb->mb_photo($list[$i]['mb_id']);
+			$comment[$i]['gnu_level'] = $level['gnu_level'];
+			$comment[$i]['eyoom_level'] = $level['eyoom_level'];
+			$comment[$i]['lv_gnu_name'] = $level['gnu_name'];
+			$comment[$i]['lv_name'] = $level['name'];
+			$comment[$i]['gnu_icon'] = $level['gnu_icon'];
+			$comment[$i]['eyoom_icon'] = $level['eyoom_icon'];
+		} else {
+			list($gnu_level,$eyoom_level,$anonymous) = explode('|',$list[$i]['wr_1']);
+			$comment[$i]['anonymous_id'] = $anonymous ? $gnu_level."|".$eyoom_level:'';
+			$comment[$i]['mb_id'] = 'anonymous';
+			$comment[$i]['wr_name'] = '익명글';
+			$comment[$i]['email'] = '';
+			$comment[$i]['homepage'] = '';
+			$comment[$i]['gnu_level'] = '';
+			$comment[$i]['eyoom_level'] = '';
+			$comment[$i]['lv_gnu_name'] = '';
+			$comment[$i]['lv_name'] = '';
+			$comment[$i]['gnu_icon'] = '';
+			$comment[$i]['eyoom_icon'] = '';
+		}
 
 		if($list[$i]['is_reply'] || $list[$i]['is_edit'] || $list[$i]['is_del']) {
 			$comment[$i]['is_reply'] = $list[$i]['is_reply'];
@@ -46,7 +63,7 @@
 			$comment[$i]['c_reply_href'] = './board.php?'.$query_string.'&amp;c_id='.$comment[$i]['comment_id'].'&amp;w=c#bo_vc_w';
 			$comment[$i]['c_edit_href'] = './board.php?'.$query_string.'&amp;c_id='.$comment[$i]['comment_id'].'&amp;w=cu#bo_vc_w';
 		}
-		$comment[$i]['mb_photo'] = $eb->mb_photo($list[$i]['mb_id']);
+		
 	}
 
 	if($board['bo_use_sns']) {
