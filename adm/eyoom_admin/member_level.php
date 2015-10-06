@@ -257,6 +257,6 @@ function check_cnt_gnu_level(num) {
 }
 </script>
 
-<?
+<?php
 include_once (G5_ADMIN_PATH.'/admin.tail.php');
 ?>

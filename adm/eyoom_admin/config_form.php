@@ -484,6 +484,6 @@ $frm_submit = '
 <?php echo $frm_submit; ?>
 <?php } ?>
 
-<?
+<?php
 include_once (G5_ADMIN_PATH.'/admin.tail.php');
 ?>

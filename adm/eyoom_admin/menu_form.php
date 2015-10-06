@@ -41,8 +41,8 @@ $frm_submit = '
 		<link rel="stylesheet" href="./css/eyoom_admin.css">
 		<form name="fmenu" action="./menu_form_update.php" onsubmit="return fmenu_check(this)" method="post">
 		<input type="hidden" name="mode" id="mode" value="update">
-		<input type="hidden" name="theme" id="theme" value="<?echo $theme;?>">
-		<input type="hidden" name="me_code" id="me_code" value="<?echo $me_code;?>">
+		<input type="hidden" name="theme" id="theme" value="<?php echo $theme;?>">
+		<input type="hidden" name="me_code" id="me_code" value="<?php echo $me_code;?>">
 		<section id="anc_scf_info">
 		<div class="tbl_frm01 tbl_wrap">
 		<?php

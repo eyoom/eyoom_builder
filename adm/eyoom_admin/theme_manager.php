@@ -21,7 +21,7 @@
 			<?php
 			$arr = get_skin_dir('theme',EYOOM_PATH);
 			for ($i=0; $i<count($arr); $i++) {
-				$config_file = $arr[$i] == 'basic' ?  eyoom_config:G5_DATA_PATH.'/eyoom.'.$arr[$i].'.config.php';
+				$config_file = $arr[$i] == 'basic' ? eyoom_config:G5_DATA_PATH.'/eyoom.'.$arr[$i].'.config.php';
 				if(file_exists($config_file)) {
 					include($config_file);
 			?>
@@ -35,8 +35,8 @@
 				<div class="btn_clone"><a href="./theme_clone.php?thema=<?php echo $arr[$i];?>" class="clone_theme" onclick="return false;">복사</a></div>
 				<div class="btn_delete"><a href="./theme_delete.php?thema=<?php echo $arr[$i];?>" class="delete_theme" onclick="return false;">삭제</a></div>
 				<div class="btn_chname"><a href="./theme_alias.php?thema=<?php echo $arr[$i];?>" class="alias_theme" onclick="return false;">별칭설정</a></div>
-				<div class="btn_community"><a href="<? echo G5_URL;?>/?theme=<?php if($tminfo[$arr[$i]]['tm_alias']) echo $tminfo[$arr[$i]]['tm_alias']; else echo $arr[$i];?>" target="_blank">커뮤니티</a></div>
-				<div class="btn_shop"><a href="<? echo G5_URL;?>/<?php echo G5_SHOP_DIR;?>/?theme=<?php if($tminfo[$arr[$i]]['tm_alias']) echo $tminfo[$arr[$i]]['tm_alias']; else echo $arr[$i];?>" target="_blank">쇼핑몰</a></div>
+				<div class="btn_community"><a href="<?php echo G5_URL;?>/?theme=<?php if($tminfo[$arr[$i]]['tm_alias']) echo $tminfo[$arr[$i]]['tm_alias']; else echo $arr[$i];?>" target="_blank">커뮤니티</a></div>
+				<div class="btn_shop"><a href="<?php echo G5_URL;?>/<?php echo G5_SHOP_DIR;?>/?theme=<?php if($tminfo[$arr[$i]]['tm_alias']) echo $tminfo[$arr[$i]]['tm_alias']; else echo $arr[$i];?>" target="_blank">쇼핑몰</a></div>
 			</div>
 			<?php
 					unset($eyoom);

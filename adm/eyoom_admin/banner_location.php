@@ -49,14 +49,14 @@ $half = count($nums) / 2;
 			<col class="grid_2">
             <col>
         </colgroup>
-		<? for ( $k = 0; $k < $half; $k++ ){ $i = $nums[$k]; $j = $nums[$k + $half]; ?>
+		<?php for ( $k = 0; $k < $half; $k++ ){ $i = $nums[$k]; $j = $nums[$k + $half]; ?>
 		<tr>
-			<th style="padding-left:20px;"><b>배너위치 <?=$i?></b></th>
-			<td><input type=text name="bn_loccd[<?=$i?>]" value="<?=( $bn_loccd[$i] ? $bn_loccd[$i] : '배너위치입력' );?>" class="frm_input" style="width:95%;"></td>
-			<th style="padding-left:20px;"><b>배너위치 <?=$j?></b></th>
-			<td><input type=text name="bn_loccd[<?=$j?>]" value="<?=( $bn_loccd[$j] ? $bn_loccd[$j] : '배너위치입력' );?>" class="frm_input" style="width:95%;"></td>
+			<th style="padding-left:20px;"><b>배너위치 <?php echo $i?></b></th>
+			<td><input type=text name="bn_loccd[<?php echo $i?>]" value="<?php echo ( $bn_loccd[$i] ? $bn_loccd[$i] : '배너위치입력' );?>" class="frm_input" style="width:95%;"></td>
+			<th style="padding-left:20px;"><b>배너위치 <?php echo $j?></b></th>
+			<td><input type=text name="bn_loccd[<?php echo $j?>]" value="<?php echo ( $bn_loccd[$j] ? $bn_loccd[$j] : '배너위치입력' );?>" class="frm_input" style="width:95%;"></td>
 		</tr>
-		<? } ?>
+		<?php } ?>
 		</table>
 	</div>
 

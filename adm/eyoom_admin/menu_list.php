@@ -93,6 +93,6 @@ $frm_submit = '
 		$('#menu').tree('expandAll');
 	}
 </script>
-<?
+<?php
 include_once (G5_ADMIN_PATH.'/admin.tail.php');
 ?>

@@ -5,8 +5,10 @@ $tocken = $_GET['tocken'];
 
 // GET 변수 처리
 $getvar = $eb->decrypt_md5($tocken);
+
 list($bn_no, $ip, $link) = explode("||",$getvar);
-if(!$bn_no) { alert('잘못된 접근입니다.',G5_URL); exit; }
+$bn_no = intval($bn_no);
+if(!$bn_no || !is_int($bn_no)) { alert('잘못된 접근입니다.',G5_URL); exit; }
 if($ip != $_SERVER['REMOTE_ADDR']) { alert('잘못된 접근입니다.',G5_URL); exit; }
 if(!$link) { alert('잘못된 접근입니다.',G5_URL); exit; }
 
@@ -20,8 +22,8 @@ if (!get_session($spb_name) && $is_member) {
 	set_session($spb_name, TRUE);
 
 	// 배너 클릭수 증가
-	sql_query("update {$g5['eyoom_banner']} set bn_clicked = bn_clicked + 1 where bn_no = '{$bn_no}'");
-	header("location:".$link);
+	sql_query("update {$g5['eyoom_banner']} set bn_clicked = bn_clicked + 1 where bn_no = '{$bn_no}'",false);
 }
+header("location:".$link);
 
 ?>

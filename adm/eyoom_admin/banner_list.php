@@ -111,8 +111,8 @@ $colspan = 12;
     <?php
     for ($i=0; $row=sql_fetch_array($result); $i++) {
 		unset($bn_img);
-		$one_update = '<a href="./banner_form.php?w=u&amp;bn_no='.$row['bn_no'].'&amp;'.$qstr.'">수정</a>';
-		$one_del = '<a href="./banner_delete.php?bn_no='.$row['bn_no'].'&amp;'.$qstr.'" onclick="if(!confirm(\'정말로 삭제하시겠습니까?\')) return false;">삭제</a>';
+		$one_update = '<a href="./banner_form.php?w=u&amp;bn_no='.$row['bn_no'].'&amp;thema='.$_theme.'&amp;'.$qstr.'">수정</a>';
+		$one_del = '<a href="./banner_delete.php?bn_no='.$row['bn_no'].'&amp;thema='.$_theme.'&amp;'.$qstr.'" onclick="if(!confirm(\'정말로 삭제하시겠습니까?\')) return false;">삭제</a>';
         $bg = 'bg'.($i%2);
 
 		$bn_file = G5_DATA_PATH.'/banner/'.$row['bn_theme'].'/'.$row['bn_img'];

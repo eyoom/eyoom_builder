@@ -134,9 +134,6 @@ class theme extends qfile
 	private function g5_menu_create() {
 		global $g5, $bo_table, $co_id, $gr_id, $board;
 
-		//if(!$board['bo_new']) $board['bo_new'] = 24;
-		$board['bo_new'] = 24; // 메인에서는 $board 가 없기에 모든 게시판에 24시간으로 강제 적용
-
 		if($bo_table) {
 			$str = "bo_table={$bo_table}";
 			$grp = sql_fetch("select gr_id from {$g5['board_table']} where bo_table = '{$bo_table}'");
@@ -166,7 +163,7 @@ class theme extends qfile
 				if(preg_match("/".$str."/i",$row2['me_link']) && $str!='') { $row2['active'] = true; }
 
 				list($url,$tmp_bo_table) = explode("=",$row2['me_link']);
-				$sql = "select count(*) as cnt from {$g5['board_new_table']} where bn_datetime between date_format(".date("YmdHis",G5_SERVER_TIME - ($board['bo_new'] * 3600)).", '%Y-%m-%d %H:%i:%s') AND date_format(".date("YmdHis",G5_SERVER_TIME).", '%Y-%m-%d %H:%i:%s') and bo_table = '{$tmp_bo_table}' and wr_id = wr_parent";
+				$sql = "select count(*) as cnt from {$g5['board_new_table']} where bn_datetime between date_format(".date("YmdHis",G5_SERVER_TIME - ($this->bo_new * 3600)).", '%Y-%m-%d %H:%i:%s') AND date_format(".date("YmdHis",G5_SERVER_TIME).", '%Y-%m-%d %H:%i:%s') and bo_table = '{$tmp_bo_table}' and wr_id = wr_parent";
 				$new = sql_fetch($sql,false);
 
 				if($new['cnt']>0) {
@@ -256,7 +253,7 @@ class theme extends qfile
 	// 이윰 New 테이블에서 최근글 정보 가져옴 : 2015-02-25 그림자밟기님이 아이디어를 제공해 주셨습니다.
 	private function eyoom_menu_new($bo_new=24) {
 		global $g5;
-		if(!$bo_new) $bo_new = 24;
+		if(!$bo_new) $bo_new = $this->bo_new;
 		$sql = "select bo_table, count(*) as cnt from {$g5['board_new_table']} where bn_datetime between date_format(".date("YmdHis",G5_SERVER_TIME - ($bo_new * 3600)).", '%Y-%m-%d %H:%i:%s') AND date_format(".date("YmdHis",G5_SERVER_TIME).", '%Y-%m-%d %H:%i:%s') and wr_id = wr_parent group by bo_table";
 		$res = sql_query($sql, false);
 		for($i=0;$row=sql_fetch_array($res);$i++) {
@@ -331,7 +328,7 @@ class theme extends qfile
 		global $g5, $theme;
 
 		if(!$data) $data = $this->eyoom_pagemenu_info($theme);
-		if(!$admin_mode) $addwhere = " and me_use = 'y' and me_use_nav = 'y' "; // 감추기 기능 연동 - fm25님이 제보해 주셨습니다.
+		if(!$admin_mode) $addwhere = " and me_use = 'y' "; // 감추기 기능 연동 - fm25님이 제보해 주셨습니다.
 		$me_code = str_split($data['me_code'],3);
 		$sql = "select * from {$g5['eyoom_menu']} where me_theme='{$theme}' and me_code like '{$me_code[0]}%' and length(me_code) > 3 {$addwhere} order by me_code asc, me_order asc";
 		$res = sql_query($sql, false);

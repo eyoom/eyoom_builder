@@ -61,6 +61,6 @@ else if ($w == 'u')
 else
     alert('제대로 된 값이 넘어오지 않았습니다.');
 
-alert($msg,'./banner_form.php?'.$qstr.'&amp;w=u&amp;bn_no='.$bn_no);
+alert($msg,'./banner_form.php?'.$qstr.'&amp;thema='.$_POST['theme'].'&amp;w=u&amp;bn_no='.$bn_no);
 
 ?>

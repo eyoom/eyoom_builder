@@ -4,6 +4,9 @@
 	// Eyoom Builder
 	define('_EYOOM_COMMON_',true);
 
+	// Version
+	define('_EYOOM_VESION_','EB_1.0.7');
+
 	// GNUBOARD5 Library
 	include_once(G5_LIB_PATH.'/common.lib.php');
 	include_once(G5_LIB_PATH.'/latest.lib.php');
@@ -51,6 +54,9 @@
 		}
 		// 익명글쓰기 체크
 		$is_anonymous = $eyoom_board['bo_use_anonymous'] == 1 ? true:false;
+
+		// 베이직스킨이 아니면 목록에서 이미지 보이게 처리
+		if($eyoom_board['bo_skin'] != 'basic') $board['bo_use_list_file'] = true;
 	}
 
 	// switcher 설정

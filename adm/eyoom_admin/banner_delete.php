@@ -18,6 +18,6 @@ if($_GET['bn_no']) {
 		}
 	}
 }
-goto_url('./banner_list.php?'.$qstr, false);
+goto_url('./banner_list.php?'.$qstr.'&amp;thema='.$_GET['thema'], false);
 
 ?>

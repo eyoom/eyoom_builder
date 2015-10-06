@@ -238,7 +238,7 @@ class latest extends eyoom
 			$list[$i] = $row;
 			$bo_table = $direct!='y' ? $row['bo_table']:$this->bo_table;
 			if(!$row['wr_subject']) {
-				if(preg_match('/secret/',$row['wr_option']) && !$is_admin && $member['mb_id']!=$row['mb_id']) {
+				if(preg_match('/secret/',$row['wr_option']) && !$is_admin && ($member['mb_id']!=$row['mb_id'] || !$is_member)) {
 					$list[$i]['wr_subject'] = '비밀 댓글입니다.';
 					$list[$i]['wr_content'] = '비밀 댓글입니다.';
 				} else {
@@ -246,7 +246,7 @@ class latest extends eyoom
 				}
 				$list[$i]['href'] = G5_BBS_URL."/board.php?bo_table={$bo_table}&amp;wr_id={$row['wr_id']}#c_{$row['wr_id']}";
 			} else {
-				if(preg_match('/secret/',$row['wr_option']) && !$is_admin && $member['mb_id']!=$row['mb_id']) {
+				if(preg_match('/secret/',$row['wr_option']) && !$is_admin && ($member['mb_id']!=$row['mb_id'] || !$is_member)) {
 					$list[$i]['wr_subject'] = '비밀글입니다.';
 					$list[$i]['wr_content'] = '비밀글입니다.';
 				} else {
@@ -361,12 +361,13 @@ class latest extends eyoom
 		if(!$folder) $folder='latest';
 
 		$tpl->define_template($folder,$skin,'latest.skin.html');
-		if($this->header_title) $tpl->assign(array('title' => $this->header_title));
 		$tpl->assign(array(
 			'bo_table' => $this->bo_table,
 			'photo' => $this->photo,
 			'content' => $this->content,
 			'cols' => $this->cols,
+			'title' => $this->header_title,
+			'respond' => $this->respond,
 		));
 		if($mode=='single') {
 			$tpl->assign(array(
@@ -513,7 +514,7 @@ class latest extends eyoom
 		
 		$orderby = " it_time desc ";
 		$list = $this->latest_item_assign($where, $opt['count'], $opt['cut_name'], $orderby, $opt['width']);
-		$this->latest_item_print($skin, $list,'latest');
+		$this->latest_print($skin, $list, 'single', 'latest');
 	}
 
 	// 상품 추출 옵션
@@ -577,20 +578,140 @@ class latest extends eyoom
 		return $list;
 	}
 	
-	private function latest_item_print($skin, $arr, $folder='latest') {
-		global $tpl, $tpl_name;
+	// 내글반응 최근반응 추출
+	public function latest_respond($skin, $option) {
+		global $g5, $member, $is_member;
 
-		if(!$folder) $folder='latest';
+		if(!$is_member) return false;
+		$where = 1;
+		$opt = $this->get_misc_option($option);
 
-		$tpl->define_template($folder,$skin,'latest.skin.html');
-		if($this->header_title) $tpl->assign(array(
-			'title' => $this->header_title,
-		));
-		$tpl->assign(array(
-			'loop' => $arr,
-		));
+		$where .= $opt['where'];
+		$where .= " and wr_mb_id='{$member['mb_id']}' and re_chk = 0 ";
 
-		$tpl->print_($tpl_name);
+		$orderby = " regdt desc ";
+		$list = $this->latest_respond_assign($where, $opt['count'], $opt['cut_subject'], $orderby);
+		$this->latest_print($skin, $list, 'single', 'latest');
+	}
+
+	private function get_misc_option($option) {
+		global $g5;
+		if($option) {
+			$optset = $this->option_query($option);
+			$where  = $optset['where'] ? $this->latest_where($optset['where']):'';
+
+			if($optset['period']) {
+				$start = date("YmdHis", strtotime("-".$optset['period']." day"));
+				$end = date("YmdHis");
+				$where .= " and regdt between date_format(".$start.", '%Y-%m-%d 00:00:00') and date_format(".$end.", '%Y-%m-%d 23:59:59')";
+			}
+
+			// 조건검색
+			$opt['where'] = $where;
+		
+			// 최신글 헤더 타이틀 
+			if($optset['title']) {
+				$this->header_title = $optset['title'];
+			}
+
+			// 출력갯수
+			if($optset['count']) $opt['count'] = $optset['count'];
+
+			// 최신글 제목길이
+			if($optset['cut_subject']) $opt['cut_subject'] = $optset['cut_subject'];
+
+			// 사용자 사진여부
+			if($optset['photo']) $this->photo = $optset['photo'];
+
+			return $opt;
+
+		} else return false;
+	}
+
+	private function latest_respond_assign($where, $max=5, $cut_subject=20, $orderby='') {
+		global $g5, $eb;
+
+		if(!$orderby) $orderby = " regdt desc ";
+		$count = sql_fetch("select count(*) as cnt from {$g5['eyoom_respond']} where $where");
+		$this->respond = $count['cnt'] ? $count['cnt'] : 0;
+
+		$sql = "select * from {$g5['eyoom_respond']} where $where order by $orderby limit $max";
+		$result = sql_query($sql, false);
+		for($i=0; $row = sql_fetch_array($result); $i++) {
+			$reinfo = $eb->respond_mention($row['re_type'],$row['mb_name'],$row['re_cnt']);
+
+			// 당일인 경우 시간으로 표시함
+			$list[$i]['mb_name'] = $row['mb_name'];
+			$list[$i]['mention'] = $reinfo['mention'];
+			$list[$i]['wr_subject'] = conv_subject($row['wr_subject'], $cut_subject, '…');
+			$list[$i]['type'] = $reinfo['type'];
+			$list[$i]['href'] = G5_BBS_URL.'/respond_chk.php?rid='.$row['rid'];
+			$list[$i]['datetime'] = $row['regdt'];
+			$list[$i]['mb_photo'] = $eb->mb_photo($row['mb_id']);
+		}
+		return $list;
+	}
+
+	// 읽지않은 메모 가져오기
+	public function latest_memo($skin, $option) {
+		global $g5, $member, $is_member;
+
+		if(!$is_member) return false;
+		$where = 1;
+		$opt = $this->get_misc_option($option);
+
+		$where .= $opt['where'];
+		$where .= " and a.me_recv_mb_id = '{$member['mb_id']}' and me_read_datetime = '0000-00-00 00:00:00' ";
+
+		$orderby = " a.me_id desc ";
+		$list = $this->latest_memo_assign($where, $opt['count'], $opt['cut_subject'], $orderby);
+		$this->latest_print($skin, $list, 'single', 'latest');
+	}
+
+	private function latest_memo_assign($where, $max=5, $cut_subject=20, $orderby='') {
+		global $g5, $member, $eb;
+
+		if(!$orderby) $orderby = " a.me_id desc ";
+		$sql = "select a.*, b.mb_id, b.mb_nick from {$g5['memo_table']} as a left join {$g5['member_table']} as b on (a.me_send_mb_id = b.mb_id) where $where order by $orderby limit $max";
+		$result = sql_query($sql, false);
+		for($i=0; $row = sql_fetch_array($result); $i++) {
+			$list[$i] = $row;
+
+			$list[$i]['mb_name'] = $row['mb_nick'];
+			$list[$i]['datetime'] = $row['me_send_datetime'];
+			$list[$i]['href']	= G5_BBS_URL.'/memo_view.php?me_id='.$row['me_id'].'&amp;kind=recv';
+			$list[$i]['memo'] = conv_subject($row['me_memo'], $cut_subject, '…');
+			$list[$i]['mb_photo'] = $eb->mb_photo($row['mb_id']);
+		}
+		return $list;
+	}
+
+	// 최근 접속자 추출하기
+	public function latest_connect($skin) {
+		global $g5, $eb, $config;
+
+		$sql = "
+			select a.mb_id, b.mb_nick, b.mb_name, b.mb_email, b.mb_homepage, b.mb_open, b.mb_point, a.lo_ip, a.lo_location, a.lo_url
+			from {$g5['login_table']} a left join {$g5['member_table']} b on (a.mb_id = b.mb_id)
+			where a.mb_id <> '{$config['cf_admin']}'
+			order by a.lo_datetime desc 
+		";
+		$result = sql_query($sql);
+		for ($i=0; $row=sql_fetch_array($result); $i++) {
+			$list[$i] = $row;
+
+			if ($row['mb_id']) {
+				$list[$i]['name'] = cut_str($row['mb_nick']);
+				$list[$i]['mb_photo'] = $eb->mb_photo($row['mb_id']);
+			} else {
+				if ($is_admin)
+					$list[$i]['name'] = $row['lo_ip'];
+				else
+					$list[$i]['name'] = preg_replace("/([0-9]+).([0-9]+).([0-9]+).([0-9]+)/", G5_IP_DISPLAY, $row['lo_ip']);
+			}
+			$list[$i]['num'] = sprintf('%03d',$i+1);
+		}
+		$this->latest_print($skin, $list, 'single', 'latest');
 	}
 }
 ?>
