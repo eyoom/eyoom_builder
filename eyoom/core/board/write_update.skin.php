@@ -39,8 +39,20 @@
 	$wr_content = $eb->remove_editor_code($wr_content);
 	$wr_content = $eb->remove_editor_emoticon($wr_content);
 
-	$wr_video = $eb->get_editor_video($wr_content);
-	$wr_video = serialize($wr_video[1]);
+	// 내용에서 동영상 정보 가져오기
+	$video_info = $eb->get_editor_video($wr_content);
+	$wr_video = serialize($video_info[1]);
+	if($wr_video) {
+		// 여유필드 wr_4 활용
+		$wr_4 = unserialize($wr_4);
+		$wr_4['thumb_src'] = $eb->make_thumb_from_video($video_info[1][0], $bo_table, $wr_id, $board['bo_gallery_width'], $board['bo_gallery_height'] );
+		$wr_4 = serialize($wr_4);
+		
+		// 리턴 이미지가 있다면 $write_table update 
+		$up_set['wr_4'] = $wr_4;
+	}
+	
+	// 내용에서 사운드클라우드 정보 가져오기
 	$wr_sound = $eb->get_editor_sound($wr_content);
 	$wr_sound = serialize($wr_sound[1]);
 
@@ -141,9 +153,19 @@
 			}
 			if(is_array($bomb)) {
 				$bomb = serialize($bomb);
-				sql_query("update $write_table set wr_2 = '{$bomb}' where wr_id='{$wr_id}'");
+				$up_set['wr_2'] = $bomb;
 			}
 		}
+	}
+	
+	// $up_set 대상이 있다면 
+	if(count($up_set) > 0 && is_array($up_set) ) {
+		$j=0;
+		foreach($up_set as $key => $val) {
+			$set[$j] = " {$key} = '{$val}' ";
+			$j++;
+		}
+		sql_query("update $write_table set " . implode(',', $set) ." where wr_id='{$wr_id}'");
 	}
 
 	// 사용자 프로그램

@@ -64,6 +64,8 @@
 		"lang_theme"	=> $lang_theme,
 		"short_url"		=> $short_url,
 		"wmode"			=> $_wmode,
+		"ycard"			=> $ycard,
+		"mb_ycard"		=> $mb_ycard,
 	));
 
 ?>

@@ -9,6 +9,21 @@
 	$user = $eb->get_user_info($mb['mb_id'])+$mb;
 	$lvuser = $eb->user_level_info($user);
 
+	// 신고처리 정보
+	if($eyoom_board['bo_use_yellow_card'] == '1') {
+		$ycard = unserialize($view['wr_4']);
+		if(!$ycard) $ycard = array();
+		
+		if($ycard['yc_blind'] == 'y' && !$is_admin && $member['mb_level'] < $eyoom_board['bo_blind_view']) {
+			$yc_data = sql_fetch("select mb_id from {$g5['eyoom_yellowcard']} where bo_table = '{$bo_table}' and wr_id = '{$wr_id}' and mb_id = '{$member['mb_id']}' ");
+			if(!$yc_data['mb_id']) {
+				alert('이 게시물은 블라인드 처리된 게시물입니다.');
+				exit;
+			}
+		}
+		$mb_ycard = $eb->mb_yellow_card($member['mb_id'],$bo_table, $wr_id);
+	}
+
 	// 읽는사람 포인트 주기 및 이윰뉴 테이블의 히트수/댓글수 일치 시키기
     $spv_name = 'spv_board_'.$bo_table.'_'.$wr_id;
     if (!get_session($spv_name)) {

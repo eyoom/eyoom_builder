@@ -230,6 +230,7 @@ class theme extends qfile
 
 	// 이윰메뉴 재정의
 	private function eyoom_menu_assign($menu_package) {
+		global $member;
 
 		// 새글정보 가져오기
 		$new = $this->eyoom_menu_new();
@@ -238,6 +239,8 @@ class theme extends qfile
 		foreach($menu_package as $key => $menuset) {
 			foreach($menuset as $k => $menu_sub) {
 				if(!is_array($menu_sub)) {
+					// 회원레벨이 허용레벨보다 작다면 보이지 않기
+					if($member['mb_level'] < $menuset['me_permit_level']) continue;
 					$mk1 = $menuset['me_order'].$key;
 					$menu[$mk1][$k] = $menu_sub;
 					if($menuset['me_type'] == $this->page_type && $menuset['me_pid'] == $this->me_pid && !defined('_INDEX_')) $menu[$mk1]['active'] = true;
@@ -246,6 +249,8 @@ class theme extends qfile
 					$cate1 = &$menu[$mk1]['submenu'];
 					foreach($menu_sub as $m => $sub) {
 						if(!is_array($sub)) {
+							// 회원레벨이 허용레벨보다 작다면 보이지 않기
+							if($member['mb_level'] < $menu_sub['me_permit_level']) continue;
 							$mk2 = $menu_sub['me_order'].$k;
 							$cate1[$mk2][$m] = $sub;
 							if($menu_sub['me_type'] == $this->page_type && $menu_sub['me_pid'] == $this->me_pid) {
@@ -258,6 +263,8 @@ class theme extends qfile
 							$cate2 = &$cate1[$mk2]['subsub'];
 							foreach($sub as $n => $val) {
 								if(!is_array($val)) {
+									// 회원레벨이 허용레벨보다 작다면 보이지 않기
+									if($member['mb_level'] < $sub['me_permit_level']) continue;
 									$mk3 = $sub['me_order'].$m;
 									$cate2[$mk3][$n] = $val;
 									if($sub['me_type'] == $this->page_type && $sub['me_pid'] == $this->me_pid) {

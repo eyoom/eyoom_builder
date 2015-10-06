@@ -2,9 +2,8 @@
 	if (!defined('_GNUBOARD_')) exit;
 
 	if($share == 'on') {
-		unset($ratio, $def_ratio);
-		$def_ratio = 20; // 20% 수수료
-		$ratio = $eyoom_board['download_fee_ratio'] ? $eyoom_board['download_fee_ratio'] : $def_ratio;
+		unset($ratio);
+		$ratio = $eyoom_board['download_fee_ratio'] ? $eyoom_board['download_fee_ratio'] : 0;
 
 		// 다운로드 포인트 이력이 있는지 체크
 		$chk = "

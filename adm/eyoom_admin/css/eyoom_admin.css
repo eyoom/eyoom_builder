@@ -35,3 +35,8 @@ form label {margin-left:10px;}
 .level_item {display:inline-block;margin-right:20px;}
 .level_item  input {width:50px;text-align:right;}
 .point_number {width:100px;margin:0 auto;padding:5px;text-align:right;}
+
+.color-red {color:#ff3300;}
+.color-green {color:#617d46}
+.color-blue {color:#4970ff}
+.color-yellow {color:#ff9501}
