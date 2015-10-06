@@ -5,7 +5,7 @@
 	define('_EYOOM_COMMON_',true);
 
 	// Version
-	define('_EYOOM_VESION_','EyoomBuilder_1.1.3');
+	define('_EYOOM_VESION_','EyoomBuilder_1.1.4');
 
 	// GNUBOARD5 Library
 	include_once(G5_LIB_PATH.'/common.lib.php');

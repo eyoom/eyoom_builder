@@ -62,7 +62,9 @@ class theme extends qfile
 		if($theme['tm_name'] && is_dir($this->theme_path.'/'.$theme['tm_name'])) {
 			$arr['theme'] = $theme['tm_name'];
 		} else {
-			$arr['theme'] = '';
+			if($arr['theme'] != 'basic' && $arr['theme'] != 'pc_basic') {
+				$arr['theme'] = '';
+			}
 		}
 
 		if($is_member) {

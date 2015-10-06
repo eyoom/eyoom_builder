@@ -22,8 +22,8 @@ if(is_writable($theme_path) && count($result_array) > 0) {
 	if($theme_count == 2) {
 		$ins_type = 'c'; //choice
 	} else if($theme_count == 1) {
-		if($theme_dir['basic']) $ins_type = 'b'; // basic
-		if($theme_dir['pc_basic']) $ins_type = 'p'; // pc_basic
+		if(isset($theme_dir['basic']) && $theme_dir['basic']) $ins_type = 'b'; // basic
+		if(isset($theme_dir['pc_basic']) && $theme_dir['pc_basic']) $ins_type = 'p'; // pc_basic
 	} else {
 ?>
 <h1>이윰빌더를 설치하기 위해서는 테마가 필요합니다.</h1>

@@ -35,7 +35,7 @@ if (file_exists($dbconfig_file)) {
     <ol>
 <?php
 $qfile = new qfile;
-
+$ins_theme = $_POST['ins_theme'];
 if($ins_theme == 'p') {
 	$theme_name = 'pc_basic';
 } else {
@@ -280,7 +280,7 @@ $cache_dir = '../..'.G5_DATA_PATH.'/_cache';
 $sql = " desc ".G5_TABLE_PREFIX."eyoom_member";
 $result = @mysql_query($sql);
 
-if(!$result || $_POST['table_rest'] == 'y') {
+if(!$result || (isset($_POST['table_rest']) && $_POST['table_rest'] == 'y')) {
 
     // 테이블 생성 ------------------------------------
     $file = implode('', file('./eyoom.table.sql'));
