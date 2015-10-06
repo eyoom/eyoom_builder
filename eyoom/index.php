@@ -7,9 +7,6 @@
 		return;
 	}
 
-	// 그누 헤더정보 출력
-	@include_once(G5_PATH.'/head.sub.php');
-
 	// 이윰 헤더 디자인 출력
 	@include_once(EYOOM_PATH.'/head.php');
 	

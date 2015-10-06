@@ -1,6 +1,9 @@
 <?php
 	if (!defined('_GNUBOARD_')) exit;
 
+	// 그누 헤더정보 출력
+	@include_once(G5_PATH.'/head.sub.php');
+
 	// 쇼핑몰 레이아웃을 커뮤니티에 적용하기
 	if(isset($shop_layout_use) && $shop_layout_use) {
 		@include_once(EYOOM_CORE_PATH.'/shop/shop.head.php');
