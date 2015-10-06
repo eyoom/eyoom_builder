@@ -53,7 +53,7 @@ if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주�
 /** ############# EyoomBuilder_1.1.0 ############# */
 { 
 	// 이윰메뉴의 me_type 속성 변경
-	$sql = "ALTER TABLE `g5_eyoom_menu` CHANGE `me_type` `me_type` VARCHAR(30) NOT NULL;";
+	$sql = "ALTER TABLE `{$g5['eyoom_menu']}` CHANGE `me_type` `me_type` VARCHAR(30) NOT NULL;";
 	sql_query($sql, true);
 
 	// 이윰NEW 테이블에 추천필드 추가
@@ -73,7 +73,7 @@ if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주�
 	// 이윰NEW 테이블에 여유필드 추가
 	if(!sql_query(" select wr_1 from {$g5['eyoom_new']} limit 1 ", false)) {
 		$sql = "
-			alter table  `g5_eyoom_new` 
+			alter table  `{$g5['eyoom_new']}` 
 			add `wr_1` varchar( 255 ) not null,
 			add `wr_2` varchar( 255 ) not null,
 			add `wr_3` varchar( 255 ) not null,
@@ -94,7 +94,7 @@ if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주�
 { 
 	// 이윰 짧은주소 테이블 생성
 	$sql = "
-		create table if not exists `g5_eyoom_link` (
+		create table if not exists `{$g5['eyoom_link']}` (
 		  `s_no` int(11) unsigned not null auto_increment,
 		  `bo_table` varchar(20) collate utf8_unicode_ci not null,
 		  `wr_id` int(11) unsigned not null default '0',
@@ -205,4 +205,44 @@ if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주�
 }
 /** ############# EyoomBuilder_1.1.7 ############# */
 
+/** ############# EyoomBuilder_1.1.10 ############# */
+{
+	// 이윰보드에 동영상 목록이미지의 사용여부 필드 추가
+	if(!sql_query(" select `bo_use_video_photo` from {$g5['eyoom_board']} limit 1 ", false)) {
+		$sql = "
+			alter table `{$g5['eyoom_board']}`
+				add `bo_use_video_photo` char(1) not null default '2' after `bo_use_point_explain`,
+				add `bo_use_list_image` char(1) not null default '1' after `bo_use_video_photo`,
+				add `download_fee_ratio` tinyint(2) not null default '0' after `bo_lucky_point_ratio`,
+				add `bo_use_yellow_card` tinyint(2) not null default '0' after `bo_use_list_image`,
+				add `bo_blind_limit` tinyint(2) not null default '5' after `bo_use_yellow_card`,
+				add `bo_blind_view` tinyint(2) not null default '10' after `bo_blind_limit`,
+				add `bo_blind_direct` tinyint(2) not null default '10' after `bo_blind_view`
+				
+		";
+		sql_query($sql, true);
+	}
+	
+	// 이윰메뉴 구성시, 접근 허용 회원레벨 결정 필드 추가
+	if(!sql_query(" select `me_permit_level` from {$g5['eyoom_menu']} limit 1 ", false)) {
+		$sql = "alter table `{$g5['eyoom_menu']}` add `me_permit_level` tinyint(4) not null default '1' after `me_order` ";
+		sql_query($sql, true);
+	}
+	
+	// 게시물 신고 테이블 생성
+	$yellow_card_table = G5_TABLE_PREFIX . 'eyoom_yellowcard';
+	$yellow_card_sql = "
+		CREATE TABLE IF NOT EXISTS `" . $yellow_card_table . "` (
+		  `yc_id` int(11) unsigned NOT NULL auto_increment,
+		  `bo_table` varchar(20) NOT NULL default '',
+		  `wr_id` int(11) NOT NULL default '0',
+		  `mb_id` varchar(20) NOT NULL default '',
+		  `yc_reason` char(1) NOT NULL,
+		  `yc_datetime` datetime NOT NULL default '0000-00-00 00:00:00',
+		  PRIMARY KEY  (`yc_id`)
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+	";
+	sql_query($yellow_card_sql, true);
+}
+/** ############# EyoomBuilder_1.1.10 ############# */
 ?>

@@ -315,6 +315,14 @@ class latest extends eyoom
 					$list[$i]['lv_name'] = '';
 				}
 			}
+			
+			// 블라인드 처리
+			$ycard = unserialize($list[$i]['wr_4']);
+			if(!$ycard) $ycard = array();
+			if($ycard['yc_blind'] == 'y') {
+				$list[$i]['wr_subject'] = '이 게시물은 블라인드 처리된 글입니다.';
+				$list[$i]['wr_content'] = '이 게시물은 블라인드 처리된 글입니다.';
+			}
 		}
 		return $list;
 	}
@@ -324,7 +332,14 @@ class latest extends eyoom
 		switch($direct) {
 			case 'y':
 				$thumb = get_list_thumbnail($this->bo_table, $source['wr_id'], $this->img_width, $this->img_height);
-				$image = $thumb['src'];
+				if($thumb['src']) {
+					$image = $thumb['src'];
+				} else {
+					$video = unserialize($source['wr_4']);
+					if($video['thumb_src']) {
+						$image = $video['thumb_src'];
+					}
+				}
 				break;
 			default :
 				$images = unserialize($source['wr_image']);
@@ -371,6 +386,11 @@ class latest extends eyoom
 							}
 						}
 					} else $image = $img; // 외부이미지는 썸네일화 기능을 지원하지 않습니다.
+				} else {
+					$video = unserialize($source['wr_4']);
+					if($video['thumb_src']) {
+						$image = $video['thumb_src'];
+					}
 				}
 				break;
 		}

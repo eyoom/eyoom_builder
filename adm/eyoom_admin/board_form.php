@@ -16,6 +16,9 @@ if($eyoom_board['bo_use_hotgul'] == '1') $checked['bo_use_hotgul'] = true; else 
 if($eyoom_board['bo_use_anonymous'] == '1') $checked['bo_use_anonymous'] = true; else $checked['bo_use_anonymous'] = false;
 if($eyoom_board['bo_use_infinite_scroll'] == '1') $checked['bo_use_infinite_scroll'] = true; else $checked['bo_use_infinite_scroll'] = false;
 if($eyoom_board['bo_use_point_explain'] == '1') $checked['bo_use_point_explain'] = true; else $checked['bo_use_point_explain'] = false;
+if($eyoom_board['bo_use_list_image'] == '1') $checked['bo_use_list_image'] = true; else $checked['bo_use_list_image'] = false;
+if($eyoom_board['bo_use_video_photo'] == '1') $checked['bo_use_video_photo'] = true; else $checked['bo_use_video_photo'] = false;
+if($eyoom_board['bo_use_yellow_card'] == '1') $checked['bo_use_yellow_card'] = true; else $checked['bo_use_yellow_card'] = false;
 if($eyoom_board['bo_cmtpoint_target'] == '2') $checked['bo_cmtpoint_target2'] = true; else $checked['bo_cmtpoint_target1'] = true;
 
 // 쇼핑몰 테마인가?
@@ -51,7 +54,7 @@ $frm_submit = '
 <input type="hidden" name="theme" id="theme" value="<?php echo $_theme;?>">
 <input type="hidden" name="gr_id" id="gr_id" value="<?php echo $board['gr_id'];?>">
 <section id="anc_bo_basic">
-    <h2 class="h2_frm">공통 설정</h2>
+    <h2 class="h2_frm color-green">공통 설정</h2>
 
     <div class="tbl_frm01 tbl_wrap">
         <table>
@@ -144,6 +147,127 @@ $frm_submit = '
                 <label for="chk_all_infinite_scroll">전체적용</label>
             </td>
         </tr>
+        <tr>
+            <th scope="row"><label for="bo_use_list_image">목록에서 이미지 사용</label></th>
+            <td>
+				<label for="bo_use_list_image"><input type="checkbox" name="bo_use_list_image" value="1" id="bo_use_list_image" <?php echo $checked['bo_use_list_image']?'checked':''; ?>> 사용</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_list_image" value="1" id="chk_grp_list_image">
+                <label for="chk_grp_list_image">그룹적용</label>
+                <input type="checkbox" name="chk_all_list_image" value="1" id="chk_all_list_image">
+                <label for="chk_all_list_image">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="bo_use_video_photo">목록에서 동영상이미지 사용</label></th>
+            <td>
+				<label for="bo_use_video_photo"><input type="checkbox" name="bo_use_video_photo" value="1" id="bo_use_video_photo" <?php echo $checked['bo_use_video_photo']?'checked':''; ?>> 사용</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_video_photo" value="1" id="chk_grp_video_photo">
+                <label for="chk_grp_video_photo">그룹적용</label>
+                <input type="checkbox" name="chk_all_video_photo" value="1" id="chk_all_video_photo">
+                <label for="chk_all_video_photo">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="download_fee_ratio">파일다운로드 수수료율</label></th>
+            <td>
+				<input type="text" name="download_fee_ratio" value="<?php echo $eyoom_board['download_fee_ratio'] ?>" id="download_fee_ratio" class="frm_input" size="5"> % <span class="exp">공유자료실 스킨 (share)의 다운로드 수수료율 지정</span>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_download_ratio" value="1" id="chk_grp_download_ratio">
+                <label for="chk_grp_download_ratio">그룹적용</label>
+                <input type="checkbox" name="chk_all_download_ratio" value="1" id="chk_all_download_ratio">
+                <label for="chk_all_download_ratio">전체적용</label>
+            </td>
+        </tr>
+        </tbody>
+        </table>
+    </div>
+</section>
+
+<section id="anc_bo_basic">
+    <h2 class="h2_frm color-green">게시물 신고/블라인드 기능</h2>
+
+    <div class="tbl_frm01 tbl_wrap">
+        <table>
+        <caption>게시물 신고/블라인드 기능</caption>
+        <colgroup>
+            <col class="grid_4">
+            <col>
+            <col class="grid_3">
+        </colgroup>
+        <tbody>
+        <tr>
+            <th scope="row"><label for="bo_use_video_photo">게시물 신고/블라인드 기능 사용</label></th>
+            <td>
+				<label for="bo_use_yellow_card"><input type="checkbox" name="bo_use_yellow_card" value="1" id="bo_use_yellow_card" <?php echo $checked['bo_use_yellow_card']?'checked':''; ?>> 사용</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_yellow_card" value="1" id="chk_grp_yellow_card">
+                <label for="chk_grp_yellow_card">그룹적용</label>
+                <input type="checkbox" name="chk_all_yellow_card" value="1" id="chk_all_yellow_card">
+                <label for="chk_all_yellow_card">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="bo_blind_limit">게시물 블라인드</label></th>
+            <td>
+				<input type="text" name="bo_blind_limit" value="<?php echo $eyoom_board['bo_blind_limit'] ?>" id="bo_blind_limit" class="frm_input" size="5"> 명 이상 신고된 게시물을 자동으로 블라인드 처리하기
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_blind_limit" value="1" id="chk_grp_blind_limit">
+                <label for="chk_grp_blind_limit">그룹적용</label>
+                <input type="checkbox" name="chk_all_blind_limit" value="1" id="chk_all_blind_limit">
+                <label for="chk_all_blind_limit">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+			<th scope="row"><label for="bo_blind_view">블라인드된 게시물 보기권한</label></th>
+			<td>
+				<select name="bo_blind_view" id="bo_blind_view">
+					<option value="">선택</option>
+					<?php 
+					  for($i=1;$i<=10;$i++) {
+					?>
+					<option value="<?php echo $i;?>" <?php if($eyoom_board['bo_blind_view'] == $i) echo "selected";?>><?php echo $i;?></option>
+					<?php
+						}
+					?>
+				</select> 레벨
+				<span class="exp">선택한 그누레벨 이상의 회원은 블라인드된 게시물을 볼 수 있습니다.</span>
+			</td>
+			<td class="td_grpset">
+				<input type="checkbox" name="chk_grp_blind_view" value="1" id="chk_grp_blind_view">
+				<label for="chk_grp_blind_view">그룹적용</label>
+				<input type="checkbox" name="chk_all_blind_view" value="1" id="chk_all_blind_view">
+				<label for="chk_all_blind_view">전체적용</label>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><label for="bo_blind_direct">게시물 블라인드 설정권한</label></th>
+			<td>
+				<select name="bo_blind_direct" id="bo_blind_direct">
+					<option value="">선택</option>
+					<?php 
+					  for($i=1;$i<=10;$i++) {
+					?>
+					<option value="<?php echo $i;?>" <?php if($eyoom_board['bo_blind_direct'] == $i) echo "selected";?>><?php echo $i;?></option>
+					<?php
+						}
+					?>
+				</select> 레벨
+				<span class="exp">선택한 그누레벨 이상의 회원은 게시물을 바로 블라인드 처리할 수 있습니다.(아직 미적용 기능입니다.)</span>
+			</td>
+			<td class="td_grpset">
+				<input type="checkbox" name="chk_grp_blind_direct" value="1" id="chk_grp_blind_direct">
+				<label for="chk_grp_blind_direct">그룹적용</label>
+				<input type="checkbox" name="chk_all_blind_direct" value="1" id="chk_all_blind_direct">
+				<label for="chk_all_blind_direct">전체적용</label>
+			</td>
+		</tr>
         </tbody>
         </table>
     </div>
