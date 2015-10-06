@@ -47,7 +47,7 @@ class qfile
 		$contents .= "?>";
 		@fwrite($fp, $contents);
 		@fclose($fp);
-		@chmod($filename, G5_FILE_PERMISSION);
+		@chmod($filename, 0644);
 	}
 
 	// 지정한 파일 삭제하기

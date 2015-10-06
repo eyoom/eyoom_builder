@@ -1,10 +1,12 @@
 <?php
-	include_once('../../../_common.php');
+	$g5_path = '../../..';
+	include_once ($g5_path.'/common.php');
 
 	$title    =  urlencode(str_replace('\"', '"',$_REQUEST['title']));
-	$short_url = googl_short_url($_REQUEST['longurl']);
-	if(!$short_url)
+	//$short_url = googl_short_url($_REQUEST['longurl']);
+	if(!$short_url) {
 		$short_url = urlencode($_REQUEST['longurl']);
+	}
 	$title_url = $title.' : '.$short_url;
 	
 	switch($_REQUEST['sns']) {

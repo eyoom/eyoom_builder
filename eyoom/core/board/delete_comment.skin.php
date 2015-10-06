@@ -1,6 +1,9 @@
 <?php
 	if (!defined('_GNUBOARD_')) exit;
 
+	// 첨부한 이미지 파일이 있다면 삭제하기
+	if($write['wr_link2']) $eb->delete_comment_image($write['wr_link2'], $bo_table);
+
 	// 내글반응 삭제
 	$where = "bo_table = '{$bo_table}' and wr_id = '{$write['wr_parent']}' and wr_cmt = '{$comment_id}'";
 	$row = sql_fetch("select * from {$g5['eyoom_respond']} where $where ");

@@ -107,7 +107,7 @@ $frm_submit = '
 </section>
 
 <?php echo $frm_submit; ?>
-<?php if(preg_match('/community/',$_theme)) {?>
+<?php if(preg_match('/(community|dynamic)/',$_theme)) {?>
 <section id="anc_bo_auth">
     <h2 class="h2_frm">[<b style='color:#f30;'><?php echo $_theme;?></b> 테마] 댓글 <?php echo $levelset['gnu_name'];?> 설정 <span class="exp">이곳의 포인트는 이윰레벨과 무관한 그누보드 회원의 <?php echo $levelset['gnu_name'];?>에 해당하는 부분입니다.</span></h2>
 

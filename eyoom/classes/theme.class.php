@@ -33,9 +33,19 @@ class theme extends qfile
 		}
 	}
 
+	// 사용자 테마설정파일 저장 경로
+	protected function theme_userdir() {
+		$theme_path = G5_DATA_PATH.'/member/theme';
+		if(!@is_dir($theme_path)) {
+			@mkdir($theme_path, G5_DIR_PERMISSION);
+			@chmod($theme_path, G5_DIR_PERMISSION);
+		}
+		return $theme_path;
+	}
+
 	// 사용자 지정 테마 설정
 	public function set_user_theme($arr) {
-		global $g5;
+		global $g5, $member, $is_member;
 
 		// 테마정보 가져오기
 		$theme = sql_fetch("select * from {$g5['eyoom_theme']} where tm_name='{$arr['theme']}' || tm_alias='{$arr['theme']}'",false);
@@ -47,20 +57,33 @@ class theme extends qfile
 			$arr['theme'] = '';
 		}
 
-		// 유니크 아이디 쿠키 생성
-		if(get_cookie('unique_theme_id')) {
-			$unique_theme_id = get_cookie('unique_theme_id');
-		} else {
-			$unique_theme_id = date('YmdHis', time()) . str_pad((int)(microtime()*100), 2, "0", STR_PAD_LEFT);
-			set_cookie('unique_theme_id',$unique_theme_id,3600);
-		}
+		if($is_member) {
+			// 사용자 테마설정파일 저장 경로 가져오기
+			$theme_dir = $this->theme_userdir();
 
-		$file = $this->tmp_path . '/' . $_SERVER['REMOTE_ADDR'] . '.' . $unique_theme_id . '.php';
-		if(file_exists($file)) {
-			include_once($file);
-			$_user_config = $arr + $user_config;
+			$file = $theme_dir . '/' . $member['mb_id'] . '.php';
+			if(file_exists($file)) {
+				include_once($file);
+				$_user_config = $arr + $user_config;
+			} else {
+				$_user_config = $arr;
+			}
 		} else {
-			$_user_config = $arr;
+			// 유니크 아이디 쿠키 생성
+			if(get_cookie('unique_theme_id')) {
+				$unique_theme_id = get_cookie('unique_theme_id');
+			} else {
+				$unique_theme_id = date('YmdHis', time()) . str_pad((int)(microtime()*100), 2, "0", STR_PAD_LEFT);
+				set_cookie('unique_theme_id',$unique_theme_id,3600);
+			}
+
+			$file = $this->tmp_path . '/' . $_SERVER['REMOTE_ADDR'] . '.' . $unique_theme_id . '.php';
+			if(file_exists($file)) {
+				include_once($file);
+				$_user_config = $arr + $user_config;
+			} else {
+				$_user_config = $arr;
+			}
 		}
 
 		//파일 생성 및 갱신
@@ -78,8 +101,15 @@ class theme extends qfile
 
 	// 사용자 지정 테마 가져오기
 	public function get_user_theme() {
-		$unique_theme_id = get_cookie('unique_theme_id');
-		$file = $this->tmp_path . '/' . $_SERVER['REMOTE_ADDR'] . '.' . $unique_theme_id . '.php';
+		global $member, $is_member;
+
+		if($is_member) {
+			$theme_dir = $this->theme_userdir();
+			$file = $theme_dir . '/' . $member['mb_id'] . '.php';
+		} else {
+			$unique_theme_id = get_cookie('unique_theme_id');
+			$file = $this->tmp_path . '/' . $_SERVER['REMOTE_ADDR'] . '.' . $unique_theme_id . '.php';
+		}
 
 		if(@file_exists($file)) {
 			include_once($file);
@@ -420,7 +450,7 @@ class theme extends qfile
 			}
 			if(is_array($info)) return $info;
 		}
-		if($url['path']) {
+		if($url['path'] && !$info) {
 			$info['me_pid'] = 'intra';
 			$info['me_type'] = 'userpage';
 			$info['me_link'] = $url['path'];
@@ -469,20 +499,24 @@ class theme extends qfile
 		global $g5, $tpl, $it_id, $is_admin, $ca_id;
 		$url = $this->compare_host_from_link($_SERVER['REQUEST_URI']);
 		$info = $this->get_meinfo_link($url);
-		$sql = "select * from {$g5['eyoom_menu']} where me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}'";
+		$where = " me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}' ";
+		if($it_id) $where .= " and me_link='{$info['me_link']}' ";
+
+		$sql = "select * from {$g5['eyoom_menu']} where $where";
 		$data = sql_fetch($sql,false);
 
 		if($data['me_id']) {
 			$me_path = explode(" > ",$data['me_path']);
 			$cnt = count($me_path);
+			$default = $this->get_default_page();
 			foreach($me_path as $key => $me_name) {
 				if($cnt-1 == $key) {
 					$active = "class='active'";
-					//$me_name = $data['me_link'] ? '<a href="'.$data['me_link'].'">'.$me_name.'</a>':$me_name;
+					$me_name = $default['title'] ? $default['title']:$me_name;
 				}
 				$path .= "<li {$active}>".$me_name."</li>";
 			}
-			$page_info['title'] = $data['me_name'];
+			$page_info['title'] = $default['title'] ? $default['title']:$data['me_name'];
 			$page_info['path'] = "<li><a href='".G5_URL."'>Home</a></li>".$path;
 			$page_info['subtitle'] = $me_path[0];
 		} else {
@@ -551,6 +585,7 @@ class theme extends qfile
 			if($it_id || $ca_id) $page_info = $this->shop_subpage_info();
 			else $page_info = $this->get_default_page();
 		}
+		
 		if(!$page_info['title']) {
 			if($is_admin) {
 				$page_info['title'] = '미등록페이지';

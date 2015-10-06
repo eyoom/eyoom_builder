@@ -19,6 +19,7 @@ function eb_nameview($skin_dir, $mb_id, $name='', $email='', $homepage='')
     $name = preg_replace("/\&#039;/", "", $name);
     $name = preg_replace("/\'/", "", $name);
     $name = preg_replace("/\"/", "&#034;", $name);
+	$name = get_text(cut_str($name, $config['cf_cut_name']));
     $title_name = $name;
 
     $tmp_name = "";

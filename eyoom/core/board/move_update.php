@@ -23,8 +23,7 @@
 	$result = sql_query($sql);
 	while ($row = sql_fetch_array($result)) {
 		$wr_num = $row['wr_num'];
-		for ($i=0; $i<count($_POST['chk_bo_table']); $i++)
-		{
+		for ($i=0; $i<count($_POST['chk_bo_table']); $i++) {
 			$move_bo_table = $_POST['chk_bo_table'][$i];
 			$move_write_table = $g5['write_prefix'] . $move_bo_table;
 
@@ -38,8 +37,7 @@
 
 			$sql2 = " select * from $write_table where wr_num = '$wr_num' order by wr_parent, wr_is_comment, wr_comment desc, wr_id ";
 			$result2 = sql_query($sql2);
-			while ($row2 = sql_fetch_array($result2))
-			{
+			while ($row2 = sql_fetch_array($result2)) {
 				$nick = cut_str($member['mb_nick'], $config['cf_cut_name']);
 				if (!$row2['wr_is_comment'] && $config['cf_use_copy_log']) {
 					if(strstr($row2['wr_option'], 'html')) {
@@ -101,16 +99,18 @@
 				$insert_id = mysql_insert_id();
 
 				// 코멘트가 아니라면
-				if (!$row2['wr_is_comment'])
-				{
+				if (!$row2['wr_is_comment']) {
 					$save_parent = $insert_id;
+
+					// 이윰뉴에서 해당 게시물 정보 가져옮
+					$eyoom_new = sql_fetch("select * from {$g5['eyoom_new']} where bo_table='$bo_table' and wr_id='{$row2['wr_id']}'");
+					$en_image = unserialize($eyoom_new['wr_image']);
+					unset($en_image['bf']);
 
 					$sql3 = " select * from {$g5['board_file_table']} where bo_table = '$bo_table' and wr_id = '{$row2['wr_id']}' order by bf_no ";
 					$result3 = sql_query($sql3);
-					for ($k=0; $row3 = sql_fetch_array($result3); $k++)
-					{
-						if ($row3['bf_file'])
-						{
+					for ($k=0; $row3 = sql_fetch_array($result3); $k++) {
+						if ($row3['bf_file']) {
 							// 원본파일을 복사하고 퍼미션을 변경
 							@copy($src_dir.'/'.$row3['bf_file'], $dst_dir.'/'.$row3['bf_file']);
 							@chmod($dst_dir/$row3['bf_file'], G5_FILE_PERMISSION);
@@ -131,36 +131,56 @@
 										 bf_datetime = '{$row3['bf_datetime']}' ";
 						sql_query($sql);
 
-						if ($sw == 'move' && $row3['bf_file'])
+						if ($sw == 'move' && $row3['bf_file']) {
 							$save[$cnt]['bf_file'][$k] = $src_dir.'/'.$row3['bf_file'];
+						}
+						$en_image['bf'][$k] = str_replace(G5_PATH,'',$dst_dir.'/'.$row3['bf_file']);
 					}
+					$wr_image = serialize($en_image); // 이윰새글에 적용
 
 					$count_write++;
 
-					if ($sw == 'move' && $i == 0)
-					{
+					if ($sw == 'move' && $i == 0) {
 						// 스크랩 이동
 						sql_query(" update {$g5['scrap_table']} set bo_table = '$move_bo_table', wr_id = '$save_parent' where bo_table = '$bo_table' and wr_id = '{$row2['wr_id']}' ");
 
 						// 최신글 이동
 						sql_query(" update {$g5['board_new_table']} set bo_table = '$move_bo_table', wr_id = '$save_parent', wr_parent = '$save_parent' where bo_table = '$bo_table' and wr_id = '{$row2['wr_id']}' ");
-						
+
 						// 추천데이터 이동
 						sql_query(" update {$g5['board_good_table']} set bo_table = '$move_bo_table', wr_id = '$save_parent' where bo_table = '$bo_table' and wr_id = '{$row2['wr_id']}' ");
 
 						// 이윰 새글 이동
-						sql_query(" update {$g5['eyoom_new']} set bo_table = '$move_bo_table', wr_id = '$save_parent', wr_parent = '$save_parent' where bo_table = '$bo_table' and wr_id = '{$row2['wr_id']}' ");
+						sql_query(" update {$g5['eyoom_new']} set bo_table = '$move_bo_table', wr_id = '$save_parent', wr_parent = '$save_parent', wr_image='{$wr_image}' where bo_table = '$bo_table' and wr_id = '{$row2['wr_id']}' ");
 
 						// 이윰 내글반응 이동
 						sql_query(" update {$g5['eyoom_respond']} set bo_table = '$move_bo_table', wr_id = '$save_parent', pr_id = '$save_parent' where bo_table = '$bo_table' and wr_id = '{$row2['wr_id']}' ");
 					}
-				}
-				else
-				{
-					$count_comment++;
 
-					if ($sw == 'move')
-					{
+					// 이윰 새글 복사
+					if($sw == 'copy') {
+						if(is_array($eyoom_new)) {
+							unset($copy_set);
+							foreach($eyoom_new as $key => $val) {
+								if($key=='bn_id' || $key == 'bn_datetime') continue;
+								else {
+									if($key == 'bo_table') $val = $move_bo_table;
+									if($key == 'wr_id') $val = $insert_id;
+									if($key == 'wr_parent') $val = $insert_id;
+									if($key == 'wr_image') $val = $wr_image;
+									if($key == 'wr_subject' || $key == 'wr_content') {
+										$val = addslashes(stripslashes($val));
+									}
+									$copy_set .= "{$key} = '{$val}', ";
+								}
+							}
+							$copy_set .= "bn_datetime='".G5_TIME_YMDHIS."'";
+						}
+						sql_query("insert into {$g5['eyoom_new']} set {$copy_set}");
+					}
+				} else {
+					$count_comment++;
+					if ($sw == 'move') {
 						// 최신글 이동
 						sql_query(" update {$g5['board_new_table']} set bo_table = '$move_bo_table', wr_id = '$insert_id', wr_parent = '$save_parent' where bo_table = '$bo_table' and wr_id = '{$row2['wr_id']}' ");
 
@@ -189,10 +209,8 @@
 
 	delete_cache_latest($bo_table);
 
-	if ($sw == 'move')
-	{
-		for ($i=0; $i<count($save); $i++)
-		{
+	if ($sw == 'move') {
+		for ($i=0; $i<count($save); $i++) {
 			for ($k=0; $k<count($save[$i]['bf_file']); $k++)
 				@unlink($save[$i]['bf_file'][$k]);
 
@@ -220,4 +238,5 @@
 		<a href=\"".$opener_href."\">돌아가기</a>
 		</noscript>
 	";
+	exit;
 ?>

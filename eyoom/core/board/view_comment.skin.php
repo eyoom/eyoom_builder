@@ -1,5 +1,4 @@
 <?php
- 
 	if (!defined('_GNUBOARD_')) exit;
 
 	unset($comment);
@@ -28,6 +27,16 @@
 			$comment[$i]['firstcmt_point'] = $point['firstcmt'] ? $point['firstcmt']:0;
 			$comment[$i]['bomb_point'] = is_array($point['bomb']) ? array_sum($point['bomb']):0;
 			$comment[$i]['lucky_point'] = $point['lucky'] ? $point['lucky']:0;
+		}
+
+		// wr_link2를 활용하여 댓글에 이미지표현
+		$cmt_file = unserialize($list[$i]['wr_link2']);
+		if(is_array($cmt_file)) {
+			foreach($cmt_file as $k => $_file) {
+				if(preg_match('/(gif|jpg|png)/',strtolower($_file['source']))) 
+					$comment[$i]['imgsrc'] = G5_DATA_URL . '/file/'.$bo_table.'/'.$_file['file'];
+				break;
+			}
 		}
 
 		$level = $list[$i]['wr_1'] ? $eb->level_info($list[$i]['wr_1']):'';
@@ -79,6 +88,9 @@
 			$comment[$i]['c_nogood_href'] = $board['bo_use_nogood'] ? './goodcmt.php?'.$query_string.'&amp;c_id='.$comment[$i]['comment_id'].'&amp;good=nogood':'';
 		}
 	}
+
+	// 댓글에 이미지 첨부파일 용량 제한
+	$upload_max_filesize = ini_get('upload_max_filesize') . ' 바이트';
 
 	if($board['bo_use_sns']) {
 		ob_start();

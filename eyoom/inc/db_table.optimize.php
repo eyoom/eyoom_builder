@@ -27,10 +27,10 @@
 		$sql = " delete from {$g5['eyoom_member']} where mb_id='' ";
 		sql_query($sql);
 		sql_query(" OPTIMIZE TABLE `{$g5['eyoom_member']}` ");
-
-		// 누적된 푸시파일 자동삭제
-		$push_file_dir = G5_DATA_PATH . '/member';
-		$qfile->del_timeover_file($push_file_dir,$config['cf_new_del']*86400,'push');
 	}
+
+	// 누적된 푸시파일 자동삭제
+	$push_file_dir = G5_DATA_PATH . '/member/push';
+	$qfile->del_timeover_file($push_file_dir,86400,'push');
 
 ?>

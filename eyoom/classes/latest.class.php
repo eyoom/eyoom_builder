@@ -10,6 +10,7 @@ class latest extends eyoom
 	public $img_height	= 0;
 	public $skip_cnt	= 0;
 	public $ca_view		= 'n';
+	public $secret		= 'y';
 
 	public function __construct() {
 	}
@@ -145,6 +146,11 @@ class latest extends eyoom
 				$where .= " and bn_datetime between date_format(".$start.", '%Y-%m-%d 00:00:00') and date_format(".$end.", '%Y-%m-%d 23:59:59')";
 			}
 
+			// 비밀글 추출여부
+			if($optset['secret'] == 'n') {
+				$where .= " and wr_option not like '%secret%' ";
+			}
+
 			// 조건검색
 			$opt['where'] = $where;
 
@@ -238,20 +244,20 @@ class latest extends eyoom
 			$list[$i] = $row;
 			$bo_table = $direct!='y' ? $row['bo_table']:$this->bo_table;
 			if(!$row['wr_subject']) {
-				if(preg_match('/secret/',$row['wr_option']) && !$is_admin && ($member['mb_id']!=$row['mb_id'] || !$is_member)) {
+				if(preg_match('/secret/',$row['wr_option']) && !$is_admin && $member['mb_id']!=$row['mb_id'] && !$is_member) {
 					$list[$i]['wr_subject'] = '비밀 댓글입니다.';
 					$list[$i]['wr_content'] = '비밀 댓글입니다.';
 				} else {
-					$list[$i]['wr_subject'] = cut_str(strip_tags($row['wr_content']), $cut_content, '…');
+					$list[$i]['wr_subject'] = cut_str(strip_tags(htmlspecialchars_decode($row['wr_content'])), $cut_content, '…');
 				}
 				$list[$i]['href'] = G5_BBS_URL."/board.php?bo_table={$bo_table}&amp;wr_id={$row['wr_id']}#c_{$row['wr_id']}";
 			} else {
-				if(preg_match('/secret/',$row['wr_option']) && !$is_admin && ($member['mb_id']!=$row['mb_id'] || !$is_member)) {
+				if(preg_match('/secret/',$row['wr_option']) && !$is_admin && $member['mb_id']!=$row['mb_id'] && !$is_member) {
 					$list[$i]['wr_subject'] = '비밀글입니다.';
 					$list[$i]['wr_content'] = '비밀글입니다.';
 				} else {
 					$list[$i]['wr_subject'] = conv_subject($row['wr_subject'], $cut_subject, '…');
-					if($this->content == 'y') $list[$i]['wr_content'] = cut_str(strip_tags($row['wr_content']), $cut_content, '…');
+					if($this->content == 'y') $list[$i]['wr_content'] = cut_str(strip_tags(htmlspecialchars_decode($row['wr_content'])), $cut_content, '…');
 
 					// 옵션으로 이미지 가져오기
 					if($this->img_view == 'y') {
@@ -701,7 +707,7 @@ class latest extends eyoom
 			$list[$i] = $row;
 
 			if ($row['mb_id']) {
-				$list[$i]['name'] = cut_str($row['mb_nick']);
+				$list[$i]['name'] = cut_str($row['mb_nick'], $config['cf_cut_name']);
 				$list[$i]['mb_photo'] = $eb->mb_photo($row['mb_id']);
 			} else {
 				if ($is_admin)

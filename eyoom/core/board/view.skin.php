@@ -80,12 +80,17 @@
 		$view['wr_homepage'] = '';
 	}
 
+	// 추천/비추천
+	if($member['mb_id']) {
+		$goodinfo = $eb->mb_goodinfo($member['mb_id'],$bo_table,$wr_id);
+	}
+
 	// sns 버튼들
 	if($board['bo_use_sns']) {
 		$sns_msg = urlencode(str_replace('\"', '"', $view['subject']));
 
 		$longurl = urlencode('http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-		$sns_send  = G5_BBS_URL.'/sns_send.php?longurl='.$longurl;
+		$sns_send  = EYOOM_CORE_URL.'/board/sns_send.php?longurl='.$longurl;
 		$sns_send .= '&amp;title='.$sns_msg;
 
 		$facebook_url = $sns_send.'&amp;sns=facebook';

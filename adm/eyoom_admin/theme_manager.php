@@ -7,6 +7,13 @@
 	for($i=0;$row=sql_fetch_array($res);$i++) {
 		$tminfo[$row['tm_name']] = $row;
 	}
+	if(defined('_EYOOM_VESION_')) {
+?>
+<section>
+	<h2><?php echo _EYOOM_VESION_;?></h2>
+</section>
+<?php
+	}
 ?>
 <section id="anc_scf_info">
     <h2 class="h2_frm">테마 메니저<span class='exp'>각 테마별로 다양한 설정을 하실 수 있습니다.</span></h2>
@@ -36,7 +43,7 @@
 				<div class="btn_delete"><a href="./theme_delete.php?thema=<?php echo $arr[$i];?>" class="delete_theme" onclick="return false;">삭제</a></div>
 				<div class="btn_chname"><a href="./theme_alias.php?thema=<?php echo $arr[$i];?>" class="alias_theme" onclick="return false;">별칭설정</a></div>
 				<div class="btn_community"><a href="<?php echo G5_URL;?>/?theme=<?php if($tminfo[$arr[$i]]['tm_alias']) echo $tminfo[$arr[$i]]['tm_alias']; else echo $arr[$i];?>" target="_blank">커뮤니티</a></div>
-				<div class="btn_shop"><a href="<?php echo G5_URL;?>/<?php echo G5_SHOP_DIR;?>/?theme=<?php if($tminfo[$arr[$i]]['tm_alias']) echo $tminfo[$arr[$i]]['tm_alias']; else echo $arr[$i];?>" target="_blank">쇼핑몰</a></div>
+				<?php if(defined('G5_USE_SHOP')) {?><div class="btn_shop"><a href="<?php echo G5_URL;?>/<?php echo G5_SHOP_DIR;?>/?theme=<?php if($tminfo[$arr[$i]]['tm_alias']) echo $tminfo[$arr[$i]]['tm_alias']; else echo $arr[$i];?>" target="_blank">쇼핑몰</a></div><?php }?>
 			</div>
 			<?php
 					unset($eyoom);

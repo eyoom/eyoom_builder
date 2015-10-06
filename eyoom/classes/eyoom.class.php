@@ -235,7 +235,7 @@ class eyoom extends qfile
 
 	// 푸쉬 생성
 	public function set_push($item,$val,$target_id,$mb_name,$re_type='') {
-		$push_file = $this->member_path.'/push.'.$target_id.'.php';
+		$push_file = $this->member_path.'/push/push.'.$target_id.'.php';
 		$push[$item]['val'] = $val;
 		$push[$item]['nick'] = $mb_name;
 		$push[$item]['type'] = $re_type;
@@ -654,7 +654,7 @@ class eyoom extends qfile
 	}
 
 	public function syntaxhighlighter($content) {
-		$content = preg_replace("/^<span.*?>(.*?)<\/span>/is","\n\\1",$content);
+		$content = preg_replace("/<span.*?>(.*?)<\/span>/is","\n\\1",$content);
 		$content = preg_replace("/{CODE\s*\:([^}]*)}/i","<pre class=\"brush: \\1;\">",$content);
 		$content = preg_replace("/{\/CODE}/i","</pre>",$content);
 		$content = preg_replace_callback("/<pre[^>]*>(.*?)<\/pre>/s",array($this,'syntaxhighlighter_remove_tag'),$content);
@@ -913,6 +913,50 @@ class eyoom extends qfile
 		return $content;
 	}
 
+	// 에디터로 업로드된 이미지 파일 삭제
+	public function delete_editor_image($content) {
+		if(!$content) return false;
+
+		// 게시물 내용에서 이미지 추출
+		$matchs = get_editor_image($content,false);
+		if(!$matchs) return false;
+
+		for($i=0; $i<count($matchs[1]); $i++) {
+			// 이미지 path 구함
+			$imgurl = parse_url($matchs[1][$i]);
+			$srcfile = $_SERVER['DOCUMENT_ROOT'].$imgurl['path'];
+			$filename = preg_replace("/\.[^\.]+$/i", "", basename($srcfile));
+			$filepath = dirname($srcfile);
+			$files = glob($filepath.'/thumb-'.$filename.'*');
+			if (is_array($files)) {
+				foreach($files as $filename)
+					@unlink($filename);
+			}
+			@unlink($srcfile);
+		}
+	}
+
+	// 댓글에 첨부한 이미지 삭제
+	public function delete_comment_image($content,$bo_table) {
+		if(!$content || !$bo_table) return false;
+
+		$b_file = unserialize($content);
+		foreach($b_file as $key => $bf) {
+			@unlink(G5_DATA_PATH.'/file/'.$bo_table.'/'.$bf['file']);
+		}
+	}
+
+	// 회원의 추천/비추천 정보 가져오기
+	public function mb_goodinfo($mb_id, $bo_table, $wr_id) {
+		global $g5;
+		if(!$mb_id || !$bo_table || !$wr_id) return false;
+		else {
+			$sql = "select * from {$g5['board_good_table']} where bo_table='{$bo_table}' and wr_id='{$wr_id}' and mb_id='{$mb_id}' limit 1";
+			$info = sql_fetch($sql,false);
+			return $info;
+		}
+	}
+
 	public function get_skin_dir($skin, $skin_path=G5_SKIN_PATH) {
 		global $g5;
 
@@ -930,6 +974,5 @@ class eyoom extends qfile
 
 		return $result_array;
 	}
-
 }
 ?>
