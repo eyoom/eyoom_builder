@@ -10,6 +10,7 @@ $theme = $_POST['theme'];
 
 $where = "bo_table='{$bo_table}' and bo_theme='{$theme}'";
 $set = "
+	use_shop_skin			= '{$_POST['use_shop_skin']}',
 	bo_use_profile_photo	= '{$_POST['bo_use_profile_photo']}',
 	bo_sel_date_type		= '{$_POST['bo_sel_date_type']}',
 	bo_use_hotgul			= '{$_POST['bo_use_hotgul']}',
@@ -37,6 +38,7 @@ sql_query($sql);
 
 // 같은 그룹내 게시판 동일 옵션 적용
 $grp_fields = '';
+if (is_checked('chk_grp_shop_skin'))		$grp_fields .= " , use_shop_skin = '{$_POST['use_shop_skin']}' ";
 if (is_checked('chk_grp_profile_photo'))	$grp_fields .= " , bo_use_profile_photo = '{$_POST['bo_use_profile_photo']}' ";
 if (is_checked('chk_grp_date_type'))		$grp_fields .= " , bo_sel_date_type = '{$_POST['bo_sel_date_type']}' ";
 if (is_checked('chk_grp_hotgul'))			$grp_fields .= " , bo_use_hotgul = '{$_POST['bo_use_hotgul']}' ";
@@ -66,6 +68,7 @@ if ($grp_fields) {
 
 // 같은 그룹내 게시판 동일 옵션 적용
 $all_fields = '';
+if (is_checked('chk_all_shop_skin'))		$all_fields .= " , use_shop_skin = '{$_POST['use_shop_skin']}' ";
 if (is_checked('chk_all_profile_photo'))	$all_fields .= " , bo_use_profile_photo = '{$_POST['bo_use_profile_photo']}' ";
 if (is_checked('chk_all_date_type'))		$all_fields .= " , bo_sel_date_type = '{$_POST['bo_sel_date_type']}' ";
 if (is_checked('chk_all_hotgul'))			$all_fields .= " , bo_use_hotgul = '{$_POST['bo_use_hotgul']}' ";

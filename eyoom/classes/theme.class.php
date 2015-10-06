@@ -287,6 +287,12 @@ class theme extends qfile
 					}
 				}
 			}
+			if($menuset['me_type'] == 'board' && $menuset['me_pid']) {
+				$tmp_bo_table = $menuset['me_pid'];
+				if($new[$tmp_bo_table]>0) {
+					$menu[$mk1]['new'] = true;
+				}
+			}
 		}
 		return $menu;
 	}
@@ -475,6 +481,7 @@ class theme extends qfile
 						$info['me_pid']  = $val;
 						$info['me_link'] = $url['path']."?".$url['query'];
 					}
+					if($key == 'bo_table') break;
 				}
 			}
 		} else if($url['path']) {

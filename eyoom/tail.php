@@ -2,7 +2,7 @@
 	if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 	// 쇼핑몰 레이아웃을 커뮤니티에 적용하기
-	if((isset($shop_layout_use) && $shop_layout_use) || $eyoom_board['use_shop_skin'] == 'y') {
+	if((isset($shop_layout_use) && $shop_layout_use)) {
 		@include_once(EYOOM_CORE_PATH.'/shop/shop.tail.php');
 		return;
 	}

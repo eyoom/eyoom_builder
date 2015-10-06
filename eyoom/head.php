@@ -5,7 +5,7 @@
 	@include_once(G5_PATH.'/head.sub.php');
 
 	// 쇼핑몰 레이아웃을 커뮤니티에 적용하기
-	if((isset($shop_layout_use) && $shop_layout_use) || $eyoom_board['use_shop_skin'] == 'y') {
+	if((isset($shop_layout_use) && $shop_layout_use)) {
 		@include_once(EYOOM_CORE_PATH.'/shop/shop.head.php');
 		return;
 	}

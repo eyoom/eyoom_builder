@@ -161,25 +161,26 @@
 		// 쇼핑몰일 경우 Eyoom Core에서 파일 제어하기
 		// Eyoom Core에 파일이 없을 경우에는 영카트 파일 실행
 		$path = $tpl->get_filename_from_url();
-		if(G5_USE_SHOP && $path['dirname'] == G5_SHOP_DIR && $eyoom['use_gnu_shop'] == 'n') {
+		if(G5_USE_SHOP && $path['dirname'] == G5_SHOP_DIR) {
 			if($eyoom_shop_core = $tpl->eyoom_control()) {
 				define('_SHOP_',true);
-
 				// 샵테마를 별도로 지정하고 있는가?
 				if($shop_theme && !$preview && $shop_theme!=$theme) {
 					unset($tpl, $eyoom);
-					$theme = $shop_theme;
 					if($shop_theme == 'basic') {
 						include(G5_DATA_PATH."/eyoom.config.php");
 					} else {
+						$theme = $shop_theme;
 						include(G5_DATA_PATH."/eyoom.".$shop_theme.".config.php");
 					}
-
-					// 템플릿명 결정
-					$tpl_name = G5_IS_MOBILE ? 'mo':'pc';
-					if($eyoom['bootstrap'])  $tpl_name = 'bs';
-					$tpl = new Template($shop_theme);
 				}
+			}
+			if($eyoom['use_gnu_shop'] == 'n') {
+				// 템플릿명 결정
+				$tpl_name = G5_IS_MOBILE ? 'mo':'pc';
+				if($eyoom['bootstrap'])  $tpl_name = 'bs';
+				$tpl = new Template($shop_theme);
+
 				@include_once(EYOOM_INC_PATH.'/hookedfile.header.php');
 				include_once($eyoom_shop_core);
 				exit;
@@ -187,7 +188,7 @@
 		}
 
 		// 쇼핑몰의 레이아웃을 커뮤니티에 적용하기
-		if(isset($default['de_shop_layout_use']) && $default['de_shop_layout_use']) {
+		if((isset($default['de_shop_layout_use']) && $default['de_shop_layout_use']) || $eyoom_board['use_shop_skin'] == 'y') {
 			(int)$shop_layout_use = 1;
 			if(!preg_match("/adm\//i",$_SERVER['SCRIPT_NAME'])) {
 				unset($default['de_shop_layout_use']);

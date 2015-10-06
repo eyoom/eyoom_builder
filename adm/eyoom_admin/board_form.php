@@ -18,6 +18,15 @@ if($eyoom_board['bo_use_infinite_scroll'] == '1') $checked['bo_use_infinite_scro
 if($eyoom_board['bo_use_point_explain'] == '1') $checked['bo_use_point_explain'] = true; else $checked['bo_use_point_explain'] = false;
 if($eyoom_board['bo_cmtpoint_target'] == '2') $checked['bo_cmtpoint_target2'] = true; else $checked['bo_cmtpoint_target1'] = true;
 
+// 쇼핑몰 테마인가?
+if(preg_match('/pc_/',$theme)) {
+	$device = 'pc';
+} else {
+	$device = 'bs';
+}
+$shop_dir = G5_PATH.'/eyoom/theme/'.$theme.'/skin_'.$device.'/shop/';
+$is_shop_theme = is_dir($shop_dir) ? true : false;
+
 $frm_submit = '
 <div class="btn_confirm01 btn_confirm">
     <input type="submit" value="확인" class="btn_submit" accesskey="s">
@@ -53,6 +62,25 @@ $frm_submit = '
             <col class="grid_3">
         </colgroup>
         <tbody>
+		<?php if($is_shop_theme) {?>
+		<tr>
+            <th scope="row"><label for="bo_use_profile_photo">레이아웃 디자인</label></th>
+            <td>
+                <label for="use_shop_skin_1">
+					<input type="radio" name="use_shop_skin" id="use_shop_skin_1" value="n" <?php echo $eyoom_board['use_shop_skin']=='n'?'checked':''; ?>> 커뮤니티 디자인 레이아웃 적용
+				</label>
+				<label for="use_shop_skin_2">
+					<input type="radio" name="use_shop_skin" id="use_shop_skin_2" value="y" <?php echo $eyoom_board['use_shop_skin']=='y'?'checked':''; ?>> 쇼핑몰 디자인 레이아웃 적용 [<b style='color:#f30;'><?php echo $theme;?></b> 테마의 쇼핑몰 스킨 레이아웃]
+				</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_shop_skin" value="1" id="chk_grp_shop_skin">
+                <label for="chk_grp_shop_skin">그룹적용</label>
+                <input type="checkbox" name="chk_all_shop_skin" value="1" id="chk_all_shop_skin">
+                <label for="chk_all_shop_skin">전체적용</label>
+            </td>
+        </tr>
+		<?php }?>
         <tr>
             <th scope="row"><label for="bo_use_profile_photo">프로필사진</label></th>
             <td>
