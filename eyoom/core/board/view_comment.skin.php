@@ -69,7 +69,7 @@
 			$comment[$i]['is_reply'] = $list[$i]['is_reply'];
 			$comment[$i]['is_edit'] = $list[$i]['is_edit'];
 			$comment[$i]['is_del'] = $list[$i]['is_del'];
-			$comment[$i]['del_link'] = $list[$i]['del_link'];
+			$comment[$i]['del_link'] = $wmode ? $list[$i]['del_link'].'&wmode=1':$list[$i]['del_link'];
 			$query_string = str_replace("&", "&amp;", $_SERVER['QUERY_STRING']);
 
 			if($w == 'cu') {

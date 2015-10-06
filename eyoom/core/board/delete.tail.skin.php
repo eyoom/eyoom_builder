@@ -9,4 +9,13 @@
 	// 사용자 프로그램
 	@include_once(EYOOM_USER_PATH.'/board/delete.tail.skin.php');
 
+	// 무한스크롤 모달창 닫기
+	if($wmode) {
+		delete_cache_latest($bo_table);
+		echo "
+		<script>window.parent.closeModal('{$write['wr_id']}');</script>
+		";
+		exit;
+	}
+
 ?>

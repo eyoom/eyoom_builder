@@ -549,6 +549,10 @@ class theme extends qfile
 			$page_info['subtitle'] = $me_path[0];
 			$page_info['sidemenu'] = $data['me_side'];
 			$page_info['registed'] = 'y';
+			// 메뉴코드 정보
+			$me_code = str_split($data['me_code'],3);
+			$page_info['cate1'] = $me_code[0];
+			$page_info['cate2'] = $me_code[1];
 		} else {
 			if($it_id || $ca_id) $page_info = $this->shop_subpage_info();
 			else $page_info = $this->get_default_page();

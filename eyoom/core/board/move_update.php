@@ -217,6 +217,7 @@
 			sql_query(" delete from $write_table where wr_parent = '{$save[$i]['wr_id']}' ");
 			sql_query(" delete from {$g5['board_new_table']} where bo_table = '$bo_table' and wr_id = '{$save[$i]['wr_id']}' ");
 			sql_query(" delete from {$g5['board_file_table']} where bo_table = '$bo_table' and wr_id = '{$save[$i]['wr_id']}' ");
+			$w_id[$i] = $save[$i]['wr_id'];
 		}
 		sql_query(" update {$g5['board_table']} set bo_count_write = bo_count_write - '$save_count_write', bo_count_comment = bo_count_comment - '$save_count_comment' where bo_table = '$bo_table' ");
 	}
@@ -224,11 +225,19 @@
 	$msg = '해당 게시물을 선택한 게시판으로 '.$act.' 하였습니다.';
 	$opener_href = './board.php?bo_table='.$bo_table.'&amp;page='.$page.'&amp;'.$qstr;
 
+	// 무한스크롤 모달창 닫기
+	if($wmode) {
+		if(isset($w_id) && $w_id) $wr_id = implode('|',$w_id);
+		$opener_script = "opener.close_modal('".$wr_id."');";
+	} else {
+		$opener_script = "opener.document.location.href = \"".$opener_href."\";";
+	}
+
 	echo "
 		<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">
 		<script>
 		alert(\"".$msg."\");
-		opener.document.location.href = \"".$opener_href."\";
+		".$opener_script."
 		window.close();
 		</script>
 		<noscript>

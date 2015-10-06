@@ -422,23 +422,6 @@ class eyoom extends qfile
 			$point_sum = $level_point + $point;
 			$level = $this->get_level_from_point($point_sum,$eyoomer['level']);
 
-			if($level != $eyoomer['level']) {
-				// 레벨업 알람 및 활동기록
-				$gap = $level - $eyoomer['level'];
-				if($gap>0) {
-					$updown = 'up';
-					$msg = 'Level Up';
-				} else {
-					$updown = 'down';
-					$msg = 'Level Down';
-				}
-				$this->set_push("levelup",$updown,$eyoomer['mb_id'],$level);
-				$content = array();
-				$content['from'] = $eyoomer['level'];
-				$content['to'] = $level;
-				$content['msg'] = $msg;
-				$this->insert_activity($eyoomer['mb_id'], "level", $content);
-			}
 			$sql = "update {$g5['eyoom_member']} set level='{$level}', level_point='{$point_sum}' where mb_id='{$eyoomer['mb_id']}'";
 			sql_query($sql, false);
 
@@ -446,7 +429,6 @@ class eyoom extends qfile
 				$sql = "update {$g5['eyoom_member']} set level_point=level_point+".$r_point." where mb_id='{$r_id}'";
 				sql_query($sql, false);
 			}
-
 		} else return false;
 	}
 
@@ -519,7 +501,7 @@ class eyoom extends qfile
 		$lvinfo = $levelinfo[$eyoomer['level']];
 		$bar_len = $lvinfo['max'] - $lvinfo['min'];
 		$lv_len = $eyoomer['level_point'] - $lvinfo['min'];
-		$ratio = ceil(($lv_len/$bar_len)*100);
+		$ratio = ($lv_len/$bar_len)*100;
 		if($ratio >= 100) {
 			$eyoomer['level'] = $eyoomer['level']+1;
 			$this->level_point(1);
@@ -531,7 +513,7 @@ class eyoom extends qfile
 		$lvinfo = $levelinfo[$eyoomer['level']];
 		$lvinfo['gnu_name'] = $levelset['gnu_alias_'.$member['mb_level']];
 		$lvinfo['level'] = $eyoomer['level'];
-		$lvinfo['ratio'] = $ratio;
+		$lvinfo['ratio'] = ceil($ratio*100)/100;
 		return $lvinfo;
 	}
 
@@ -1061,7 +1043,7 @@ class eyoom extends qfile
 					$data['group'] = sql_fetch(" select * from {$g5['group_table']} where gr_id = '{$data['gr_id']}' ");
 				}
 				$data['theme'] = $link['theme'];
-
+				$data['write_table'] = $write_table;
 				return $data;
 
 			} else {

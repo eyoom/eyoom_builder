@@ -105,6 +105,24 @@
 		$band_url   = $sns_send.'&amp;sns=band';
 	}
 
+	// Window Mode 사용시
+	if($wmode) {
+		// 목록 출력을 강제로 막음
+		$board['bo_use_list_view'] = 0;
+
+		// 일반 버튼들 wmode 적용하기
+		$add_query = '&wmode=1';
+		$prev_href .= $prev_href ? $add_query:'';
+		$next_href .= $next_href ? $add_query:'';
+		$update_href .= $update_href ? $add_query:'';
+		$delete_href .= $delete_href ? $add_query:'';
+		$copy_href .= $copy_href ? $add_query:'';
+		$move_href .= $move_href ? $add_query:'';
+		$search_href .= $search_href ? $add_query:'';
+		$reply_href .= $reply_href ? $add_query:'';
+		$write_href .= $write_href ? $add_query:'';
+	}
+
 	// wr_1에 작성자의 레벨정보 입력
 	if($is_member) $wr_1 = $member['mb_level']."|".$eyoomer['level'];
 

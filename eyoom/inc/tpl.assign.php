@@ -63,6 +63,7 @@
 		"lang_alert"	=> $lang_alert,
 		"lang_theme"	=> $lang_theme,
 		"short_url"		=> $short_url,
+		"wmode"			=> $_wmode,
 	));
 
 ?>

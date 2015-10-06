@@ -71,7 +71,17 @@
 			wr_video	= '{$wr_video}',
 			wr_sound	= '{$wr_sound}',
 			wr_comment	= '0',
-			wr_hit		= '0'
+			wr_hit		= '0',
+			wr_1		= '{$wr_1}',
+			wr_2		= '{$wr_2}',
+			wr_3		= '{$wr_3}',
+			wr_4		= '{$wr_4}',
+			wr_5		= '{$wr_5}',
+			wr_6		= '{$wr_6}',
+			wr_7		= '{$wr_7}',
+			wr_8		= '{$wr_8}',
+			wr_9		= '{$wr_9}',
+			wr_10		= '{$wr_10}'
 	";
 
 	$update = "
@@ -86,7 +96,17 @@
 			wr_option	= '{$html},{$secret},{$mail}',
 			wr_image	= '{$wr_image}',
 			wr_video	= '{$wr_video}',
-			wr_sound	= '{$wr_sound}'
+			wr_sound	= '{$wr_sound}',
+			wr_1		= '{$wr_1}',
+			wr_2		= '{$wr_2}',
+			wr_3		= '{$wr_3}',
+			wr_4		= '{$wr_4}',
+			wr_5		= '{$wr_5}',
+			wr_6		= '{$wr_6}',
+			wr_7		= '{$wr_7}',
+			wr_8		= '{$wr_8}',
+			wr_9		= '{$wr_9}',
+			wr_10		= '{$wr_10}'
 		where $where
 	";
 
@@ -128,5 +148,8 @@
 
 	// 사용자 프로그램
 	@include_once(EYOOM_USER_PATH.'/board/write_update.skin.php');
+
+	// 무한스크롤 리스트에서 뷰창을 띄웠을 경우
+	$qstr .= $wmode ? $qstr.'&wmode=1':'';
 
 ?>

@@ -5,7 +5,7 @@
 	define('_EYOOM_COMMON_',true);
 
 	// Version
-	define('_EYOOM_VESION_','EyoomBuilder_1.1.4');
+	define('_EYOOM_VESION_','EyoomBuilder_1.1.5');
 
 	// GNUBOARD5 Library
 	include_once(G5_LIB_PATH.'/common.lib.php');
@@ -58,6 +58,12 @@
 		}
 		// 익명글쓰기 체크
 		$is_anonymous = $eyoom_board['bo_use_anonymous'] == 1 ? true:false;
+
+		// 무한스크롤 기능을 사용하면 wmode를 활성화
+		if($eyoom_board['bo_use_infinite_scroll'] == 1) {
+			$_wmode = true;
+			if($wmode) define('_WMODE_',true);
+		}
 
 		// 베이직스킨이 아니면 목록에서 이미지 보이게 처리
 		if($eyoom_board['bo_skin'] != 'basic') $board['bo_use_list_file'] = true;

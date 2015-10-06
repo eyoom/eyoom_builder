@@ -61,7 +61,17 @@
 		}
 		if($board['bo_use_list_content']) {
 			$content_length = G5_IS_MOBILE ? 100:150;
-			$list[$key]['content'] = cut_str(trim(strip_tags(preg_replace("/\?/","",$list[$key]['wr_content']))),$content_length, '…');
+			$wr_content = $list[$key]['wr_content'];
+			$wr_content = $eb->remove_editor_code($wr_content);
+			$wr_content = $eb->remove_editor_emoticon($wr_content);
+			$wr_content = $eb->remove_editor_video($wr_content);
+			$wr_content = $eb->remove_editor_sound($wr_content);
+			$list[$key]['content'] = cut_str(trim(strip_tags(preg_replace("/\?/","",$wr_content))),$content_length, '…');
+		}
+		
+		// 게시물 view페이지의 wmode(Window Mode) 설정
+		if($_wmode) {
+			$list[$key]['href'] = $list[$key]['href'].'&wmode=1';
 		}
 	}
 

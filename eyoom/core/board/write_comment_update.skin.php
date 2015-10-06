@@ -211,6 +211,9 @@
 	// 사용자 프로그램
 	@include_once(EYOOM_USER_PATH.'/board/write_comment_update.skin.php');
 
+	// 무한스크롤 리스트에서 뷰창을 띄웠을 경우
+	$qstr .= $wmode ? $qstr.'&wmode=1':'';
+
 	if($goback) {
 		delete_cache_latest($bo_table);
 		$mb_photo = $eb->mb_photo($mb_id);
