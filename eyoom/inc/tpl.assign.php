@@ -60,6 +60,8 @@
 		"use"			=> $use,
 		"qa"			=> $qa,
 		"switcher"		=> $switcher,
+		"lang_alert"	=> $lang_alert,
+		"lang_theme"	=> $lang_theme,
 	));
 
 ?>

@@ -10,14 +10,19 @@ class theme extends qfile
 
 	// Constructor Function
 	public function __construct() {
-		global $g5, $bo_table, $co_id, $gr_id, $board, $theme, $pid, $ca_id;
+		global $g5, $bo_table, $co_id, $gr_id, $board, $pid, $ca_id, $faq, $fm_id, $sca;
 
 		$this->tmp_path		= G5_DATA_PATH . '/tmp';
 		$this->theme_path	= EYOOM_THEME_PATH;
 		
 		if($bo_table) {
-			$this->page_type = 'board';
-			$this->me_pid = $bo_table;
+			if(!$sca) {
+				$this->page_type = 'board';
+				$this->me_pid = $bo_table;
+			} else {
+				$this->page_type = 'category';
+				$this->me_pid = $sca;
+			}
 		} else if($gr_id) {
 			$this->page_type = 'group';
 			$this->me_pid = $gr_id;
@@ -30,6 +35,9 @@ class theme extends qfile
 		} else if($ca_id) {
 			$this->page_type = 'shop';
 			$this->me_pid = $ca_id;
+		} else if($fm_id) {
+			$this->page_type = 'faq';
+			$this->me_pid = $fm_id;
 		}
 	}
 
@@ -435,27 +443,34 @@ class theme extends qfile
 		if($url['query']) {
 			parse_str($url['query'],$query);
 			foreach($query as $key => $val) {
-				if(in_array($key,array('bo_table','gr_id','co_id','ca_id','pid'))) {
+				if(in_array($key,array('bo_table','gr_id','co_id','ca_id','pid','theme','faq','fm_id','sca'))) {
 					switch($key) {
-						case "bo_table": $info['me_type'] = 'board'; break;
-						case "gr_id": $info['me_type'] = 'group'; break;
-						case "co_id": $info['me_type'] = 'page'; break;
-						case "ca_id": $info['me_type'] = 'shop'; break;
-						case "pid": $info['me_type'] = 'pid'; break;
+						case "bo_table"	: $info['me_type'] = 'board'; break;
+						case "gr_id"	: $info['me_type'] = 'group'; break;
+						case "co_id"	: $info['me_type'] = 'page'; break;
+						case "ca_id"	: $info['me_type'] = 'shop'; break;
+						case "pid"		: $info['me_type'] = 'pid'; break;
+						case "theme"	: $info['me_type'] = 'theme'; break;
+						case "faq"		: $info['me_type'] = 'faq'; break;
+						case "fm_id"	: $info['me_type'] = 'faq'; break;
+						case "qalist"	: $info['me_type'] = 'qalist'; break;
+						case "sca"		: $info['me_type'] = 'category'; break;
 					}
 					$info['me_pid']  = $val;
 					$info['me_link'] = $url['path']."?".$url['query'];
-					break;
 				}
 			}
-			if(is_array($info)) return $info;
-		}
-		if($url['path'] && !$info) {
+		} else if($url['path']) {
+			$info['me_pid'] = basename($url['path']);
+			$info['me_type'] = 'userpage';
+			$info['me_link'] = $url['path'];
+			
+		} else {
 			$info['me_pid'] = 'intra';
 			$info['me_type'] = 'userpage';
 			$info['me_link'] = $url['path'];
-			if(is_array($info)) return $info;
 		}
+		if(is_array($info)) return $info;
 	}
 
 	// 메뉴링크 정보 가져오기
@@ -496,10 +511,10 @@ class theme extends qfile
 
 	// 이윰메뉴 서브페이지 정보 가져오기
 	private function eyoom_subpage_info($theme) {
-		global $g5, $tpl, $it_id, $is_admin, $ca_id;
+		global $g5, $tpl, $it_id, $is_admin, $ca_id, $eyoom, $lang_theme;
 		$url = $this->compare_host_from_link($_SERVER['REQUEST_URI']);
 		$info = $this->get_meinfo_link($url);
-		$where = " me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}' ";
+		$where = " me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}' and me_use='y' ";
 		if($it_id) $where .= " and me_link='{$info['me_link']}' ";
 
 		$sql = "select * from {$g5['eyoom_menu']} where $where";
@@ -508,15 +523,13 @@ class theme extends qfile
 		if($data['me_id']) {
 			$me_path = explode(" > ",$data['me_path']);
 			$cnt = count($me_path);
-			$default = $this->get_default_page();
 			foreach($me_path as $key => $me_name) {
 				if($cnt-1 == $key) {
 					$active = "class='active'";
-					$me_name = $default['title'] ? $default['title']:$me_name;
 				}
 				$path .= "<li {$active}>".$me_name."</li>";
 			}
-			$page_info['title'] = $default['title'] ? $default['title']:$data['me_name'];
+			$page_info['title'] = $data['me_name'];
 			$page_info['path'] = "<li><a href='".G5_URL."'>Home</a></li>".$path;
 			$page_info['subtitle'] = $me_path[0];
 		} else {
@@ -525,10 +538,10 @@ class theme extends qfile
 		}
 		if(!$page_info['title']) {
 			if($is_admin) {
-				$page_info['title'] = '미등록페이지';
+				$page_info['title'] = $eyoom['theme_lang_type']=='m' ? $lang_theme[1181] : '미등록페이지';
 				$page_info['path'] = "<a href='".G5_ADMIN_URL."/eyoom_admin/menu_list.php' style='color:#f30;'>관리자 > 이윰설정 > 이윰메뉴설정</a> 에서 메뉴를 등록해 주세요.";
 			} else {
-				$page_info['title'] = '미등록페이지';
+				$page_info['title'] = $eyoom['theme_lang_type']=='m' ? $lang_theme[1181] : '미등록페이지';
 				$page_info['path'] = '메뉴등록이 안된 페이지입니다.';
 			}
 		}
@@ -537,7 +550,7 @@ class theme extends qfile
 
 	// 그누메뉴 서브페이지 정보 가져오기
 	private function g5_subpage_info($menu_array) {
-		global $g5, $bo_table, $co_id, $board, $co, $gr_id, $ca_id;
+		global $g5, $bo_table, $co_id, $board, $co, $gr_id, $ca_id, $eyoom, $lang_theme;
 
 		if($bo_table || $co_id) {
 			$stx = $bo_table ? "bo_table=".$bo_table : "co_id=".$co_id;
@@ -588,10 +601,10 @@ class theme extends qfile
 		
 		if(!$page_info['title']) {
 			if($is_admin) {
-				$page_info['title'] = '미등록페이지';
+				$page_info['title'] = $eyoom['theme_lang_type']=='m' ? $lang_theme[1181] : '미등록페이지';
 				$page_info['path'] = "<a href='".G5_ADMIN_URL."/menu_list.php' style='color:#f30;'>관리자 > 환경설정 > 메뉴설정</a> 에서 메뉴를 등록해 주세요.";
 			} else {
-				$page_info['title'] = '미등록페이지';
+				$page_info['title'] = $eyoom['theme_lang_type']=='m' ? $lang_theme[1181] : '미등록페이지';
 				$page_info['path'] = '메뉴등록이 안된 페이지입니다.';
 			}
 		}
@@ -600,48 +613,48 @@ class theme extends qfile
 
 	// 이미 존재하는 기능페이지 정보
 	private function get_default_page() {
-		global $is_member, $type;
+		global $is_member, $type, $eyoom, $lang_theme;
 		$temp_sname = explode('/',$_SERVER['SCRIPT_NAME']);
 		list($key,$ext) = explode('.',$temp_sname[count($temp_sname)-1]);
 
 		switch($key) {
-			case 'new'		: $title = '새글모음'; break;
-			case 'respond'	: $title = '내글반응'; break;
-			case 'search'	: $title = '전체검색'; break;
-			case 'faq'		: $title = '자주하시는 질문'; break;
+			case 'new'		: $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[990] : '새글모음'; break;
+			case 'respond'	: $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[647] : '내글반응'; break;
+			case 'search'	: $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[675] : '전체검색'; break;
+			case 'faq'		: $title = $eyoom['theme_lang_type']=='m' ? 'FAQ' : '자주하시는 질문'; break;
 			case 'qalist'	:
 			case 'qawrite'	:
-			case 'qaview'	: $title = '1:1문의'; break;
-			case 'current_connect'	: $title = '현재접속자'; break;
-			case 'register'	: $cate_name='회원가입'; $title = '약관동의'; break;
+			case 'qaview'	: $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[619] : '1:1문의'; break;
+			case 'current_connect'	: $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[1085] : '현재접속자'; break;
+			case 'register'	: $cate_name = $eyoom['theme_lang_type']=='m' ? $lang_theme[616] : '회원가입'; $title = $eyoom['theme_lang_type']=='m' ? 'Agreement' : '약관동의'; break;
 			case 'register_form' : 
 				if($is_member) {
-					$cate_name='멤버쉽'; $title = '정보수정';
+					$cate_name = $eyoom['theme_lang_type']=='m' ? 'MemberShip' : '멤버쉽'; $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[614] : '정보수정';
 				} else {
-					$cate_name='회원가입'; $title = '정보입력';
+					$cate_name = $eyoom['theme_lang_type']=='m' ? $lang_theme[616] : '회원가입'; $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[614] : '정보입력';
 				}
 				break;
-			case 'register_result': $cate_name='회원가입'; $title = '회원가입완료'; break;
-			case 'cart'		: $title = '장바구니'; $cate_name = '쇼핑몰'; break;
-			case 'wishlist'	: $title = '위시리스트'; $cate_name = '쇼핑몰'; break;
-			case 'orderform': $title = '주문하기'; $cate_name = '쇼핑몰'; break;
-			case 'orderinquiryview'	: $title = '구매내역 상세보기'; $cate_name = '쇼핑몰'; break;
-			case 'orderinquiry'	: $title = '구매내역'; $cate_name = '쇼핑몰'; break;
+			case 'register_result': $cate_name = $eyoom['theme_lang_type']=='m' ? $lang_theme[616] : '회원가입'; $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[616] : '회원가입완료'; break;
+			case 'cart'		: $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[609] : '장바구니'; $cate_name = $eyoom['theme_lang_type']=='m' ? $lang_theme[644] : '쇼핑몰'; break;
+			case 'wishlist'	: $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[610] : '위시리스트'; $cate_name = $eyoom['theme_lang_type']=='m' ? $lang_theme[644] : '쇼핑몰'; break;
+			case 'orderform': $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[383] : '주문하기'; $cate_name = $eyoom['theme_lang_type']=='m' ? $lang_theme[644] : '쇼핑몰'; break;
+			case 'orderinquiryview'	: $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[1261] : '구매내역 상세보기'; $cate_name = $eyoom['theme_lang_type']=='m' ? $lang_theme[644] : '쇼핑몰'; break;
+			case 'orderinquiry'	: $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[1261] : '구매내역'; $cate_name = $eyoom['theme_lang_type']=='m' ? $lang_theme[644] : '쇼핑몰'; break;
 			case 'listtype':
 				switch($type) {
-					case 1: $title = '히트상품'; $cate_name = '쇼핑몰'; break;
-					case 2: $title = '추천상품'; $cate_name = '쇼핑몰'; break;
-					case 3: $title = '최신상품'; $cate_name = '쇼핑몰'; break;
-					case 4: $title = '인기상품'; $cate_name = '쇼핑몰'; break;
-					case 5: $title = '할인상품'; $cate_name = '쇼핑몰'; break;
+					case 1: $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[404] : '히트상품'; $cate_name = $eyoom['theme_lang_type']=='m' ? $lang_theme[644] : '쇼핑몰'; break;
+					case 2: $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[406] : '추천상품'; $cate_name = $eyoom['theme_lang_type']=='m' ? $lang_theme[644] : '쇼핑몰'; break;
+					case 3: $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[409] : '최신상품'; $cate_name = $eyoom['theme_lang_type']=='m' ? $lang_theme[644] : '쇼핑몰'; break;
+					case 4: $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[411] : '인기상품'; $cate_name = $eyoom['theme_lang_type']=='m' ? $lang_theme[644] : '쇼핑몰'; break;
+					case 5: $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[413] : '할인상품'; $cate_name = $eyoom['theme_lang_type']=='m' ? $lang_theme[644] : '쇼핑몰'; break;
 				}
 				break;
-			case 'mypage': $title = '마이페이지'; $cate_name = '쇼핑몰'; break;
+			case 'mypage': $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[618] : '마이페이지'; $cate_name = $eyoom['theme_lang_type']=='m' ? $lang_theme[644] : '쇼핑몰'; break;
 			case 'personalpay':
 			case 'personalpayform':
-			case 'personalpayresult': $title = '개인결제'; $cate_name = '쇼핑몰'; break;
-			case 'itemqalist': $title = '상품문의'; $cate_name = '쇼핑몰'; break;
-			case 'itemuselist': $title = '사용후기'; $cate_name = '쇼핑몰'; break;
+			case 'personalpayresult': $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[620] : '개인결제'; $cate_name = $eyoom['theme_lang_type']=='m' ? $lang_theme[644] : '쇼핑몰'; break;
+			case 'itemqalist': $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[416] : '상품문의'; $cate_name = $eyoom['theme_lang_type']=='m' ? $lang_theme[644] : '쇼핑몰'; break;
+			case 'itemuselist': $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[415] : '사용후기'; $cate_name = $eyoom['theme_lang_type']=='m' ? $lang_theme[644] : '쇼핑몰'; break;
 		}
 		if(!$cate_name) {
 			$page_info['title'] = $title;

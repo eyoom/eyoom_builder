@@ -23,6 +23,8 @@
 	define('EYOOM_INC_URL', EYOOM_URL.'/inc');
 	define('EYOOM_MISC_PATH', EYOOM_PATH.'/misc');
 	define('EYOOM_MISC_URL', EYOOM_URL.'/misc');
+	define('EYOOM_LANGUAGE_PATH', EYOOM_PATH.'/language');
+	define('EYOOM_LANGUAGE_URL', EYOOM_URL.'/language');
 	define('EYOOM_SHOP_PATH', EYOOM_CORE_PATH.'/shop');
 	define('EYOOM_SHOP_URL', EYOOM_CORE_URL.'/shop');
 
@@ -50,15 +52,21 @@
 		// Eyoom Class Object Initialization
 		include_once(EYOOM_CLASS_PATH.'/class.init.php');
 
+		// G5_ROOT 정의하기
+		$g5_root = $eb->g5_root(dirname(__FILE__));
+		define('G5_ROOT', $g5_root);
+
 		// 테마 설정
 		$_user  = array();
 		$theme  = $eyoom['theme'];
 		$bs		= $eyoom['bootstrap'];
+		$language = $eyoom['language'];
 
 		// GET값으로 테마 및 부트스트랩 지정할 경우
 		if(isset($_GET['theme']) || isset($_GET['bs'])) {
 			$_user['theme'	  ] = $_GET['theme'];
 			$_user['bootstrap']	= $_GET['bs']?$_GET['bs']:1;
+			$_user['language']	= $_GET['language']?$_GET['language']:'kr';
 			$_config = $thema->set_user_theme($_user);
 		} else {
 			$_config = $thema->get_user_theme();
@@ -72,15 +80,15 @@
 		if(isset($_config['bootstrap'])) $bs = $_config['bootstrap'];
 		unset($_user, $_config);
 
-		// 템플릿명 결정
-		$tpl_name = G5_IS_MOBILE ? 'mo':'pc';
-		if ($eyoom['bootstrap'] || $bs)  $tpl_name = 'bs';
-
 		// 테마 환경설정파일
 		define('config_file',G5_DATA_PATH."/eyoom.".$theme.".config.php");
 		if(@file_exists(config_file)) {
 			if($theme != 'basic') @include_once(config_file);
 		} else $theme = 'basic';
+
+		// 템플릿명 결정
+		$tpl_name = G5_IS_MOBILE ? 'mo':'pc';
+		if($eyoom['bootstrap'])  $tpl_name = 'bs';
 
 		// 이윰레벨 설정파일
 		$levelset_config_file = G5_DATA_PATH."/eyoom.levelset.php";
@@ -98,6 +106,22 @@
 		if($eyoom['theme_key']) {
 			$tm = sql_fetch("select * from {$g5['eyoom_theme']} where tm_name = '{$theme}'",false);
 		} else $theme = 'basic';
+
+		// 언어정의
+		if($eyoom['theme_lang_type']=='m') { // 다국어 테마일 경우
+			if(!$eyoom['language']) {
+				$eyoom['language'] = 'kr';
+			}
+			$g5['language'] = $eyoom['language'];
+			$language_theme_file = G5_DATA_PATH.'/language/theme.'.$theme.'.'.$g5['language'].'.php';
+			if(file_exists($language_theme_file)) {
+				include_once($language_theme_file);
+			}
+			$language_alert_file = G5_DATA_PATH.'/language/alert.'.$theme.'.'.$g5['language'].'.php';
+			if(file_exists($language_alert_file)) {
+				include_once($language_alert_file);
+			}
+		}
 
 		// 이윰 common 파일
 		@include_once(EYOOM_PATH.'/common.php');
@@ -122,6 +146,14 @@
 				@include_once(EYOOM_INC_PATH.'/hookedfile.header.php');
 				include_once($eyoom_shop_core);
 				exit;
+			}
+		}
+
+		// 쇼핑몰의 레이아웃을 커뮤니티에 적용하기
+		if(isset($default['de_shop_layout_use']) && $default['de_shop_layout_use']) {
+			(int)$shop_layout_use = 1;
+			if(!preg_match("/adm\//i",$_SERVER['SCRIPT_NAME'])) {
+				unset($default['de_shop_layout_use']);
 			}
 		}
 	} else {

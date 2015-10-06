@@ -1,4 +1,5 @@
-<?php 
+<?php
+ 
 	if (!defined('_GNUBOARD_')) exit;
 
 	// 추천 비추천 내글반응 적용하기
@@ -19,8 +20,16 @@
 	$act_contents['bo_name'] = $board['bo_subject'];
 	$act_contents['wr_id'] = $wr_id;
 	$eb->insert_activity($member['mb_id'],$good,$act_contents);
+
+	// 추천 비추천 포인트 지급 및 추천수 이윰NEW에 업데이트
 	switch($good) {
-		case 'good' : $eb->level_point($levelset['good'],$write['mb_id'],$levelset['regood']); break;
+		case 'good' : 
+			$eb->level_point($levelset['good'],$write['mb_id'],$levelset['regood']);
+			
+			// 이윰NEW에 추천 기록 적용
+			$sql = "update {$g5['eyoom_new']} as a set a.wr_good=(select b.wr_good from {$g5['write_prefix']}{$bo_table} as b where b.wr_id='{$wr_id}') where a.bo_table='{$bo_table}' and a.wr_id = a.wr_parent and a.wr_id='{$wr_id}'";
+			sql_query($sql,false);
+			break;
 		case 'nogood' : $eb->level_point($levelset['nogood'],$write['mb_id'],$levelset['renogood']); break;
 	}
 	

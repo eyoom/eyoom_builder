@@ -57,8 +57,12 @@ switch($mode) {
 			if($key == 'cover_width') {
 				$val = !$_POST[$key] ? '845':$_POST[$key];
 			}
+			if($key == 'language') {
+				$val = !$_POST[$key] ? 'kr':$_POST[$key];
+			}
 			$eyoom_config[$key] = $val;
 		}
+		if(!$eyoom_config['language']) $eyoom_config['language'] = $_POST['language'];
 
 		$qfile->save_file('eyoom',$eyoom_config_file,$eyoom_config);
 		$msg = "설정을 사용테마에 적용하였습니다.";
@@ -67,4 +71,3 @@ switch($mode) {
 }
 
 ?>
-

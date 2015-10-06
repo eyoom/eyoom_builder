@@ -1,4 +1,5 @@
-<?php 
+<?php
+ 
 	if (!defined('_GNUBOARD_')) exit;
 	include_once('../_common.php');
 	include_once(G5_CAPTCHA_PATH.'/captcha.lib.php');
@@ -96,6 +97,8 @@
 		'list3' => $list3,
 		'po' => $po,
 		'member' => $member,
+		"lang_alert" => $lang_alert,
+		"lang_theme" => $lang_theme,
 	));
 	$tpl->print_($tpl_name);
 

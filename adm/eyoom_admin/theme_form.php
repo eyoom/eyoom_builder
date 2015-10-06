@@ -9,6 +9,11 @@ $g5['title'] = '테마설치';
 
 include_once(G5_PATH.'/head.sub.php');
 $hostname = $eb->eyoom_host();
+if(preg_match('/basic/',$_GET['thema'])) {
+	$ord_title = 'Eyoom 회원비밀번호';
+} else {
+	$ord_title = '테마 주문번호';
+}
 ?>
 
 <div id="wrapper" style="min-width:100%;">
@@ -43,7 +48,7 @@ $hostname = $eb->eyoom_host();
 				<td><input type="text" name="tm_mb_id" value="" id="tm_mb_id" required class="required frm_input" size="40"></td>
 			</tr>
 			<tr>
-				<th scope="row"><label for="theme">테마 주문번호</label></th>
+				<th scope="row"><label for="theme"><?php echo $ord_title;?></label></th>
 				<td><input type="text" name="tm_ordno" value="" id="tm_ordno" required class="required frm_input" size="40"></td>
 			</tr>
 			</table>
@@ -78,7 +83,7 @@ function ftheme_check(f) {
 		return false;
 	}
 	if(f.tm_ordno.value == '') {
-		alert('테마 주문번호는 필수항목입니다.');
+		alert('<?php echo $ord_title;?>는 필수항목입니다.');
 		f.tm_ordno.focus();
 		f.tm_ordno.select();
 		return false;

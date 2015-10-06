@@ -1,6 +1,12 @@
 <?php
 	if (!defined('_GNUBOARD_')) exit;
 
+	// 메인주소를 쇼핑몰로 사용
+	if(isset($default['de_root_index_use']) && $default['de_root_index_use']) {
+		@include_once(EYOOM_CORE_PATH.'/shop/index.php');
+		return;
+	}
+
 	// 그누 헤더정보 출력
 	@include_once(G5_PATH.'/head.sub.php');
 

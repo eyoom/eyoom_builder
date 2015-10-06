@@ -26,6 +26,35 @@ $frm_submit = '
 <?php include './theme_manager.php'; // 테마 메니저 ?>
 
 <?php if($_theme) {?>
+<?php if($_eyoom['theme_lang_type'] == 'm') {?>
+<section id="anc_scf_info">
+    <h2 class="h2_frm">[<b style='color:#f30;'><?php echo $_theme;?></b> 테마] 언어설정 <span class='exp'>테마의 언어를 변경하실 수 있습니다.</span></h2>
+
+    <div class="tbl_frm01 tbl_wrap">
+        <table>
+        <caption>언어설정</caption>
+        <colgroup>
+            <col class="grid_4">
+            <col>
+        </colgroup>
+        <tbody>
+        <tr>
+            <th scope="row"><label for="theme">테마 언어설정</label></th>
+            <td>
+				<select name="language" id="language" required class="required">
+					<option value="">:: select language :: </option>
+					<option value="kr" <?php if($_eyoom['language']=='kr' || !$_eyoom['language']) echo 'selected';?>>한국어</option>
+					<option value="en"<?php if($_eyoom['language']=='en') echo 'selected';?>>English</option>
+					<option value="cn"<?php if($_eyoom['language']=='cn') echo 'selected';?>>中文</option>
+					<option value="jp"<?php if($_eyoom['language']=='jp') echo 'selected';?>>わご</option>
+				</select>
+            </td>
+        </tr>
+		</tbody>
+		</table>
+	</div>
+</section>
+<?php }?>
 <section id="anc_scf_info">
     <h2 class="h2_frm">[<b style='color:#f30;'><?php echo $_theme;?></b> 테마] 스킨설정 <span class='exp'>그누보드 스킨 선택시 그누보드 환경설정에서 스킨을 선택하거나 스킨파일에서 직접 설정하셔야 합니다.</span></h2>
 

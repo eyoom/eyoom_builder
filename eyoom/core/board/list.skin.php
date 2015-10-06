@@ -67,9 +67,20 @@
 
 	// 카테고리
 	if ($board['bo_use_category']) {
+		// 카테고리별 게시글수 출력 표시 - 비즈팔님이 아이디어를 제공해 주셨습니다.
+		$res = sql_query("select distinct ca_name, count(*) as cnt from {$write_table} where wr_id = wr_parent group by ca_name",false);
+		$ca_total=0;
+		for($i=0;$row=sql_fetch_array($res);$i++) {
+			$ca_name = $row['ca_name'] ? $row['ca_name'] : '미분류';
+			$ca_count[$ca_name] = $row['cnt'];
+			$ca_total += $row['cnt'];
+		}
+
+		// 카테고리 정보 재구성
 		foreach($categories as $key => $val) {
 			$bocate[$key]['ca_name'] = trim($val);
 			$bocate[$key]['ca_sca'] = urlencode($bocate[$key]['ca_name']);
+			$bocate[$key]['ca_count'] = number_format($ca_count[$val]);
 		}
 		$decode_sca =urldecode($sca);
 	}

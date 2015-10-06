@@ -3,13 +3,11 @@ class eyoom extends qfile
 {
 	protected	$tpl_name;
 	protected	$member_path;
-	public		$g5_root		= '';
 
 	public function __construct() {
 		global $eyoom;
 		$this->member_path = G5_DATA_PATH . '/member';
 		if($eyoom) $this->eyoom = $eyoom;
-		$this->g5_root = $this->g5_root();
 	}
 
 	// 랜덤
@@ -226,11 +224,13 @@ class eyoom extends qfile
 	}
 
 	// 그누보드5/영카트5 루트폴더
-	public function g5_root() {
+	public function g5_root($path) {
+		$path = str_replace('\\', '/', $path);
 		$tilde_remove = preg_replace('/^\/\~[^\/]+(.*)$/', '$1', $_SERVER['SCRIPT_NAME']);
 		$document_root = str_replace($tilde_remove, '', $_SERVER['SCRIPT_FILENAME']);
-		$root = str_replace($document_root, '', G5_PATH);
-		return $root;
+		$output = str_replace($document_root, '', $path);
+		$output = str_replace('extend', '', $output);
+		return $output;
 	}
 
 	// 푸쉬 생성

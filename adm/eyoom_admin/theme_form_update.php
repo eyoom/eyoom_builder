@@ -27,6 +27,16 @@ foreach($eyoom as $key => $val) {
 	else $outarray[$key] = $val;
 	$i++;
 }
+
+// 다국어버전 테마 유무
+if(preg_match('/mlang/',$_POST['tm_theme'])) {
+	$outarray['theme_lang_type'] = 'm';
+}
+
+// PC/MO 테마 인지 반응형인지 구분
+if(preg_match('/pc_/',$_POST['tm_theme'])) {
+	$outarray['bootstrap'] = 0;
+}
 $theme_config = '../../data/eyoom.'.$_POST['tm_theme'].'.config.php';
 $qfile->save_file('eyoom',$theme_config,$outarray,false);
 

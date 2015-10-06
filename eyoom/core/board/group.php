@@ -1,7 +1,13 @@
 <?php
 	include_once('../../_common.php');
 
-	$g5['title'] = '게시물 ' . $act;
+	if($eyoom['theme_lang_type']=='m') {
+		$tit_prev = $lang_theme[1077];
+	} else {
+		$tit_prev = '게시물';
+	}
+
+	$g5['title'] = $tit_prev . ' ' . $act;
 	include_once(G5_PATH.'/head.sub.php');
 
 	// 이윰 헤더 디자인 출력

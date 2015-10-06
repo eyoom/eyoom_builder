@@ -15,6 +15,9 @@
 
 	$chars_array = array_merge(range(0,9), range('a','z'), range('A','Z'));
 
+	// 본 댓글의 저장값 다시 가져오기
+	$cdata = sql_fetch("select wr_content, wr_link2 from {$write_table} where wr_id='{$comment_id}'", false);
+
 	// 가변 파일 업로드
 	$file_upload_msg = '';
 	$upload = array();
@@ -45,7 +48,6 @@
 		}
 
 		// 이미 등록된 이미지가 있다면 이전 이미지는 삭제처리
-		$cdata = sql_fetch("select wr_link2 from {$write_table} where wr_id='{$comment_id}'", false);
 		$dfile = unserialize($cdata['wr_link2']);
 		if(is_array($dfile)) {
 			foreach($dfile as $i => $file) {
@@ -130,6 +132,7 @@
 		$eb->respond($respond);
 	}
 
+	$wr_content = $cdata['wr_content'];
 	$wr_content = $eb->remove_editor_code($wr_content);
 	$wr_content = $eb->remove_editor_emoticon($wr_content);
 

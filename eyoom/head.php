@@ -1,6 +1,12 @@
 <?php
 	if (!defined('_GNUBOARD_')) exit;
 
+	// 쇼핑몰 레이아웃을 커뮤니티에 적용하기
+	if(isset($shop_layout_use) && $shop_layout_use) {
+		@include_once(EYOOM_CORE_PATH.'/shop/shop.head.php');
+		return;
+	}
+
 	if(!defined('_EYOOM_COMMON_') || $qaconfig) @include EYOOM_PATH.'/common.php';
 
 	if($is_member) {

@@ -311,12 +311,12 @@ class latest extends eyoom
 				break;
 			default :
 				$images = unserialize($source['wr_image']);
+				unset($g5_root);
 				if(is_array($images)) {
 					for($k=0;$k<count($images['bf']);$k++) {
 						if(!$images['bf'][$k]) continue;
 						else {
 							$img = $images['bf'][$k];
-							$g5_root = $eb->g5_root;
 							break;
 						}
 					}
@@ -325,12 +325,13 @@ class latest extends eyoom
 							if(!$images['url'][$j]) continue;
 							else {
 								$img = $images['url'][$j];
-								$p = parse_url($img);
-								$host = preg_replace("/www\./i","",$p['host']);
-								$_host = preg_replace("/www\./i","",$_SERVER['HTTP_HOST']);
-								if($host == $_host) {
-									$g5_root = $eb->g5_root;
-									$img = str_replace($g5_root,'',$img);
+								if(preg_match('/http/',$img)) {
+									$extra_img = true;
+								} else {
+									$g5_root = G5_ROOT;
+									if($g5_root != '/') {
+										$img = str_replace($g5_root,'',$img);
+									}
 								}
 								break;
 							}
@@ -338,7 +339,7 @@ class latest extends eyoom
 					}
 
 					// 파일첨부 또는 에디터 이미지 처리
-					if($g5_root) {
+					if($img && !$extra_img) {
 						$imgfile = G5_PATH.$img;
 						if(@file_exists($imgfile)) {
 							$img_path = explode('/',$img);
@@ -498,6 +499,21 @@ class latest extends eyoom
 			'bo_table' => $bo_table,
 		));
 		$tpl->print_($tpl_name);
+	}
+
+	public function latest_good($skin,$option,$bo_table='') {
+		$where = 1;
+		$opt = $this->get_option($option);
+		$where .= $opt['where'];
+		$where .= " and wr_id = wr_parent and wr_good != 0 ";
+		$orderby = " wr_good desc, bn_datetime desc ";
+		$list = $this->latest_assign($where, $opt['count'], $opt['cut_subject'], $opt['cut_content'], $orderby, $opt['bo_direct']);
+		if($print === null) $print = true;
+		if($print) {
+			$this->latest_print($skin, $list,'single','latest');
+		} else {
+			return $list;
+		}
 	}
 
 	// 쇼핑몰 상품 추출하기

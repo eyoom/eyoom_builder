@@ -5,7 +5,7 @@
 	define('_EYOOM_COMMON_',true);
 
 	// Version
-	define('_EYOOM_VESION_','EyoomBuilder_1.0.8');
+	define('_EYOOM_VESION_','EyoomBuilder_1.1.0');
 
 	// GNUBOARD5 Library
 	include_once(G5_LIB_PATH.'/common.lib.php');
@@ -74,7 +74,47 @@
 				}
 			} else @include $switcher_admin;
 		}
+		if(!$_switcher[$theme]) {
+			if(preg_match('/community/',$theme)) {
+				$_switcher['community'] = array(
+					"sw_color"	=> "default",
+					"sw_fixed"	=> "",
+					"sw_boxed"	=> "",
+					"usemember" => "",
+					"sw_use"	=> ""
+				);
+			}
+			if(preg_match('/dynamic/',$theme)) {
+				$_switcher['dynamic'] = array(
+					"sw_color"		=> "default",
+					"sw_fixed"		=> "fixed",
+					"sw_boxed"		=> "boxed",
+					"sw_sideopen"	=> "closed",
+					"sw_sidebar"	=> "default",
+					"sw_sidemenu"	=> "accordion",
+					"sw_sidepos"	=> "left",
+					"sw_footer"		=> "default",
+					"usemember"		=> "on",
+					"sw_use"		=> "off"
+				);
+			}
+		}
 		$switcher = $_switcher[$theme];
+	}
+
+	// SNS용 이미지/제목/내용 추가 메타태그
+	if($bo_table && $wr_id) {
+		$head_title = strip_tags(conv_subject($write['wr_subject'], 255)) . ' > ' . $board['bo_subject'] . ' | ' . $config['cf_title'];
+		$first_image = get_list_thumbnail($bo_table, $wr_id, 600, 0);
+		$config['cf_add_meta'] .= '
+			<meta property="og:id" content="'.G5_URL.'" />
+			<meta property="og:url" content="'.G5_BBS_URL.'/board.php?bo_table='.$bo_table.'&amp;wr_id='.$wr_id.'" />
+			<meta property="og:type" content="article" />
+			<meta property="og:title" content="'.$head_title.'" />
+			<meta property="og:site_name" content="'.$config['cf_title'].'" />
+			<meta property="og:description" content="'.cut_str(trim(str_replace(array("\r\n","\r","\n"),'',strip_tags(preg_replace("/\?/","",$write['wr_content'])))),200, '…').'"/>
+			<meta property="og:image" content="'.$first_image['src'].'" />
+		';
 	}
 
 	// Eyoom Core Path

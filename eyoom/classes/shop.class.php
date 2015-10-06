@@ -178,6 +178,26 @@ class shop
 		return $icon;
 	}
 
+	// 상품 파일 업로드
+	public function it_file_upload($srcfile, $filename, $dir) {
+		if($filename == '') return '';
+
+		if(!is_dir($dir)) {
+			@mkdir($dir, G5_DIR_PERMISSION);
+			@chmod($dir, G5_DIR_PERMISSION);
+		}
+
+		$pattern = "/[#\&\+\-%@=\/\\:;,'\"\^`~\|\!\?\*\$#<>\(\)\[\]\{\}]/";
+		$filename = preg_replace("/\s+/", "", $filename);
+		$filename = preg_replace( $pattern, "", $filename);
+		$filename = preg_replace_callback("/[가-힣]+/", create_function('$matches', 'return base64_encode($matches[0]);'), $filename);
+		$filename = preg_replace( $pattern, "", $filename);
+		upload_file($srcfile, $filename, $dir);
+		$file = str_replace(G5_DATA_PATH.'/item/', '', $dir.'/'.$filename);
+
+		return $file;
+	}
+
 }
 
 ?>
