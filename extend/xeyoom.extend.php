@@ -32,6 +32,12 @@
 	define('EYOOM_USER_PATH', EYOOM_PATH.'/user_program');
 	define('EYOOM_USER_URL', EYOOM_URL.'/user_program');
 
+	// 그누보드5 테마 상수 및 레이아웃 변수 정의
+	define('G5_THEME_PATH', EYOOM_PATH);
+	$config['cf_include_head'] = 'eyoom/head.php';
+	$config['cf_include_tail'] = 'eyoom/tail.php';
+	$config['cf_include_index'] = 'eyoom/index.php';
+	
 	// Eyoom DB Table
 	$g5['eyoom_respond']	= G5_TABLE_PREFIX.'eyoom_respond';
 	$g5['eyoom_member']		= G5_TABLE_PREFIX.'eyoom_member';
@@ -174,16 +180,16 @@
 						include(G5_DATA_PATH."/eyoom.".$shop_theme.".config.php");
 					}
 				}
-			}
-			if($eyoom['use_gnu_shop'] == 'n') {
-				// 템플릿명 결정
-				$tpl_name = G5_IS_MOBILE ? 'mo':'pc';
-				if($eyoom['bootstrap'])  $tpl_name = 'bs';
-				$tpl = new Template($shop_theme);
-
-				@include_once(EYOOM_INC_PATH.'/hookedfile.header.php');
-				include_once($eyoom_shop_core);
-				exit;
+				if($eyoom['use_gnu_shop'] == 'n') {
+					// 템플릿명 결정
+					$tpl_name = G5_IS_MOBILE ? 'mo':'pc';
+					if($eyoom['bootstrap'])  $tpl_name = 'bs';
+					$tpl = new Template($shop_theme);
+	
+					@include_once(EYOOM_INC_PATH.'/hookedfile.header.php');
+					include_once($eyoom_shop_core);
+					exit;
+				}
 			}
 		}
 

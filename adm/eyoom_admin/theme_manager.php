@@ -21,6 +21,7 @@
 					<div class="refresh btn_latest"><a href="javascript:;" class="refresh_latest" onclick="return refresh_db_record('latest');">최신글정리</a></div>
 					<div class="refresh btn_respond"><a href="javascript:;" class="refresh_respond" onclick="return refresh_db_record('respond');">내글반응정리</a></div>
 					<div class="refresh btn_dbupdate"><a href="javascript:;" class="refresh_dbupdate" onclick="return refresh_db_record('dbupdate');">최신 DB 및 설정적용</a></div>
+					<div class="refresh btn_theme"><a href="javascript:;" class="use_eyoom_theme" onclick="return use_eyoom_theme();">이윰테마사용</a></div>
 				</div>
 			</td>
 		</tr>
@@ -138,5 +139,22 @@ function refresh_db_record(target) {
 			}
 		});
 	} else return false;
+}
+function use_eyoom_theme() {
+	if(confirm('그누보드5의 테마 대신 이윰빌더의 테마를 메인테마로 사용합니다.\n\n계속 진행하시겠습니까?')) {
+		$.ajax({
+			url: "./use_eyoom_theme.php",
+			type: "POST",
+			data: {'theme': 'eyoom'},
+			dataType: "json",
+			async: false,
+			cache: false,
+			success: function(data, textStatus) {
+				if(data.result == 'yes'){
+					alert('정상적으로 처리하였습니다.');
+				}
+			}
+		});
+	}
 }
 </script>

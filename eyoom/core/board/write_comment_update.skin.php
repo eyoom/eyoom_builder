@@ -17,6 +17,19 @@
 
 	// 본 댓글의 저장값 다시 가져오기
 	$cdata = sql_fetch("select wr_content, wr_link2 from {$write_table} where wr_id='{$comment_id}'", false);
+	
+	// 첨부 이미지 삭제처리
+	if($_POST['del_cmtimg']) {
+		$dfile = unserialize($cdata['wr_link2']);
+		if(is_array($dfile)) {
+			foreach($dfile as $i => $file) {
+				$del_file = G5_DATA_PATH.'/file/'.$bo_table.'/'.$file['file'];
+				@unlink($del_file);
+				$delimg = "update {$write_table} set wr_link2 = '' where wr_id = '{$comment_id}'";
+				sql_query($delimg,false);
+			}
+		}
+	}
 
 	// 가변 파일 업로드
 	$file_upload_msg = '';
@@ -34,6 +47,7 @@
 		$filesize  = $_FILES['cmt_file']['size'][$i];
 		$filename  = $_FILES['cmt_file']['name'][$i];
 		$filename  = get_safe_filename($filename);
+		if(!$filename) break;
 
 		// 서버에 설정된 값보다 큰파일을 업로드 한다면
 		if ($filename) {
@@ -49,7 +63,7 @@
 
 		// 이미 등록된 이미지가 있다면 이전 이미지는 삭제처리
 		$dfile = unserialize($cdata['wr_link2']);
-		if(is_array($dfile)) {
+		if(is_array($dfile) && !$_POST['del_cmtimg']) {
 			foreach($dfile as $i => $file) {
 				$del_file = G5_DATA_PATH.'/file/'.$bo_table.'/'.$file['file'];
 				@unlink($del_file);
@@ -189,21 +203,22 @@
 		}
 
 	} else if($w == 'cu') {
-		$query = "
-			update {$g5['eyoom_new']} set 
-				bo_table	= '{$bo_table}',
-				pr_id		= '{$respond['pr_id']}',
-				wr_id		= '{$comment_id}',
-				wr_parent	= '{$wr_id}',
-				ca_name		= '{$wr['ca_name']}',
-				wr_content	= '{$wr_content}',
-				wr_option	= '{$wr_secret}',
-				mb_level	= '{$wr_1}',
-				wr_image	= '{$wr_image}',
-				wr_video	= '{$wr_video}',
-				wr_sound	= '{$wr_sound}'
-			where bo_table = '{$bo_table}' and wr_id = '{$comment_id}'
+		$set = "
+			bo_table	= '{$bo_table}',
+			pr_id		= '{$respond['pr_id']}',
+			wr_id		= '{$comment_id}',
+			wr_parent	= '{$wr_id}',
+			ca_name		= '{$wr['ca_name']}',
+			wr_content	= '{$wr_content}',
+			wr_option	= '{$wr_secret}',
+			mb_level	= '{$wr_1}',
 		";
+		if($wr_image) $set .= " wr_image = '{$wr_image}', ";
+		if($wr_video) $set .= " wr_video = '{$wr_video}', ";
+		if($wr_sound) $set .= " wr_sound = '{$wr_sound}', ";
+		$set .= " bn_datetime = bn_datetime ";
+		
+		$query = "update {$g5['eyoom_new']} set {$set} where bo_table = '{$bo_table}' and wr_id = '{$comment_id}'";
 	}
 	if($query) sql_query($query);
 	unset($query);

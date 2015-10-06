@@ -298,18 +298,6 @@ if(!$result || (isset($_POST['table_rest']) && $_POST['table_rest'] == 'y')) {
 }
 ?>
         <li>DB 테이블 생성 완료</li>
-<?php
-// DB 설정파일 업데이트
-$sql = " 
-	update ${g5['config_table']} set 
-		cf_include_index = 'eyoom/index.php',
-		cf_include_head = 'eyoom/head.php',
-		cf_include_tail = 'eyoom/tail.php'
-	where cf_admin != ''
-";
-mysql_query($sql);
-?>
-        <li>이윰빌더 설정 적용 완료</li>
     </ol>
 
     <p>축하합니다. 이윰빌더 설치가 완료되었습니다.</p>
