@@ -1,0 +1,550 @@
+<?php
+class theme extends qfile
+{
+	protected $path		= '';
+	protected $tmp_path	= '';
+	protected $theme_path	= '';
+
+	// Constructor Function
+	public function __construct() {
+		$this->tmp_path		= G5_DATA_PATH . '/tmp';
+		$this->theme_path	= EYOOM_THEME_PATH;
+	}
+
+	// 사용자 지정 테마 설정
+	public function set_user_theme($arr) {
+		global $g5;
+
+		//$theme = sql_fetch("select * from {$g5['eyoom_theme']} where tm_name='{$arr['theme']}' || tm_alias='{$arr['theme']}'",false);
+
+		// 지정한 사용자 테마가 없다면 디폴트 테마로
+		//$arr['theme'] = !is_dir($this->theme_path.'/'.$theme['tm_name']) ? '' : $theme['tm_name'];
+
+		// 유니크 아이디 쿠키 생성
+		if(get_cookie('unique_theme_id')) {
+			$unique_theme_id = get_cookie('unique_theme_id');
+		} else {
+			$unique_theme_id = date('YmdHis', time()) . str_pad((int)(microtime()*100), 2, "0", STR_PAD_LEFT);
+			set_cookie('unique_theme_id',$unique_theme_id,3600);
+		}
+
+		$file = $this->tmp_path . '/' . $_SERVER['REMOTE_ADDR'] . '.' . $unique_theme_id . '.php';
+		if(file_exists($file)) {
+			include_once($file);
+			$_user_config = $arr + $user_config;
+		} else {
+			$_user_config = $arr;
+		}
+
+		//파일 생성 및 갱신
+		parent::save_file('user_config', $file, $_user_config);
+
+		// 특정시간이 지난 파일은 자동 삭제
+		parent::del_timeover_file($this->tmp_path);
+
+		// 사용자 테마가 없다면 파일삭제
+		if(!$_user_config['theme']) {
+			parent::del_file($file);
+			return false;
+		} else return $_user_config;
+	}
+
+	// 사용자 지정 테마 가져오기
+	public function get_user_theme() {
+		$unique_theme_id = get_cookie('unique_theme_id');
+		$file = $this->tmp_path . '/' . $_SERVER['REMOTE_ADDR'] . '.' . $unique_theme_id . '.php';
+
+		if(@file_exists($file)) {
+			include_once($file);
+			return $user_config;
+		} else return false;
+	}
+
+	// PC/모바일 버전보기 링크 생성하기
+	public function get_href($handle) {
+		if ($handle == 'bs') {
+			return;
+		} else {
+			switch($handle) {
+				case 'pc': $device = 'mobile'; break;
+				case 'mo': $device = 'pc'; break;
+			}
+			if(G5_USE_MOBILE) {
+				$seq = 0;
+				$p = parse_url(G5_URL);
+				$href = $p['scheme'].'://'.$p['host'].$_SERVER['PHP_SELF'];
+				if($_SERVER['QUERY_STRING']) {
+					$sep = '?';
+					foreach($_GET as $key=>$val) {
+						if($key == 'device')
+							continue;
+
+						$href .= $sep.$key.'='.strip_tags($val);
+						$sep = '&amp;';
+						$seq++;
+					}
+				}
+				if($seq)
+					$href .= '&amp;device='.$device;
+				else
+					$href .= '?device='.$device;
+			}
+			return $href;
+		}
+	}
+
+	// 자동메뉴 연동/생성
+	public function menu_create($flag) {
+		if(!$flag) $flag = 'g5';
+		switch($flag) {
+			case 'g5'	: $menu = $this->g5_menu_create(); break;
+			case 'eyoom': $menu = $this->eyoom_menu_create(); break;
+		}
+		return $menu;
+	}
+
+	// 그누메뉴 자동생성 : 반복문 안에 SQL문이 반복되어 메뉴가 많을 경우 느려지는 원인이 될 수 있음
+	private function g5_menu_create() {
+		global $g5, $bo_table, $co_id, $gr_id, $board;
+
+		//if(!$board['bo_new']) $board['bo_new'] = 24;
+		$board['bo_new'] = 24; // 메인에서는 $board 가 없기에 모든 게시판에 24시간으로 강제 적용
+
+		if($bo_table) {
+			$str = "bo_table={$bo_table}";
+			$grp = sql_fetch("select gr_id from {$g5['board_table']} where bo_table = '{$bo_table}'");
+			$gr_str = "gr_id=".$grp['gr_id'];
+		}
+		if($gr_id) {
+			$gr_str = "gr_id=".$gr_id;
+		}
+		if($co_id) $str = "co_id={$co_id}";
+
+		$sql = " select * from {$g5['menu_table']} where me_use = '1' and length(me_code) = '2' order by me_order, me_id ";
+		$result = sql_query($sql, false);
+
+		for ($i=0; $row=sql_fetch_array($result); $i++) {
+			if($str || $gr_str) {
+				if((preg_match("/".$gr_str."/i",$row['me_link']) && $gr_str) || (preg_match("/".$str."/i",$row['me_link'])) && $str) {
+					if(!defined('_INDEX_')) $row['active'] = true;
+				}
+			}
+			$menu[$i] = $row;
+
+			$loop = &$menu[$i]['submenu'];
+			$sql2 = " select * from {$g5['menu_table']} where me_use = '1' and length(me_code) = '4' and substring(me_code, 1, 2) = '{$row['me_code']}' order by me_order, me_id ";
+			$result2 = sql_query($sql2, false);
+
+			for ($k=0; $row2=sql_fetch_array($result2); $k++) {
+				if(preg_match("/".$str."/i",$row2['me_link']) && $str!='') { $row2['active'] = true; }
+
+				list($url,$tmp_bo_table) = explode("=",$row2['me_link']);
+				$sql = "select count(*) as cnt from {$g5['board_new_table']} where bn_datetime between date_format(".date("YmdHis",G5_SERVER_TIME - ($board['bo_new'] * 3600)).", '%Y-%m-%d %H:%i:%s') AND date_format(".date("YmdHis",G5_SERVER_TIME).", '%Y-%m-%d %H:%i:%s') and bo_table = '{$tmp_bo_table}' and wr_id = wr_parent";
+				$new = sql_fetch($sql,false);
+
+				if($new['cnt']>0) {
+					$row2['new'] = true;
+					$menu[$i]['new'] = true;
+				}
+
+				$loop[$k] = $row2;
+			}
+			$menu[$i]['cnt'] = count($loop);
+		}
+		return $menu;
+	}
+
+	// 이윰메뉴 
+	private function eyoom_menu_create() {
+		global $g5, $bo_table, $co_id, $gr_id, $board, $theme;
+
+		$board['bo_new'] = 24;
+		$menu_package = $this->eyoom_menu($theme);
+		if(!$menu_package) return false;
+
+		// 5단계까지 가능하지만 3단계까지 표현
+		// 좀 무식해 보이는 소스지만 속도는 빠름
+		// 메뉴에 NEW 표시하는 것이 없으면 더욱 빨라짐..
+		foreach($menu_package as $key => $menuset) {
+			foreach($menuset as $k => $menu_sub) {
+				if(!is_array($menu_sub)) {
+					$mk1 = $menuset['me_order'].$key;
+					$menu[$mk1][$k] = $menu_sub;
+					if(($menuset['me_type'] == 'board' && $menuset['me_pid'] == $bo_table) || 
+						($menuset['me_type'] == 'group' && $menuset['me_pid'] == $gr_id) ||
+						($menuset['me_type'] == 'page' && $menuset['me_pid'] == $co_id)) {
+						if(!defined('_INDEX_')) $menu[$mk1]['active'] = true;
+					}
+					@ksort($menu);
+				} else {
+					$cate1 = &$menu[$mk1]['submenu'];
+					foreach($menu_sub as $m => $sub) {
+						if(!is_array($sub)) {
+							$mk2 = $menu_sub['me_order'].$k;
+							$cate1[$mk2][$m] = $sub;
+							if(($menu_sub['me_type'] == 'board' && $menu_sub['me_pid'] == $bo_table) || 
+								($menu_sub['me_type'] == 'group' && $menu_sub['me_pid'] == $gr_id) ||
+								($menu_sub['me_type'] == 'page' && $menu_sub['me_pid'] == $co_id)) {
+								if($_GET['sca']) {
+									if(!defined('_INDEX_')) $menu[$mk1]['active'] = true;
+									//if($_GET['sca']==$cate1[$mk2]['me_name']) $cate1[$mk2]['active'] = true;
+								} else {
+									if(!defined('_INDEX_')) $menu[$mk1]['active'] = true;
+									//if($_GET['bo_table']!="portfolio") $cate1[$mk2]['active'] = true;
+								}
+							}
+							@ksort($cate1);
+						} else {
+							$cate1[$mk2]['sub'] = 'on';
+							$cate2 = &$cate1[$mk2]['subsub'];
+							foreach($sub as $n => $val) {
+								if(!is_array($val)) {
+									$mk3 = $sub['me_order'].$m;
+									$cate2[$mk3][$n] = $val;
+									if(($sub['me_type'] == 'board' && $sub['me_pid'] == $bo_table) || 
+										($sub['me_type'] == 'group' && $sub['me_pid'] == $gr_id) ||
+										($sub['me_type'] == 'page' && $sub['me_pid'] == $co_id)) {
+										if(!defined('_INDEX_')) $menu[$mk1]['active'] = true;
+										//$cate1[$mk2]['active'] = true;
+										//$cate2[$mk3]['active'] = true;
+									}
+									@ksort($cate2);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return $menu;
+	}
+
+	// 이윰메뉴 5단계까지 구현
+	public function eyoom_menu($theme) {
+		global $g5, $admin_mode;
+
+		if(!$admin_mode) $addwhere = " and me_use = 'y' and me_use_nav = 'y' ";
+		$sql = "select * from {$g5['eyoom_menu']} where me_theme='{$theme}' {$addwhere} order by me_code asc, me_order asc";
+		$res = sql_query($sql, false);
+		for($i=0;$row=sql_fetch_array($res);$i++) {
+			$split = str_split($row['me_code'],3);
+			$depth = count($split);
+
+			if($depth==1) $menu[$split[0]] = $row;
+			if($depth==2) $menu[$split[0]][$split[1]] = $row;
+			if($depth==3) $menu[$split[0]][$split[1]][$split[2]] = $row;
+			if($depth==4) $menu[$split[0]][$split[1]][$split[2]][$split[3]] = $row;
+			if($depth==5) $menu[$split[0]][$split[1]][$split[2]][$split[3]][$split[4]] = $row;
+		}
+		return $menu;
+	}
+
+	// 이윰배열을 JSON 형식으로 변환
+	public function eyoom_menu_json($arr) {
+		$output = '';
+		if(is_array($arr)) {
+			$output .= ',"children":[';
+			foreach($arr as $key => $val) {
+				if(strlen($val['me_code'])<2) continue;
+				unset($blind);
+				if($val['me_use'] == 'n') $blind = " <span style='color:#f30;'><i class='fa fa-eye-slash'></i></span>";
+				$_output[$val['me_order']] .= '{';
+				$_output[$val['me_order']] .= '"id":"'.$val['me_code'].'",';
+				$_output[$val['me_order']] .= '"order":"'.$val['me_order'].'",';
+				$_output[$val['me_order']] .= '"text":"'.$val['me_name'].$blind.'"';
+				if(is_array($val) && count($val)>3) $_output[$val['me_order']] .= $this->eyoom_menu_json($val);
+				$_output[$val['me_order']] .= '}';
+			}
+			@ksort($_output);
+			$output .= @implode(',',$_output);
+			$output .= ']';
+		}
+		return $output;
+	}
+
+	// 메뉴코드를 단계별로 잘라 배열에 담기
+	private function get_splited_code($split=array()) {
+		$cnt = count($split);
+		if($cnt<1) return false;
+		else {
+			for($i=0;$i<count($split);$i++) {
+				if($i==0) $code[$i] = $split[$i];
+				else $code[$i] = $code[$i-1].$split[$i];
+			}
+		}
+		return $code;
+	}
+
+	// 메뉴코드에서 위치정보 가져오기 - 반복문 안에 쿼리문으로 권장하지 않은 방법
+	// 만들긴 했지만 거의 사용하지 않을 예정 - 관리자모드에서 사용
+	public function get_path($me_code) {
+		global $g5;
+
+		$split = str_split($me_code,3);
+		$code = $this->get_splited_code($split);
+
+		if(is_array($code)) {
+			for($i=0;$i<count($code);$i++) {
+				$path = sql_fetch("select me_name from {$g5['eyoom_menu']} where me_code='{$code[$i]}'");
+				$path_name[$i] = $path['me_name'];
+			}
+		}
+		$path = implode(" &gt; ", $path_name);
+		return $path;
+	}
+
+	// 메뉴 링크로 부터 메뉴속성 추출하기
+	public function get_meinfo_link($link) {
+		$str = parse_url($link);
+		if($str['query']) {
+			parse_str($str['query'],$query);
+			foreach($query as $key => $val) {
+				if(in_array($key,array('bo_table','gr_id','co_id','ca_id','pid'))) {
+					switch($key) {
+						case "bo_table": $info['me_type'] = 'board'; break;
+						case "gr_id": $info['me_type'] = 'group'; break;
+						case "co_id": $info['me_type'] = 'page'; break;
+						case "ca_id": $info['me_type'] = 'shop'; break;
+						case "pid": $info['me_type'] = 'pid'; break;
+					}
+					$info['me_pid']  = $val;
+					$info['me_link'] = $str['path']."?".$str['query'];
+					break;
+				}
+			}
+		} else {
+			$path = explode("/",$str['path']);
+			$info['me_pid'] = $path[(count($path)-1)];
+			$info['me_type'] = 'userpage';
+			$info['me_link'] = $str['path'];
+		}
+		return $info;
+	}
+
+	// 서브페이지 좌/우측에 해당 페이지의 서브메뉴 가져오기
+	public function submenu_create($me_code,$flag='') {
+		if(!$flag) $flag = 'g5';
+		switch($flag) {
+			case 'g5'	: $menu = $this->g5_submenu_create($me_code); break;
+			case 'eyoom': $menu = $this->eyoom_submenu_create($me_code); break;
+		}
+		return $menu;
+	}
+
+	private function g5_submenu_create($me_code) {
+		global $g5;
+
+		$sql = " select * from {$g5['menu_table']} where me_use = '1' and length(me_code) = '4' and substring(me_code, 1, 2) = '{$me_code}' order by me_order, me_id ";
+		$result = sql_query($sql, false);
+
+		for ($i=0; $row=sql_fetch_array($result); $i++) {
+			$submenu[$i] = $row;
+		}
+		return $submenu;
+	}
+
+	private function eyoom_submenu_create($me_code) {
+		global $g5;
+
+		$submenu = '';
+		return $submenu;
+	}
+
+	// 서브페이지의 title 및 Path 가져오기
+	public function subpage_info($menu_array) {
+		global $eyoom, $theme;
+		if($eyoom['use_eyoom_menu'] == 'y') {
+			$page_info = $this->eyoom_subpage_info($theme);
+		} else {
+			$page_info = $this->g5_subpage_info($menu_array);
+		}
+		return $page_info;
+	}
+
+	// 이윰메뉴 서브페이지 정보 가져오기
+	private function eyoom_subpage_info($theme) {
+		global $g5, $tpl, $it_id, $is_admin;
+		$url = $_SERVER['REQUEST_URI'];
+		$info = $this->get_meinfo_link($url);
+		$sql = "select * from {$g5['eyoom_menu']} where me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}'";
+		$data = sql_fetch($sql,false);
+
+		if($data['me_id']) {
+			$me_path = explode(" > ",$data['me_path']);
+			$cnt = count($me_path);
+			foreach($me_path as $key => $me_name) {
+				if($cnt-1 == $key) {
+					$active = "class='active'";
+					//$me_name = $data['me_link'] ? '<a href="'.$data['me_link'].'">'.$me_name.'</a>':$me_name;
+				}
+				$path .= "<li {$active}>".$me_name."</li>";
+			}
+			$page_info['title'] = $data['me_name'];
+			$page_info['path'] = "<li><a href='".G5_URL."'>Home</a></li>".$path;
+		} else {
+			if($it_id) $page_info = $this->shop_subpage_info();
+			else $page_info = $this->get_default_page();
+		}
+		if(!$page_info['title']) {
+			if($is_admin) {
+				$page_info['title'] = '미등록페이지';
+				$page_info['path'] = "<a href='".G5_ADMIN_URL."/eyoom_admin/menu_list.php' style='color:#f30;'>관리자 > 이윰설정 > 이윰메뉴설정</a> 에서 메뉴를 등록해 주세요.";
+			} else {
+				$page_info['title'] = '미등록페이지';
+				$page_info['path'] = '메뉴등록이 안된 페이지입니다.';
+			}
+		}
+		return $page_info;
+	}
+
+	// 그누메뉴 서브페이지 정보 가져오기
+	private function g5_subpage_info($menu_array) {
+		global $g5, $bo_table, $co_id, $board, $co, $gr_id;
+
+		if($bo_table || $co_id) {
+			$stx = $bo_table ? "bo_table=".$bo_table : "co_id=".$co_id;
+			foreach($menu_array as $key => $menu) {
+				if(is_array($menu['submenu'])) {
+					foreach($menu['submenu'] as $k => $sub) {
+						if(preg_match("/$stx/",$sub['me_link'])) {
+							$submenu['cate1']['me_code'] = $menu['me_code'];
+							$submenu['cate1']['link'] = $menu['me_link'];
+							$submenu['cate1']['name'] = $menu['me_name'];
+							$submenu['cate2'] = $sub;
+							break;
+						}
+					}
+				}
+			}
+			if($submenu) {
+				$page_info['pr_code'] = $submenu['cate1']['me_code'];
+				$page_info['subtitle'] = $submenu['cate1']['name'];
+				$page_info['title'] = $submenu['cate2']['me_name'];
+				$page_info['path'] = "<li><a href='".G5_URL."'>Home</a></li><li><a href='".$submenu['cate1']['link']."'>" . $submenu['cate1']['name'] . "</a></li><li class='active'>" . $submenu['cate2']['me_name']."</li>";
+			}
+
+			if(!$page_info) {
+				if($bo_table) {
+					$page_info['title'] = $board['bo_subject'];
+					$page_info['path'] = "<li><a href='".G5_URL."'>Home</a></li><li class='active'>".$board['bo_subject']."</li>";
+				} else if($co_id) {
+					$page_info['title'] = $co['co_subject'];
+					$page_info['path'] = "<li><a href='".G5_URL."'>Home</a></li><li class='active'>".$co['co_subject']."</li>";
+				}
+			}
+		} else if($gr_id) {
+			// Group 페이지 정보
+			$sql = "select gr_subject from {$g5['group_table']} where gr_id='{$gr_id}'";
+			$group = sql_fetch($sql, false);
+
+			if($group['gr_subject']) {
+				$page_info['title'] = $group['gr_subject'];
+				$page_info['path'] = "<li><a href='".G5_URL."'>Home</a></li><li class='active'>".$group['gr_subject']."</li>";
+			}
+
+		} else {
+			// 새글 / 1:1문의 / 내글반응 / 회원관련 페이지 등 정해진 페이지 정보
+			if($it_id) $page_info = $this->shop_subpage_info();
+			else $page_info = $this->get_default_page();
+		}
+		if(!$page_info['title']) {
+			if($is_admin) {
+				$page_info['title'] = '미등록페이지';
+				$page_info['path'] = "<a href='".G5_ADMIN_URL."/menu_list.php' style='color:#f30;'>관리자 > 환경설정 > 메뉴설정</a> 에서 메뉴를 등록해 주세요.";
+			} else {
+				$page_info['title'] = '미등록페이지';
+				$page_info['path'] = '메뉴등록이 안된 페이지입니다.';
+			}
+		}
+		return $page_info;
+	}
+
+	// 이미 존재하는 기능페이지 정보
+	private function get_default_page() {
+		global $is_member, $type;
+		$temp_sname = explode('/',$_SERVER['SCRIPT_NAME']);
+		list($key,$ext) = explode('.',$temp_sname[count($temp_sname)-1]);
+
+		switch($key) {
+			case 'new'		: $title = '새글모음'; break;
+			case 'respond'	: $title = '내글반응'; break;
+			case 'search'	: $title = '전체검색'; break;
+			case 'faq'		: $title = '자주하시는 질문'; break;
+			case 'qalist'	:
+			case 'qawrite'	:
+			case 'qaview'	: $title = '1:1문의'; break;
+			case 'current_connect'	: $title = '현재접속자'; break;
+			case 'register'	: $cate_name='회원가입'; $title = '약관동의'; break;
+			case 'register_form' : 
+				if($is_member) {
+					$cate_name='멤버쉽'; $title = '정보수정';
+				} else {
+					$cate_name='회원가입'; $title = '정보입력';
+				}
+				break;
+			case 'register_result': $cate_name='회원가입'; $title = '회원가입완료'; break;
+			case 'cart'		: $title = '장바구니'; $cate_name = '쇼핑몰'; break;
+			case 'wishlist'	: $title = '위시리스트'; $cate_name = '쇼핑몰'; break;
+			case 'orderinquiryview'	: $title = '구매내역 상세보기'; $cate_name = '쇼핑몰'; break;
+			case 'orderinquiry'	: $title = '구매내역'; $cate_name = '쇼핑몰'; break;
+			case 'listtype':
+				switch($type) {
+					case 1: $title = '히트상품'; $cate_name = '쇼핑몰'; break;
+					case 2: $title = '추천상품'; $cate_name = '쇼핑몰'; break;
+					case 3: $title = '최신상품'; $cate_name = '쇼핑몰'; break;
+					case 4: $title = '인기상품'; $cate_name = '쇼핑몰'; break;
+					case 5: $title = '할인상품'; $cate_name = '쇼핑몰'; break;
+				}
+				break;
+			case 'mypage': $title = '마이페이지'; $cate_name = '쇼핑몰'; break;
+			case 'personalpay': $title = '개인결제'; $cate_name = '쇼핑몰'; break;
+			case 'itemqalist': $title = '상품문의'; $cate_name = '쇼핑몰'; break;
+			case 'itemuselist': $title = '사용후기'; $cate_name = '쇼핑몰'; break;
+		}
+		if(!$cate_name) {
+			$page_info['title'] = $title;
+			$page_info['path'] = "<li><a href='".G5_URL."'>Home</a></li><li class='active'>".$title."</li>";
+		} else {
+			$page_info['title'] = $title;
+			$page_info['path'] = "<li><a href='".G5_URL."'>Home</a></li><li>".$cate_name."</li><li class='active'>".$title."</li>";
+		}
+		return $page_info;
+	}
+
+	public function shop_subpage_info() {
+		global $g5, $shop, $ca_id, $it_id;
+
+		if($it_id) {
+			$row = sql_fetch("select ca_id, ca_id2, ca_id3 from {$g5['g5_shop_item_table']} where it_id='{$it_id}' limit 1");
+			if($row['ca_id3']) {
+				$ca_id = $row['ca_id3'];
+			} else if($row['ca_id2']) {
+				$ca_id = $row['ca_id2'];
+			} else if($row['ca_id1']) {
+				$ca_id = $row['ca_id1'];
+			}
+		}
+		$path = $shop->get_navi($ca_id);
+		$pageinfo['title'] = $path['title'];
+		$pageinfo['path'] = "<li><a href='".G5_URL."'>Home</a></li>".$path['path'];
+		return $pageinfo;
+	}
+
+	// Pagenation 정보
+	public function pg_pages($tpl_name, $url) {
+		global $config;
+		if($tpl_name == 'bs'){
+			$pg_pages = $config['cf_write_pages'];
+			if(G5_IS_MOBILE) $pg_pages = $config['cf_mobile_pages'];
+		}
+		switch($tpl_name) {
+			case 'pc': $pg_pages = $config['cf_write_pages']; break;
+			case 'mo': $pg_pages = $config['cf_mobile_pages']; break;
+		}
+		$pg['pages']= $pg_pages;
+		$pg['url']	= $url;
+		$pg['tpl']	= $tpl_name;
+		return $pg;
+	}
+}
+?>

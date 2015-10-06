@@ -1,0 +1,35 @@
+@charset "utf-8";
+
+form .exp {margin-left:20px;font-size:11px;color:#777;font-weight:normal;color:#f60;}
+form label {margin-left:10px;}
+
+#theme_select {}
+#theme_select .themes {height:25px;}
+#theme_select .themes div {float:left;padding:4px 2px;}
+#theme_select .theme_name {clear:left;width:195px;font-weight:bold;margin-top:4px;}
+
+.themes a, .bo_btns a {display:block;color:#555;border:1px solid #bbb;background:#eee;padding:3px 5px;}
+.themes a:hover, .bo_btns a:hover {text-decoration:none;background:#ddd;color:#555;}
+.themes a.active {color:#fff;border:1px solid #cc3061;background:#ff3061;}
+.theme_setup a {color:#fff;border:1px solid #506c35;background:#617d46;}
+.themes .btn_clone {margin-left:15px;}
+.themes .btn_community {margin-left:15px;}
+.themes .btn_clone a,.themes .btn_delete a,.themes .btn_chname a {color:#fff;border:1px solid #555;background:#777;}
+.themes .btn_community a, .themes .btn_shop a {color:#fff;border:1px solid #000;background:#333;}
+
+.bo_btns div {margin:0 auto;width:70px;text-align:center;}
+
+.eyoom_level_point_set {margin:0 0 0 -20px;clear:left;}
+.eyoom_level_point_set li {list-style-type:none;float:left;min-width:220px;height:30px;}
+.eyoom_level_point_set li input{text-align:right;width:40px;}
+.eyoom_level_point_set li .point_item{display:inline-block;width:120px;}
+
+.inner_titme {font-weight:bold;clear:left;height:20px;margin:10px 0;border-bottom:1px solid #eee;}
+
+.level_tbl thead th {height:20px;padding:5px;text-align:center;background:#e5ecef;border:1px solid #d1dee2}
+.level_tbl td {border:1px solid #ececec;height:25px;padding:5px;}
+.level_tbl th {border:1px solid #ececec;text-align:center;padding:5px;}
+
+.level_item {display:inline-block;margin-right:20px;}
+.level_item  input {width:50px;text-align:right;}
+.point_number {width:100px;margin:0 auto;padding:5px;text-align:right;}

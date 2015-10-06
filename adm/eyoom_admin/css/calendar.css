@@ -1,0 +1,24 @@
+@charset "utf-8";
+
+.calendarBox {border-right:3px solid #eee;border-bottom:3px solid #eee;z-index:1000;}
+.calendarTitleY {position:absolute;top:0;left:5px;font-family:tahoma; font-size:11px; color:#666666; text-align:left; padding-top:4px; padding-left:5px;}
+.calendarTitleM {margin:5px auto;width:85px;height:35px;text-align:center;font-family:tahoma; font-size:24px; color:#089bc0; text-align:left; font-weight:bold; padding-left:2px;}
+.calendarWeekS {font-family:tahoma; font-size:9px; font-weight:bold; color:#f50; float:left; width:28px; height:20px; padding-top:2px; }
+.calendarWeekT {font-family:tahoma; font-size:9px; font-weight:bold; color:#089bc0; float:left; width:28px; height:20px; padding-top:2px; }
+.calendarWeek {font-family:tahoma; font-size:9px; color:#808080; float:left; width:28px; height:20px; padding-top:2px; }
+
+.calendarDayS {font-family:tahoma; font-size:11px; color:#f50; float:left; width:28px; height:20px; cursor:pointer; font-weight:bold;padding-top:2px; }
+.calendarDayT {font-family:tahoma; font-size:11px; color:#089bc0; float:left; width:28px; height:20px; cursor:pointer; font-weight:bold;padding-top:2px; }
+.calendarDay {font-family:tahoma; font-size:11px; color:#555; float:left; width:28px; height:20px; cursor:pointer; font-weight:bold;padding-top:2px; }
+.calendarToDay {font-family:tahoma; font-size:11px; color:#fff; float:left; width:28px; height:20px; cursor:pointer; background:#f30; font-weight:bold;padding-top:2px;}
+
+.arr1 {display:inline-block;width:16px;height:16px;margin-right:10px;}
+.arr2 {display:inline-block;width:16px;height:16px;margin-left:10px;}
+.arr1:hover {background-position:0 -16px;}
+.arr2:hover {background-position:-16px -16px;}
+
+.calendarNoDay {float:left; width:28px; height:20px;padding-top:2px; }
+.calendarNow {font-family:tahoma; font-size:11px; color:#777; float:left; width:180px; height:20px; cursor:pointer; padding-left:4px;text-align:center;}
+.calendarNow:hover {text-decoration:underline;color:#f30;}
+.calendarClose {position:absolute;top:8px;right:13px;font-family:verdana; font-size:12px; font-weight:bold; color:#555; float:left; width:55px; height:20px; cursor:pointer;}
+.clearboth {clear:both;}
