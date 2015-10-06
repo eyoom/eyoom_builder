@@ -21,7 +21,7 @@
 		"mb"			=> $mb,
 		"user"			=> $user,
 		"menu"			=> $menu,
-		"submenu"		=> $submenu,
+		"sidemenu"		=> $sidemenu,
 		"connect"		=> $connect,
 		"newwin"		=> $newwin,
 		"list"			=> $list,

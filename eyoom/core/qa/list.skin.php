@@ -16,7 +16,7 @@
 	$list_pages = preg_replace('/(\.php)(&amp;|&)/i', '$1?', get_paging(G5_IS_MOBILE ? $qaconfig['qa_mobile_page_rows'] : $qaconfig['qa_page_rows'], $page, $total_page, './qalist.php'.$qstr.'&amp;page='));
 
 	// Paging 
-	$paging = $thema->pg_pages($tpl_name,'./qalist.php'.$qstr.'&amp;page=');
+	$paging = $thema->pg_pages($tpl_name,'./qalist.php?'.$qstr.'&amp;page=');
 
 	// 사용자 프로그램
 	@include_once(EYOOM_USER_PATH.'/qa/list.skin.php');

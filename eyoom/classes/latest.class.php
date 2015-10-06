@@ -1,6 +1,14 @@
 <?php
 class latest extends eyoom
 {
+	public $bo_new		= 24;
+	public $photo		= 'n';
+	public $content		= 'n';
+	public $img_view	= 'n';
+	public $cols		= 3;
+	public $img_width	= 500;
+	public $img_height	= 0;
+
 	public function __construct() {
 	}
 
@@ -168,22 +176,22 @@ class latest extends eyoom
 			if($optset['type']) $opt['type'] = $optset['type'];
 
 			// 사용자 사진여부
-			if($optset['photo']) $this->photo = $optset['photo']; else $this->photo = 'n';
+			if($optset['photo']) $this->photo = $optset['photo'];
 
 			// 컨텐츠 출력여부
-			if($optset['content']) $this->content = $optset['content']; else $this->content = 'n';
+			if($optset['content']) $this->content = $optset['content'];
 
 			// 이미지 출력여부
-			if($optset['img_view']) $this->img_view = $optset['img_view']; else $this->img_view = 'n';
+			if($optset['img_view']) $this->img_view = $optset['img_view'];
 
 			// 이미지 가로 이미지 수
-			if($optset['cols']) $this->cols = $optset['cols']; else $this->cols = '3';
+			if($optset['cols']) $this->cols = $optset['cols'];
 
 			// 이미지 가로사이즈
-			if($optset['img_width']) $this->img_width = $optset['img_width']; else $this->img_width = '500';
+			if($optset['img_width']) $this->img_width = $optset['img_width'];
 
 			// 이미지 세로사이즈
-			if($optset['img_height']) $this->img_height = $optset['img_height']; else $this->img_height = '0';
+			if($optset['img_height']) $this->img_height = $optset['img_height'];
 
 			return $opt;
 
@@ -232,16 +240,16 @@ class latest extends eyoom
 				} else {
 					$list[$i]['wr_subject'] = conv_subject($row['wr_subject'], $cut_subject, '…');
 					if($this->content == 'y') $list[$i]['wr_content'] = cut_str(strip_tags($row['wr_content']), $cut_content, '…');
-				}
-				// 옵션으로 이미지 가져오기
-				if($this->img_view == 'y') {
-					$list[$i]['image'] = $this->latest_image($row,$direct);
+
+					// 옵션으로 이미지 가져오기
+					if($this->img_view == 'y') {
+						$list[$i]['image'] = $this->latest_image($row,$direct);
+					}
 				}
 				$list[$i]['href'] = G5_BBS_URL."/board.php?bo_table={$bo_table}&amp;wr_id={$row['wr_parent']}";
 			}
 
 			$list[$i]['wr_hit'] = $row['wr_hit'];
-			$list[$i]['datetime'] = $direct == 'y' ? $row['wr_datetime'] : $row['bn_datetime'];
 			if($direct == 'y') {
 				$list[$i]['datetime'] = $row['wr_datetime'];
 				$wr_1 = $row['wr_1'];
@@ -249,20 +257,27 @@ class latest extends eyoom
 				$list[$i]['datetime'] = $row['bn_datetime'];
 				$wr_1 = $row['mb_level'];
 			}
+
+			// new 표시
+			if ($list[$i]['datetime'] >= date("Y-m-d H:i:s", G5_SERVER_TIME - ($this->bo_new * 3600))) $list[$i]['new'] = true;
+
+			// 레벨정보
 			$level = $wr_1 ? $eb->level_info($wr_1):'';
-			if(!$level['anonymous']) {
-				$list[$i]['mb_photo'] = $eb->mb_photo($list[$i]['mb_id']);
-			} else {
-				$list[$i]['mb_photo'] = '';
-				$list[$i]['mb_id'] = 'anonymous';
-				$list[$i]['mb_nick'] = '익명';
-				$list[$i]['email'] = '';
-				$list[$i]['homepage'] = '';
-				$list[$i]['gnu_level'] = '';
-				$list[$i]['gnu_icon'] = '';
-				$list[$i]['eyoom_icon'] = '';
-				$list[$i]['lv_gnu_name'] = '';
-				$list[$i]['lv_name'] = '';
+			if(is_array($level)) {
+				if(!$level['anonymous']) {
+					$list[$i]['mb_photo'] = $eb->mb_photo($list[$i]['mb_id']);
+				} else {
+					$list[$i]['mb_photo'] = '';
+					$list[$i]['mb_id'] = 'anonymous';
+					$list[$i]['mb_nick'] = '익명';
+					$list[$i]['email'] = '';
+					$list[$i]['homepage'] = '';
+					$list[$i]['gnu_level'] = '';
+					$list[$i]['gnu_icon'] = '';
+					$list[$i]['eyoom_icon'] = '';
+					$list[$i]['lv_gnu_name'] = '';
+					$list[$i]['lv_name'] = '';
+				}
 			}
 		}
 		return $list;
@@ -290,6 +305,7 @@ class latest extends eyoom
 							if(!$images['url'][$j]) continue;
 							else {
 								$img = $images['url'][$j];
+								if($this->g5_root) $img = str_replace($this->g5_root,'',$img);
 								break;
 							}
 						}
@@ -450,7 +466,7 @@ class latest extends eyoom
 		));
 		$tpl->print_($tpl_name);
 	}
-	
+
 	// 쇼핑몰 상품 추출하기
 	public function latest_item($skin, $option) {
 		global $g5, $config, $tpl, $tpl_name, $eb;

@@ -1,13 +1,15 @@
 <?php
 class eyoom extends qfile
 {
-	protected $tpl_name;
-	protected $member_path;
+	protected	$tpl_name;
+	protected	$member_path;
+	public		$g5_root		= '';
 
 	public function __construct() {
 		global $eyoom;
 		$this->member_path = G5_DATA_PATH . '/member';
 		if($eyoom) $this->eyoom = $eyoom;
+		$this->g5_root = $this->g5_root();
 	}
 
 	// 랜덤
@@ -201,9 +203,13 @@ class eyoom extends qfile
 				$reinfo['type'] = '대댓글';
 				$reinfo['mention'] = $cnt > 0 ?  "<b>".$name."</b>님외 <b>".$cnt."</b>개의 대댓글이 내댓글에 달렸습니다." : "<b>".$name."</b>님이 내댓글에 대댓글을 남겼습니다.";
 				break;
-			case 'cmt_good'	:
+			case 'goodcmt'	:
 				$reinfo['type'] = '댓글공감';
 				$reinfo['mention'] = $cnt > 0 ?  "<b>".$name."</b>님외 <b>".$cnt."</b>명이 내댓글에 공감합니다." : "<b>".$name."</b>님이 내댓글을 공감하였습니다.";
+				break;
+			case 'nogoodcmt'	:
+				$reinfo['type'] = '댓글비공감';
+				$reinfo['mention'] = $cnt > 0 ?  "<b>".$name."</b>님외 <b>".$cnt."</b>명이 내댓글에 비공감합니다." : "<b>".$name."</b>님이 내댓글을 비공감하였습니다.";
 				break;
 		}
 		return $reinfo;
@@ -217,6 +223,14 @@ class eyoom extends qfile
 		$info['host'] = preg_replace("/www\./i","",$info['host']);
 		$info['query'] = $query;
 		return $info;
+	}
+
+	// 그누보드5/영카트5 루트폴더
+	public function g5_root() {
+		$tilde_remove = preg_replace('/^\/\~[^\/]+(.*)$/', '$1', $_SERVER['SCRIPT_NAME']);
+		$document_root = str_replace($tilde_remove, '', $_SERVER['SCRIPT_FILENAME']);
+		$root = str_replace($document_root, '', G5_PATH);
+		return $root;
 	}
 
 	// 푸쉬 생성
@@ -407,9 +421,9 @@ class eyoom extends qfile
 			$point_sum = $level_point + $point;
 			$level = $this->get_level_from_point($point_sum,$eyoomer['level']);
 
-			if($level != $eyoom['level']) {
+			if($level != $eyoomer['level']) {
 				// 레벨업 알람 및 활동기록
-				$gap = $level - $eyoom['level'];
+				$gap = $level - $eyoomer['level'];
 				if($gap>0) {
 					$updown = 'up';
 					$msg = 'Level Up';
@@ -433,7 +447,7 @@ class eyoom extends qfile
 			}
 
 			// 그누레벨 자동조정
-			if(!$is_admin && $level != $eyoom['level']) $this->set_gnu_level($level);
+			if(!$is_admin && $level != $eyoomer['level']) $this->set_gnu_level($level);
 
 		} else return false;
 	}
@@ -549,6 +563,42 @@ class eyoom extends qfile
 		} else return false;
 	}
 
+	// 댓글쓰기 포인트
+	public function point_comment() {
+		global $g5, $member, $eyoom_board, $cmt_amt, $board, $wr_id, $comment_id, $wr;
+
+		unset($point);
+		// 첫댓글 포인트
+		if($eyoom_board['bo_firstcmt_point'] > 0 && !$cmt_amt && $member['mb_id'] != $wr['mb_id']) {
+			$point['firstcmt'] = $eyoom_board['bo_firstcmt_point_type'] == 1 ? $this->random_num($eyoom_board['bo_firstcmt_point']-1)+1 : $eyoom_board['bo_firstcmt_point'];
+			insert_point($member['mb_id'], $point['firstcmt'], $board['bo_subject'].' wr_id='.$wr_id.' 게시물 첫 댓글 포인트', '@firstcmt', $member['mb_id'], $board['bo_subject'].'|'.$wr_id.'|'.$comment_id);
+		}
+
+		// 지뢰폭탄 포인트 - 게시판 여유필드 wr_2를 사용
+		if($eyoom_board['bo_bomb_point'] > 0 && $eyoom_board['bo_bomb_point_limit'] > 0 && $eyoom_board['bo_bomb_point_cnt'] > 0 && $wr['wr_2']) {
+			$bomb = @unserialize($wr['wr_2']);
+			if(is_array($bomb)) {
+				foreach($bomb as $key => $val) {
+					if($val == $cmt_amt) {
+						$point['bomb'][$key] = $eyoom_board['bo_bomb_point_type'] == 1 ? $this->random_num($eyoom_board['bo_bomb_point']-1)+1 : $eyoom_board['bo_bomb_point'];
+						insert_point($member['mb_id'], $point['bomb'][$key], $board['bo_subject'].' wr_id='.$wr_id.' 게시물 지뢰폭탄 포인트', '@bomb', $member['mb_id'], $board['bo_subject'].'|'.$wr_id.'|'.$comment_id.'|'.$key);
+					}
+				}
+			}
+		}
+
+		// 럭키 포인트
+		if($eyoom_board['bo_lucky_point'] > 0 && $eyoom_board['bo_lucky_point_ratio'] > 0) {
+			$max = ceil(100/$eyoom_board['bo_lucky_point_ratio']);
+			$random = $this->random_num($max-1);
+			if($random%$max == 0) {
+				$point['lucky'] = $eyoom_board['bo_lucky_point_type'] == 1 ? $this->random_num($eyoom_board['bo_lucky_point']-1)+1 : $eyoom_board['bo_lucky_point'];
+				insert_point($member['mb_id'], $point['lucky'], $board['bo_subject'].' wr_id='.$wr_id.' 게시물 행운의 포인트', '@lucky', $member['mb_id'], $board['bo_subject'].'|'.$wr_id.'|'.$comment_id);
+			}
+		}
+		if(is_array($point)) return $point;
+	}
+
 	public function empty_key($key_val) {
 		global $tpl, $tm, $theme, $preview;
 		if($theme != 'basic') {
@@ -604,7 +654,7 @@ class eyoom extends qfile
 	}
 
 	public function syntaxhighlighter($content) {
-		$content = preg_replace("/<span.*?>(.*?)<\/span>/is","\n\\1",$content);
+		$content = preg_replace("/^<span.*?>(.*?)<\/span>/is","\n\\1",$content);
 		$content = preg_replace("/\\t/i","&nbsp;&nbsp;&nbsp;&nbsp;",$content);
 		$content = preg_replace("/{CODE\s*\:([^}]*)}/i","<pre class=\"brush: \\1;\">",$content);
 		$content = preg_replace("/{\/CODE}/i","</pre>",$content);

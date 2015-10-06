@@ -19,8 +19,11 @@
 	if($eyoom['use_eyoom_menu'] == 'y') $menu_flag = 'eyoom';
 	$menu = $thema->menu_create($menu_flag);
 
-	// 서브페이지 타이틀 및 Path 정보
-	if(!defined('_INDEX_'))	$subinfo = $thema->subpage_info($menu);
+	// 서브페이지 메뉴정보, 타이틀 및 Path 정보
+	if(!defined('_INDEX_'))	{
+		$sidemenu = $thema->submenu_create($menu_flag);
+		$subinfo = $thema->subpage_info($menu);
+	}
 
 	// 접속자 정보
 	$connect = $eb->get_connect();

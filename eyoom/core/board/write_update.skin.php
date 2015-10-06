@@ -49,7 +49,7 @@
 
 	// 내용글에서 텍스트 추출
 	$content = conv_content(stripslashes($wr_content), 1);
-	$content = trim(addslashes(conv_subject(strip_tags($content),300, '…')));
+	$content = trim(addslashes(cut_str(strip_tags($content), 300, '…')));
 
 	$where = "bo_table = '{$bo_table}' and wr_id = '{$wr_id}'";
 	$insert = "
@@ -82,7 +82,6 @@
 			wr_subject	= '{$wr_subject}',
 			wr_content	= '{$content}',
 			wr_option	= '{$html},{$secret},{$mail}',
-			mb_level	= '{$wr_1}',
 			wr_image	= '{$wr_image}',
 			wr_video	= '{$wr_video}',
 			wr_sound	= '{$wr_sound}'
@@ -112,7 +111,18 @@
 	if($query) sql_query($query, false);
 	unset($query, $insert, $update);
 
-
+	// 지뢰폭탄 포인트 심기
+	if ($w == '' || $w == 'r') {
+		if($eyoom_board['bo_bomb_point'] > 0 && $eyoom_board['bo_bomb_point_limit'] > 0 && $eyoom_board['bo_bomb_point_cnt'] > 0) {
+			for($i=0;$i<$eyoom_board['bo_bomb_point_cnt'];$i++) {
+				$bomb[$i] = $eb->random_num($eyoom_board['bo_bomb_point_limit']-1);
+			}
+			if(is_array($bomb)) {
+				$bomb = serialize($bomb);
+				sql_query("update $write_table set wr_2 = '{$bomb}' where wr_id='{$wr_id}'");
+			}
+		}
+	}
 
 	// 사용자 프로그램
 	@include_once(EYOOM_USER_PATH.'/board/write_update.skin.php');

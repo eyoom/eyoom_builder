@@ -1,14 +1,36 @@
 <?php
 class theme extends qfile
 {
-	protected $path		= '';
-	protected $tmp_path	= '';
+	protected $path			= '';
+	protected $tmp_path		= '';
 	protected $theme_path	= '';
+	protected $page_type	= '';
+	protected $me_pid		= '';
+	protected $bo_new		= 24;
 
 	// Constructor Function
 	public function __construct() {
+		global $g5, $bo_table, $co_id, $gr_id, $board, $theme, $pid, $ca_id;
+
 		$this->tmp_path		= G5_DATA_PATH . '/tmp';
 		$this->theme_path	= EYOOM_THEME_PATH;
+		
+		if($bo_table) {
+			$this->page_type = 'board';
+			$this->me_pid = $bo_table;
+		} else if($gr_id) {
+			$this->page_type = 'group';
+			$this->me_pid = $gr_id;
+		} else if($co_id) {
+			$this->page_type = 'page';
+			$this->me_pid = $co_id;
+		} else if($pid) {
+			$this->page_type = 'pid';
+			$this->me_pid = $pid;
+		} else if($ca_id) {
+			$this->page_type = 'shop';
+			$this->me_pid = $ca_id;
+		}
 	}
 
 	// 사용자 지정 테마 설정
@@ -156,25 +178,26 @@ class theme extends qfile
 
 	// 이윰메뉴 
 	private function eyoom_menu_create() {
-		global $g5, $bo_table, $co_id, $gr_id, $board, $theme;
-
-		$board['bo_new'] = 24;
-		$menu_package = $this->eyoom_menu($theme);
+		// 메뉴정보 가져오기
+		$menu_package = $this->eyoom_menu();
 		if(!$menu_package) return false;
+		$menu = $this->eyoom_menu_assign($menu_package);
+		return $menu;
+	}
+
+	// 이윰메뉴 재정의
+	private function eyoom_menu_assign($menu_package) {
+
+		// 새글정보 가져오기
+		$new = $this->eyoom_menu_new();
 
 		// 5단계까지 가능하지만 3단계까지 표현
-		// 좀 무식해 보이는 소스지만 속도는 빠름
-		// 메뉴에 NEW 표시하는 것이 없으면 더욱 빨라짐..
 		foreach($menu_package as $key => $menuset) {
 			foreach($menuset as $k => $menu_sub) {
 				if(!is_array($menu_sub)) {
 					$mk1 = $menuset['me_order'].$key;
 					$menu[$mk1][$k] = $menu_sub;
-					if(($menuset['me_type'] == 'board' && $menuset['me_pid'] == $bo_table) || 
-						($menuset['me_type'] == 'group' && $menuset['me_pid'] == $gr_id) ||
-						($menuset['me_type'] == 'page' && $menuset['me_pid'] == $co_id)) {
-						if(!defined('_INDEX_')) $menu[$mk1]['active'] = true;
-					}
+					if($menuset['me_type'] == $this->page_type && $menuset['me_pid'] == $this->me_pid && !defined('_INDEX_')) $menu[$mk1]['active'] = true;
 					@ksort($menu);
 				} else {
 					$cate1 = &$menu[$mk1]['submenu'];
@@ -182,16 +205,9 @@ class theme extends qfile
 						if(!is_array($sub)) {
 							$mk2 = $menu_sub['me_order'].$k;
 							$cate1[$mk2][$m] = $sub;
-							if(($menu_sub['me_type'] == 'board' && $menu_sub['me_pid'] == $bo_table) || 
-								($menu_sub['me_type'] == 'group' && $menu_sub['me_pid'] == $gr_id) ||
-								($menu_sub['me_type'] == 'page' && $menu_sub['me_pid'] == $co_id)) {
-								if($_GET['sca']) {
-									if(!defined('_INDEX_')) $menu[$mk1]['active'] = true;
-									//if($_GET['sca']==$cate1[$mk2]['me_name']) $cate1[$mk2]['active'] = true;
-								} else {
-									if(!defined('_INDEX_')) $menu[$mk1]['active'] = true;
-									//if($_GET['bo_table']!="portfolio") $cate1[$mk2]['active'] = true;
-								}
+							if($menu_sub['me_type'] == $this->page_type && $menu_sub['me_pid'] == $this->me_pid) {
+								if(!defined('_INDEX_')) $menu[$mk1]['active'] = true;
+								$cate1[$mk2]['active'] = true;
 							}
 							@ksort($cate1);
 						} else {
@@ -201,16 +217,29 @@ class theme extends qfile
 								if(!is_array($val)) {
 									$mk3 = $sub['me_order'].$m;
 									$cate2[$mk3][$n] = $val;
-									if(($sub['me_type'] == 'board' && $sub['me_pid'] == $bo_table) || 
-										($sub['me_type'] == 'group' && $sub['me_pid'] == $gr_id) ||
-										($sub['me_type'] == 'page' && $sub['me_pid'] == $co_id)) {
+									if($sub['me_type'] == $this->page_type && $sub['me_pid'] == $this->me_pid) {
 										if(!defined('_INDEX_')) $menu[$mk1]['active'] = true;
-										//$cate1[$mk2]['active'] = true;
-										//$cate2[$mk3]['active'] = true;
+										$cate1[$mk2]['active'] = true;
+										$cate2[$mk3]['active'] = true;
 									}
 									@ksort($cate2);
 								}
 							}
+							if($sub['me_type'] == 'board' && $sub['me_pid']) {
+								$tmp_bo_table = $sub['me_pid'];
+								if($new[$tmp_bo_table]>0) {
+									$cate2[$mk3]['new'] = true;
+									$cate1[$mk2]['new'] = true;
+									$menu[$mk1]['new'] = true;
+								}
+							}
+						}
+					}
+					if($menu_sub['me_type'] == 'board' && $menu_sub['me_pid']) {
+						$tmp_bo_table = $menu_sub['me_pid'];
+						if($new[$tmp_bo_table]>0) {
+							$cate1[$mk2]['new'] = true;
+							$menu[$mk1]['new'] = true;
 						}
 					}
 				}
@@ -219,9 +248,21 @@ class theme extends qfile
 		return $menu;
 	}
 
+	// 이윰 New 테이블에서 최근글 정보 가져옴 : 2015-02-25 그림자밟기님이 아이디어를 제공해 주셨습니다.
+	private function eyoom_menu_new($bo_new=24) {
+		global $g5;
+		if(!$bo_new) $bo_new = 24;
+		$sql = "select bo_table, count(*) as cnt from {$g5['board_new_table']} where bn_datetime between date_format(".date("YmdHis",G5_SERVER_TIME - ($bo_new * 3600)).", '%Y-%m-%d %H:%i:%s') AND date_format(".date("YmdHis",G5_SERVER_TIME).", '%Y-%m-%d %H:%i:%s') and wr_id = wr_parent group by bo_table";
+		$res = sql_query($sql, false);
+		for($i=0;$row=sql_fetch_array($res);$i++) {
+			$new[$row['bo_table']] = $row['cnt'];
+		}
+		return $new;
+	}
+
 	// 이윰메뉴 5단계까지 구현
-	public function eyoom_menu($theme) {
-		global $g5, $admin_mode;
+	public function eyoom_menu() {
+		global $g5, $admin_mode, $theme;;
 
 		if(!$admin_mode) $addwhere = " and me_use = 'y' and me_use_nav = 'y' ";
 		$sql = "select * from {$g5['eyoom_menu']} where me_theme='{$theme}' {$addwhere} order by me_code asc, me_order asc";
@@ -235,6 +276,67 @@ class theme extends qfile
 			if($depth==3) $menu[$split[0]][$split[1]][$split[2]] = $row;
 			if($depth==4) $menu[$split[0]][$split[1]][$split[2]][$split[3]] = $row;
 			if($depth==5) $menu[$split[0]][$split[1]][$split[2]][$split[3]][$split[4]] = $row;
+		}
+		return $menu;
+	}
+
+	// 서브페이지 좌/우측에 해당 페이지의 서브메뉴 가져오기
+	public function submenu_create($flag='') {
+		if(!$flag) $flag = 'g5';
+		switch($flag) {
+			case 'g5'	: $submenu = $this->g5_submenu_create(); break;
+			case 'eyoom': $submenu = $this->eyoom_submenu_create(); break;
+		}
+		return $submenu;
+	}
+
+	private function g5_submenu_create($me_code) {
+		global $g5;
+
+		$sql = " select * from {$g5['menu_table']} where me_use = '1' and length(me_code) = '4' and substring(me_code, 1, 2) = '{$me_code}' order by me_order, me_id ";
+		$result = sql_query($sql, false);
+
+		for ($i=0; $row=sql_fetch_array($result); $i++) {
+			$submenu[$i] = $row;
+		}
+		return $submenu;
+	}
+
+	// 이윰 서브메뉴 생성하기
+	private function eyoom_submenu_create() {
+		$data = $this->eyoom_pagemenu_info();
+		$menu_package = $this->eyoom_submenu($data);
+		if(!$menu_package) return false;
+		$submenu = $this->eyoom_menu_assign($menu_package);
+		return $submenu;
+	}
+
+	// 페이지 정보 가져오기
+	private function eyoom_pagemenu_info() {
+		global $g5, $theme;
+		$url = $_SERVER['REQUEST_URI'];
+		$info = $this->get_meinfo_link($url);
+		$sql = "select * from {$g5['eyoom_menu']} where me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}'";
+		$data = sql_fetch($sql,false);
+		return $data;
+	}
+
+	// 이윰 서브메뉴
+	public function eyoom_submenu($data) {
+		global $g5, $theme;
+
+		if(!$data) $data = $this->eyoom_pagemenu_info($theme);
+		$me_code = str_split($data['me_code'],3);
+		$sql = "select * from {$g5['eyoom_menu']} where me_theme='{$theme}' and me_code like '{$me_code[0]}%' and length(me_code) > 3 order by me_code asc, me_order asc";
+		$res = sql_query($sql, false);
+		for($i=0;$row=sql_fetch_array($res);$i++) {
+			$split = str_split($row['me_code'],3);
+			$depth = count($split);
+
+			if($depth==2) $menu[$split[1]] = $row;
+			if($depth==3) $menu[$split[1]][$split[2]] = $row;
+			if($depth==4) $menu[$split[1]][$split[2]][$split[3]] = $row;
+			if($depth==5) $menu[$split[1]][$split[2]][$split[3]][$split[4]] = $row;
 		}
 		return $menu;
 	}
@@ -321,35 +423,6 @@ class theme extends qfile
 			$info['me_link'] = $str['path'];
 		}
 		return $info;
-	}
-
-	// 서브페이지 좌/우측에 해당 페이지의 서브메뉴 가져오기
-	public function submenu_create($me_code,$flag='') {
-		if(!$flag) $flag = 'g5';
-		switch($flag) {
-			case 'g5'	: $menu = $this->g5_submenu_create($me_code); break;
-			case 'eyoom': $menu = $this->eyoom_submenu_create($me_code); break;
-		}
-		return $menu;
-	}
-
-	private function g5_submenu_create($me_code) {
-		global $g5;
-
-		$sql = " select * from {$g5['menu_table']} where me_use = '1' and length(me_code) = '4' and substring(me_code, 1, 2) = '{$me_code}' order by me_order, me_id ";
-		$result = sql_query($sql, false);
-
-		for ($i=0; $row=sql_fetch_array($result); $i++) {
-			$submenu[$i] = $row;
-		}
-		return $submenu;
-	}
-
-	private function eyoom_submenu_create($me_code) {
-		global $g5;
-
-		$submenu = '';
-		return $submenu;
 	}
 
 	// 서브페이지의 title 및 Path 가져오기

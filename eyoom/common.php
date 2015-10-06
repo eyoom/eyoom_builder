@@ -38,13 +38,23 @@
 			$eyoom_board['bo_sel_date_type']		= 1;
 			$eyoom_board['bo_use_hotgul']			= 1;
 			$eyoom_board['bo_use_anonymous']		= 2;
+			$eyoom_board['bo_use_point_explain']	= 1;
+			$eyoom_board['bo_firstcmt_point']		= 0;
+			$eyoom_board['bo_firstcmt_point_type']	= 1;
+			$eyoom_board['bo_bomb_point']			= 0;
+			$eyoom_board['bo_bomb_point_type']		= 1;
+			$eyoom_board['bo_bomb_point_limit']		= 10;
+			$eyoom_board['bo_bomb_point_cnt']		= 1;
+			$eyoom_board['bo_lucky_point']			= 0;
+			$eyoom_board['bo_lucky_point_type']		= 1;
+			$eyoom_board['bo_lucky_point_ratio']	= 1;
 		}
 		// 익명글쓰기 체크
 		$is_anonymous = $eyoom_board['bo_use_anonymous'] == 1 ? true:false;
 	}
 
 	// switcher 설정
-	if(preg_match('/community/',$theme)) {
+	if($theme!='basic') {
 		$switcher_path = G5_DATA_PATH.'/member/switcher';
 		$switcher_admin = G5_DATA_PATH.'/member/switcher/'.$config['cf_admin'].'.config.php';
 		if(file_exists($switcher_admin)) {

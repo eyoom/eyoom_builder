@@ -31,6 +31,6 @@
 	// 사용자 프로그램
 	@include_once(EYOOM_USER_PATH.'/member/photo_update.php');
 
-	goto_url(G5_URL.$back_url);
+	goto_url($back_url);
 	
 ?>

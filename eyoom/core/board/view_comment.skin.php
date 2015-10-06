@@ -1,4 +1,5 @@
 <?php
+ 
 	if (!defined('_GNUBOARD_')) exit;
 
 	unset($comment);
@@ -20,6 +21,14 @@
 		$comment[$i]['datetime'] = $list[$i]['datetime'];
 		$comment[$i]['wr_option'] = $list[$i]['wr_option'];
 		$comment[$i]['content1'] = get_text($list[$i]['content1'], 0);
+
+		// 댓글포인트
+		$point = $list[$i]['wr_link1'] ? @unserialize($list[$i]['wr_link1']):'';
+		if(is_array($point)) {
+			$comment[$i]['firstcmt_point'] = $point['firstcmt'] ? $point['firstcmt']:0;
+			$comment[$i]['bomb_point'] = is_array($point['bomb']) ? array_sum($point['bomb']):0;
+			$comment[$i]['lucky_point'] = $point['lucky'] ? $point['lucky']:0;
+		}
 
 		$level = $list[$i]['wr_1'] ? $eb->level_info($list[$i]['wr_1']):'';
 		if(is_array($level)) {

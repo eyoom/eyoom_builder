@@ -36,6 +36,7 @@
 
 	$wr_content = $eb->remove_editor_video($wr_content);
 	$wr_content = $eb->remove_editor_sound($wr_content);
+	$wr_content = htmlspecialchars($wr_content);
 
 	// Eyoom 새글에 등록
 	if ($w == 'c') {
@@ -68,6 +69,16 @@
 		$act_contents['content'] = $wr_content;
 		$eb->insert_activity($mb_id,$type,$act_contents);
 		$eb->level_point($levelset['cmt']);
+
+		// 댓글 포인트
+		if($eyoom_board['bo_firstcmt_point'] || $eyoom_board['bo_bomb_point'] || $eyoom_board['bo_lucky_point']) {
+			$point = $eb->point_comment();
+			if(is_array($point)) {
+				$point = serialize($point);
+				// 댓글의 경우 wr_link1을 사용하지 않기에 활용
+				sql_query(" update $write_table set wr_link1 = '{$point}' where wr_id='{$comment_id}'");
+			}
+		}
 
 	} else if($w == 'cu') {
 		$query = "

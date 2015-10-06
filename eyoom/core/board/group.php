@@ -7,7 +7,7 @@
 	// 이윰 헤더 디자인 출력
 	@include_once(EYOOM_PATH.'/head.php');
 
-	$exclude = array('ajjitalk','trash');
+	$exclude = array();
 
 	//  최신글
 	$sql = " select bo_table, bo_subject
@@ -30,7 +30,10 @@
 		$res = sql_query($sql2, false);
 		for($k=0; $row2 = sql_fetch_array($res); $k++) {
 			$loop[$k] = $row2;
-			//$board[$k]['mb_photo'] = $eb->mb_photo($row2['mb_id']);
+
+			// new 표시
+			if ($row2['bn_datetime'] >= date("Y-m-d H:i:s", G5_SERVER_TIME - (24 * 3600))) $loop[$k]['new'] = true;
+			
 			if(!$row2['wr_subject']) {
 				$loop[$k]['wr_subject'] = conv_subject($row2['wr_content'], 30, '…');
 				$loop[$k]['href'] = G5_BBS_URL."/board.php?bo_table={$row2['bo_table']}&amp;wr_id={$row2['wr_id']}#c_{$row['wr_id']}";
