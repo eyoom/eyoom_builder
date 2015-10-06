@@ -15,14 +15,7 @@ $set = "
 	bo_sel_date_type		= '{$_POST['bo_sel_date_type']}',
 	bo_use_hotgul			= '{$_POST['bo_use_hotgul']}',
 	bo_use_anonymous		= '{$_POST['bo_use_anonymous']}',
-	bo_use_infinite_scroll	= '{$_POST['bo_use_infinite_scroll']}',
-	bo_use_list_image		= '{$_POST['bo_use_list_image']}',
-	bo_use_video_photo		= '{$_POST['bo_use_video_photo']}',
-	bo_use_yellow_card		= '{$_POST['bo_use_yellow_card']}',
-	bo_blind_limit			= '{$_POST['bo_blind_limit']}',
-	bo_blind_view			= '{$_POST['bo_blind_view']}',
-	bo_blind_direct			= '{$_POST['bo_blind_direct']}',
-	download_fee_ratio		= '{$_POST['download_fee_ratio']}'
+	bo_use_infinite_scroll	= '{$_POST['bo_use_infinite_scroll']}'
 ";
 if(preg_match('/(community|dynamic)/',$theme)) {
 $set .= ",
@@ -52,14 +45,7 @@ if (is_checked('chk_grp_hotgul'))			$grp_fields .= " , bo_use_hotgul = '{$_POST[
 if (is_checked('chk_grp_anonymous'))		$grp_fields .= " , bo_use_anonymous = '{$_POST['bo_use_anonymous']}' ";
 if (is_checked('chk_grp_infinite_scroll'))	$grp_fields .= " , bo_use_infinite_scroll = '{$_POST['bo_use_infinite_scroll']}' ";
 if (is_checked('chk_grp_point_explain'))	$grp_fields .= " , bo_use_point_explain = '{$_POST['bo_use_point_explain']}' ";
-if (is_checked('chk_grp_list_image'))		$grp_fields .= " , bo_use_list_image = '{$_POST['bo_use_list_image']}' ";
-if (is_checked('chk_grp_video_photo'))		$grp_fields .= " , bo_use_video_photo = '{$_POST['bo_use_video_photo']}' ";
-if (is_checked('chk_grp_yellow_card'))		$grp_fields .= " , bo_use_yellow_card = '{$_POST['bo_use_yellow_card']}' ";
-if (is_checked('chk_grp_blind_limit'))		$grp_fields .= " , bo_blind_limit = '{$_POST['bo_blind_limit']}' ";
-if (is_checked('chk_grp_blind_view'))		$grp_fields .= " , bo_blind_view = '{$_POST['bo_blind_view']}' ";
-if (is_checked('chk_grp_blind_direct'))		$grp_fields .= " , bo_blind_direct = '{$_POST['bo_blind_direct']}' ";
 if (is_checked('chk_grp_cmtpoint_target'))	$grp_fields .= " , bo_cmtpoint_target = '{$_POST['bo_cmtpoint_target']}' ";
-if (is_checked('chk_grp_download_ratio'))	$grp_fields .= " , download_fee_ratio = '{$_POST['download_fee_ratio']}' ";
 if (is_checked('chk_grp_firstcmt_point')) {
 	$grp_fields .= " , bo_firstcmt_point		= '{$_POST['bo_firstcmt_point']}' ";
 	$grp_fields .= " , bo_firstcmt_point_type	= '{$_POST['bo_firstcmt_point_type']}' ";
@@ -80,7 +66,7 @@ if ($grp_fields) {
     sql_query(" update {$g5['eyoom_board']} set bo_table = bo_table {$grp_fields} where gr_id = '{$_POST['gr_id']}' and bo_theme='{$theme}' ");
 }
 
-// 모든 게시판 동일 옵션 적용
+// 같은 그룹내 게시판 동일 옵션 적용
 $all_fields = '';
 if (is_checked('chk_all_shop_skin'))		$all_fields .= " , use_shop_skin = '{$_POST['use_shop_skin']}' ";
 if (is_checked('chk_all_profile_photo'))	$all_fields .= " , bo_use_profile_photo = '{$_POST['bo_use_profile_photo']}' ";
@@ -89,14 +75,7 @@ if (is_checked('chk_all_hotgul'))			$all_fields .= " , bo_use_hotgul = '{$_POST[
 if (is_checked('chk_all_anonymous'))		$all_fields .= " , bo_use_anonymous = '{$_POST['bo_use_anonymous']}' ";
 if (is_checked('chk_all_infinite_scroll'))	$all_fields .= " , bo_use_infinite_scroll = '{$_POST['bo_use_infinite_scroll']}' ";
 if (is_checked('chk_all_point_explain'))	$all_fields .= " , bo_use_point_explain = '{$_POST['bo_use_point_explain']}' ";
-if (is_checked('chk_all_list_image'))		$all_fields .= " , bo_use_list_image = '{$_POST['bo_use_list_image']}' ";
-if (is_checked('chk_all_video_photo'))		$all_fields .= " , bo_use_video_photo = '{$_POST['bo_use_video_photo']}' ";
-if (is_checked('chk_all_yellow_card'))		$all_fields .= " , bo_use_yellow_card = '{$_POST['bo_use_yellow_card']}' ";
-if (is_checked('chk_all_blind_limit'))		$all_fields .= " , bo_blind_limit = '{$_POST['bo_blind_limit']}' ";
-if (is_checked('chk_all_blind_view'))		$all_fields .= " , bo_blind_view = '{$_POST['bo_blind_view']}' ";
-if (is_checked('chk_all_blind_direct'))		$all_fields .= " , bo_blind_direct = '{$_POST['bo_blind_direct']}' ";
 if (is_checked('chk_all_cmtpoint_target'))	$all_fields .= " , bo_cmtpoint_target = '{$_POST['bo_cmtpoint_target']}' ";
-if (is_checked('chk_all_download_ratio'))	$all_fields .= " , download_fee_ratio = '{$_POST['download_fee_ratio']}' ";
 if (is_checked('chk_all_firstcmt_point'))	{
 	$all_fields .= " , bo_firstcmt_point		= '{$_POST['bo_firstcmt_point']}' ";
 	$all_fields .= " , bo_firstcmt_point_type	= '{$_POST['bo_firstcmt_point_type']}' ";

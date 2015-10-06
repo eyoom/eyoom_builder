@@ -46,12 +46,8 @@
 				$list[$key]['lv_name'] = '';
 			}
 		}
-		
-		/**
-		 * 갤러리 게시판의 경우, 목록에서 이미지를 반드시 사용으로 체크해야만 이미지가 출력되도록 기능 개선
-		 * 일반 게시판의 경우, 사용하지 않도록 체크하면 속도향상이 기대됨
-		 */
-		if($eyoom_board['bo_use_list_image']) {
+
+		if($board['bo_use_list_file']) {
 			$thumb = get_list_thumbnail($board['bo_table'], $list[$key]['wr_id'], $board['bo_gallery_width'], $board['bo_gallery_height']);
 			if($tpl_name == 'bs') {
 				if($thumb['src']) {
@@ -69,39 +65,6 @@
 				}
 			}
 		}
-		
-		/**
-		 * 목록에서 동영상이미지 사용을 체크했을 경우
-		 * 속도에 영향을 미치지 않도록 썸네일 정보가 이미 있다면 실행하지 않도록 처리
-		 */
-		if($eyoom_board['bo_use_video_photo'] == '1' && !$thumb['src']) {
-			/**
-			 * 동영상으로 부터 이미지 추출하는 부분
-			 * 동영상 경로는 wr_4 필드를 활용하기 
-			 */
-			if($list[$key]['wr_4']) {
-				$video = unserialize($list[$key]['wr_4']);
-				$thumb['src'] = $video['thumb_src'];
-				if($thumb['src']) {
-					if($tpl_name == 'bs') {
-						if($thumb['src']) {
-							$list[$key]['img_content'] = '<img class="img-responsive" src="'.$thumb['src'].'">';
-							$list[$key]['img_src'] = $thumb['src'];
-						} else {
-							$list[$key]['img_content'] = '<span style="width:100%;">no image</span>';
-						}
-					} else {
-						if($thumb['src']) {
-							$list[$key]['img_content'] = '<img src="'.$thumb['src'].'" alt="'.$thumb['alt'].'" width="'.$board['bo_gallery_width'].'" height="'.$board['bo_gallery_height'].'">';
-							$list[$key]['img_src'] = $thumb['src'];
-						} else {
-							$list[$key]['img_content'] = '<span style="width:'.$board['bo_gallery_width'].'px;height:'.$board['bo_gallery_height'].'px">no image</span>';
-						}
-					}
-				}
-			}
-		}
-		
 		if($board['bo_use_list_content']) {
 			$content_length = G5_IS_MOBILE ? 100:150;
 			$wr_content = $list[$key]['wr_content'];
@@ -115,18 +78,6 @@
 		// 게시물 view페이지의 wmode(Window Mode) 설정
 		if($_wmode) {
 			$list[$key]['href'] = $list[$key]['href'].'&wmode=1';
-		}
-		
-		/**
-		 * 게시물 블라인드 처리 
-		 */
-		$ycard = unserialize($list[$key]['wr_4']);
-		if(!$ycard) $ycard = array();
-		if($ycard['yc_blind'] == 'y') {
-			$yc_data = sql_fetch("select mb_id from {$g5['eyoom_yellowcard']} where bo_table = '{$bo_table}' and wr_id = '{$list[$key]['wr_id']}' and mb_id = '{$member['mb_id']}' ");
-			if(!$is_admin && $member['mb_level'] < $eyoom_board['bo_blind_view'] && !$yc_data['mb_id']) $list[$key]['href'] = 'javascript:;';
-			$list[$key]['subject'] = '이 게시물은 블라인드 처리된 글입니다.';
-			$list[$key]['content'] = '이 게시물은 블라인드 처리된 글입니다.';
 		}
 	}
 

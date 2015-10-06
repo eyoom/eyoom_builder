@@ -11,7 +11,7 @@
 	define('EYOOM_THEME_PATH', EYOOM_PATH.'/theme');
 	define('EYOOM_THEME_URL', EYOOM_URL.'/theme');
 	define('EYOOM_AJAX_URL', EYOOM_SITE.'/eyoom/eyoom.ajax.php');
-	
+
 	// Eyoom Core & Class 외 경로 정의
 	define('EYOOM_CORE_PATH', EYOOM_PATH.'/core');
 	define('EYOOM_CORE_URL', EYOOM_URL.'/core');
@@ -37,7 +37,7 @@
 	$config['cf_include_head'] = 'eyoom/head.php';
 	$config['cf_include_tail'] = 'eyoom/tail.php';
 	$config['cf_include_index'] = 'eyoom/index.php';
-
+	
 	// Eyoom DB Table
 	$g5['eyoom_respond']	= G5_TABLE_PREFIX.'eyoom_respond';
 	$g5['eyoom_member']		= G5_TABLE_PREFIX.'eyoom_member';
@@ -50,7 +50,6 @@
 	$g5['eyoom_menu']		= G5_TABLE_PREFIX.'eyoom_menu';
 	$g5['eyoom_link']		= G5_TABLE_PREFIX.'eyoom_link';
 	$g5['eyoom_attendance'] = G5_TABLE_PREFIX.'eyoom_attendance'; 
-	$g5['eyoom_yellowcard']	= G5_TABLE_PREFIX.'eyoom_yellowcard'; 
 
 	// Eyoom 환경설정파일
 	$eyoom = array();
@@ -186,7 +185,7 @@
 					$tpl_name = G5_IS_MOBILE ? 'mo':'pc';
 					if($eyoom['bootstrap'])  $tpl_name = 'bs';
 					$tpl = new Template($shop_theme);
-
+	
 					@include_once(EYOOM_INC_PATH.'/hookedfile.header.php');
 					include_once($eyoom_shop_core);
 					exit;

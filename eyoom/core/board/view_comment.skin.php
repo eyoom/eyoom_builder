@@ -89,15 +89,6 @@
 			$comment[$i]['c_good_href'] = $board['bo_use_good'] ? './goodcmt.php?'.$query_string.'&amp;c_id='.$comment[$i]['comment_id'].'&amp;good=good':'';
 			$comment[$i]['c_nogood_href'] = $board['bo_use_nogood'] ? './goodcmt.php?'.$query_string.'&amp;c_id='.$comment[$i]['comment_id'].'&amp;good=nogood':'';
 		}
-		
-		// 블라인드 처리
-		$cmt_ycard = unserialize($list[$i]['wr_4']);
-		if(!$cmt_ycard) $cmt_ycard = array();
-		$comment[$i]['yc_count'] = $cmt_ycard['yc_count'];
-		if($cmt_ycard['yc_blind'] == 'y') {
-			$comment[$i]['yc_blind'] = true;
-		}
-		$comment[$i]['mb_ycard'] = $eb->mb_yellow_card($member['mb_id'],$bo_table, $comment[$i]['comment_id']);
 	}
 
 	// 댓글에 이미지 첨부파일 용량 제한

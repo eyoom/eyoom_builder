@@ -36,21 +36,20 @@ switch($_POST['mode']) {
 			}
 
 			$set = "
-				me_theme		= '{$_POST['theme']}',
-				me_code			= '{$me_code}',
-				me_order		= '{$me_order}',
-				me_icon			= '{$_POST['subme_icon']}',
-				me_shop			= '{$_POST['me_shop']}',
-				me_name			= '{$_POST['subme_name']}',
-				me_path			= '{$subme_path}',
-				me_type			= '{$subme_info['me_type']}',
-				me_pid			= '{$subme_info['me_pid']}',
-				me_link			= '{$subme_info['me_link']}',
-				me_target		= '{$_POST['subme_target']}',
-				me_permit_level	= '{$_POST['subme_permit_level']}',
-				me_side			= '{$_POST['subme_side']}',
-				me_use			= '{$_POST['subme_use']}',
-				me_use_nav		= '{$me_use_nav}'
+				me_theme	= '{$_POST['theme']}',
+				me_code		= '{$me_code}',
+				me_order	= '{$me_order}',
+				me_icon		= '{$_POST['subme_icon']}',
+				me_shop		= '{$_POST['me_shop']}',
+				me_name		= '{$_POST['subme_name']}',
+				me_path		= '{$subme_path}',
+				me_type		= '{$subme_info['me_type']}',
+				me_pid		= '{$subme_info['me_pid']}',
+				me_link		= '{$subme_info['me_link']}',
+				me_target	= '{$_POST['subme_target']}',
+				me_side		= '{$_POST['subme_side']}',
+				me_use		= '{$_POST['subme_use']}',
+				me_use_nav	= '{$me_use_nav}'
 			";
 			$insert = "insert into {$g5['eyoom_menu']} set $set";
 			sql_query($insert,false);
@@ -81,19 +80,18 @@ switch($_POST['mode']) {
 			}
 
 			$set = "
-				me_order		= '{$_POST['me_order']}',
-				me_icon			= '{$_POST['me_icon']}',
-				me_shop			= '{$_POST['me_shop']}',
-				me_name			= '{$_POST['me_name']}',
-				me_path			= '{$_POST['me_path']}',
-				me_type			= '{$me_info['me_type']}',
-				me_pid			= '{$me_info['me_pid']}',
-				me_link			= '{$me_info['me_link']}',
-				me_target		= '{$_POST['me_target']}',
-				me_permit_level	= '{$_POST['me_permit_level']}',
-				me_side			= '{$_POST['me_side']}',
-				me_use			= '{$_POST['me_use']}',
-				me_use_nav		= '{$me_use_nav}'
+				me_order	= '{$_POST['me_order']}',
+				me_icon		= '{$_POST['me_icon']}',
+				me_shop		= '{$_POST['me_shop']}',
+				me_name		= '{$_POST['me_name']}',
+				me_path		= '{$_POST['me_path']}',
+				me_type		= '{$me_info['me_type']}',
+				me_pid		= '{$me_info['me_pid']}',
+				me_link		= '{$me_info['me_link']}',
+				me_target	= '{$_POST['me_target']}',
+				me_side		= '{$_POST['me_side']}',
+				me_use		= '{$_POST['me_use']}',
+				me_use_nav	= '{$me_use_nav}'
 			";
 
 			$update = "update {$g5['eyoom_menu']} set $set where me_theme='{$_POST['theme']}' and me_code='{$_POST['me_code']}' and me_shop='{$_POST[me_shop]}'";

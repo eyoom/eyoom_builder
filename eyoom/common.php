@@ -5,7 +5,7 @@
 	define('_EYOOM_COMMON_',true);
 
 	// Version
-	define('_EYOOM_VESION_','EyoomBuilder_1.1.10');
+	define('_EYOOM_VESION_','EyoomBuilder_1.1.9');
 
 	// GNUBOARD5 Library
 	include_once(G5_LIB_PATH.'/common.lib.php');
@@ -46,12 +46,6 @@
 			$eyoom_board['bo_use_anonymous']		= 2;
 			$eyoom_board['bo_use_infinite_scroll']	= 2;
 			$eyoom_board['bo_use_point_explain']	= 1;
-			$eyoom_board['bo_use_video_photo']		= 2;
-			$eyoom_board['bo_use_list_image']		= 1;
-			$eyoom_board['bo_use_yellow_card']		= 0;
-			$eyoom_board['bo_blind_limit']			= 5;
-			$eyoom_board['bo_blind_view']			= 10;
-			$eyoom_board['bo_blind_direct']			= 10;
 			$eyoom_board['bo_firstcmt_point']		= 0;
 			$eyoom_board['bo_firstcmt_point_type']	= 1;
 			$eyoom_board['bo_bomb_point']			= 0;
@@ -61,7 +55,6 @@
 			$eyoom_board['bo_lucky_point']			= 0;
 			$eyoom_board['bo_lucky_point_type']		= 1;
 			$eyoom_board['bo_lucky_point_ratio']	= 1;
-			$eyoom_board['download_fee_ratio']		= 0;
 		}
 		// 익명글쓰기 체크
 		$is_anonymous = $eyoom_board['bo_use_anonymous'] == 1 ? true:false;

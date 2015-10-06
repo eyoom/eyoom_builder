@@ -170,12 +170,6 @@ CREATE TABLE IF NOT EXISTS `g5_eyoom_board` (
   `bo_use_anonymous` char(1) NOT NULL default '2',
   `bo_use_infinite_scroll` char(1) NOT NULL default '2',
   `bo_use_point_explain` char(1) NOT NULL default '1',
-  `bo_use_video_photo` char(1) NOT NULL default '2',
-  `bo_use_list_image` char(1) NOT NULL default '1',
-  `bo_use_yellow_card` tinyint(2) NOT NULL default '0',
-  `bo_blind_limit` tinyint(2) NOT NULL default '5',
-  `bo_blind_view` tinyint(2) NOT NULL default '10',
-  `bo_blind_direct` tinyint(2) NOT NULL default '10',
   `bo_cmtpoint_target` char(1) NOT NULL default '1',
   `bo_firstcmt_point` int(7) NOT NULL default '0',
   `bo_firstcmt_point_type` char(1) NOT NULL default '1',
@@ -186,8 +180,7 @@ CREATE TABLE IF NOT EXISTS `g5_eyoom_board` (
   `bo_lucky_point` int(7) NOT NULL default '0',
   `bo_lucky_point_type` char(1) NOT NULL default '1',
   `bo_lucky_point_ratio` int(2) NOT NULL default '1',
-  `download_fee_ratio` tinyint(2) NOT NULL default '0',
-  PRIMARY KEY  (`bo_id`),
+  PRIMARY KEY (`bo_id`),
   KEY `bo_table` (`bo_table`),
   KEY `bo_theme` (`bo_theme`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -229,7 +222,6 @@ CREATE TABLE IF NOT EXISTS `g5_eyoom_menu` (
   `me_link` varchar(255) NOT NULL default '',
   `me_target` varchar(255) NOT NULL default '',
   `me_order` int(11) NOT NULL default '0',
-  `me_permit_level` tinyint(4) NOT NULL default '1',
   `me_side` enum('y','n') NOT NULL default 'y',
   `me_use` enum('y','n') NOT NULL default 'y',
   `me_use_nav` enum('y','n') NOT NULL default 'y',
@@ -267,21 +259,4 @@ CREATE TABLE IF NOT EXISTS `g5_eyoom_link` (
   `wr_id` int(11) unsigned NOT NULL default '0',
   `theme` varchar(40) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`s_no`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `g5_eyoom_yellowcard`
---
-
-DROP TABLE IF EXISTS `g5_eyoom_yellowcard`;
-CREATE TABLE IF NOT EXISTS `g5_eyoom_yellowcard` (
-  `yc_id` int(11) unsigned NOT NULL auto_increment,
-  `bo_table` varchar(20) NOT NULL default '',
-  `wr_id` int(11) NOT NULL default '0',
-  `mb_id` varchar(20) NOT NULL default '',
-  `yc_reason` char(1) NOT NULL,
-  `yc_datetime` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (`yc_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

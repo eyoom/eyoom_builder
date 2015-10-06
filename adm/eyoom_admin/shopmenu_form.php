@@ -115,22 +115,6 @@ $frm_submit = '
 				</td>
 			</tr>
 			<tr>
-				<th scope="row"><label for="me_permit_level">메뉴보이기 레벨설정</label></th>
-				<td>
-					<select name="me_permit_level" id="me_permit_level">
-						<option value="">선택</option>
-						<?php 
-						  for($i=1;$i<=10;$i++) {
-						?>
-						<option value="<?php echo $i;?>" <?php if($meinfo['me_permit_level'] == $i) echo "selected";?>><?php echo $i;?></option>
-						<?php
-							}
-						?>
-					</select> 레벨
-					<span class="exp">선택한 그누레벨 이상의 회원에게 메뉴가 보이게 됩니다.</span>
-				</td>
-			</tr>
-			<tr>
 				<th scope="row"><label for="me_side">사이드 레이아웃</label></th>
 				<td>
 					<label for="me_side1"><input type="radio" name="me_side" id="me_side1" value="y" <?php echo $checked['me_side1'];?>> 보이기</label>
@@ -215,22 +199,6 @@ $frm_submit = '
 					  <option value="self" selected>현재창</option>
 					</select>
 					<span class="exp">예) <?php echo G5_BBS_URL;?>/board.php?bo_table=free</span>
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="subme_permit_level">메뉴보이기 레벨설정</label></th>
-				<td>
-					<select name="subme_permit_level" id="subme_permit_level">
-						<option value="">선택</option>
-						<?php 
-						  for($i=1;$i<=10;$i++) {
-						?>
-						<option value="<?php echo $i;?>" <?php if($i == 1) echo "selected";?>><?php echo $i;?></option>
-						<?php
-							}
-						?>
-					</select> 레벨
-					<span class="exp">선택한 그누레벨 이상의 회원에게 메뉴가 보이게 됩니다.</span>
 				</td>
 			</tr>
 			<tr>

@@ -769,25 +769,13 @@ class eyoom extends qfile
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
+		@curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+		$output = curl_exec($ch);
+		curl_close($ch);
 
-		if($host == 'vimeo.com') {
-			curl_setopt($ch, CURLOPT_HEADER, 0);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-			$output = unserialize(curl_exec($ch));
-			$output = $output[0];
-			curl_close($ch);
-			return $output;
-		} else {
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-			curl_setopt($ch, CURLOPT_HEADER, 0);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-			$output = curl_exec($ch);
-			curl_close($ch);
-			if($host == 'ted.com') return $output;
-		}
-		
 		switch($host) {
 			case 'tvcast.naver.com':
 				preg_match('/nhn.rmcnmv.RMCVideoPlayer\("(?P<vid>[A-Z0-9]+)", "(?P<inKey>[a-z0-9]+)"/i', $output, $video);
@@ -813,7 +801,7 @@ class eyoom extends qfile
 				$code = $res[0];
 				return $code;
 				break;
-			case 'slideshare.net':
+			case 'slideshare.net';
 				preg_match('/\<meta class=\"twitter_player\"([^\<\>])*\>/i', $output, $scrapping);
 				$temp = explode("embed_code/",htmlspecialchars($scrapping[0]));
 				$res  = explode("&quot;",$temp[1]);
@@ -866,129 +854,6 @@ class eyoom extends qfile
 			$source = "<div class='responsive-video'>".$source."</div>";
 			return $source;
 		} else return false;		
-	}
-	
-	/**
-	 * URL로부터 동영상 이미지 경로를 찾기
-	 */
-	public function get_imgurl_from_video($src) {
-		$video = $this->video_from_soruce($src);
-		
-		switch($video['host']) {
-			case 'youtu.be':
-			case 'youtube.com':
-				$path_name = mb_substr($video['key'],0,11,"utf-8");
-				$video['img_url'] = "http://img.youtube.com/vi/{$path_name}/0.jpg ";
-				break;
-
-			case 'vimeo.com':
-				$url = "http://vimeo.com/api/v2/video/{$video['key']}.php";
-				$thumb = $this->get_video_use_curl($url, $video['host']);
-				$video['img_url'] = $thumb['thumbnail_large'];
-				break;
-			
-			case 'ted.com':
-				$content = $this->get_video_use_curl($src, $video['host']);
-				if (preg_match('!(((ht|f)tps?:\/\/)|(www.))[a-zA-Z0-9_\-.:#/~}?]+.jpg!', $content, $match)) {
-					$video['img_url'] = $match[0];
-				}
-				break;
-			default : $video['img_url'] = ''; break;
-		}
-		return $video;
-	}
-	
-	/**
-	 * 동영상 URL를 이용하여 목록이미지 thumbnail 생성하기
-	 */
-	public function make_thumb_from_video($src, $bo_table, $wr_id, $width, $height) {
-		
-		$src = preg_replace('/&nbsp;/', '', $src);
-		
-		$video = $this->get_imgurl_from_video($src);
-		$filename = trim($this->get_filename_from_url($video['img_url']));
-		$thumb_info = '/file/' . $bo_table . '/vlist_thumb_' . $wr_id . '_' . $filename;
-		$vlist_thumb_path = G5_DATA_PATH . $thumb_info;
-		$vlist_thumb_url = G5_DATA_URL . $thumb_info;
-		
-		if($video['img_url']) {
-			if( file_exists($vlist_thumb_path) ) {
-				return $vlist_thumb_url;
-			} else {
-				if($video['host'] != 'ted.com') { // TED 이미지는 용량이 너무 커서 로컬에 저장하는 시간이 너무 길어서 제외
-					$local_image = G5_DATA_PATH . '/file/' . $bo_table . '/vlist_img_' . $wr_id . '_' . $filename;
-					if(file_exists($local_image)) {
-						return $this->make_thumb_video_image($bo_table, $wr_id, $filename, $width, $height);
-					} else {
-						$this->save_url_image($video['img_url'], $local_image);
-						return $this->make_thumb_video_image($bo_table, $wr_id, $filename, $width, $height);
-					}
-				} else {
-					return $video['img_url'];
-				}
-			}
-		} else return;
-	}
-	
-	/**
-	 * URL로 부터 파일명 가져오기
-	 */
-	public function get_filename_from_url($url) {
-		$dirs = explode('/', $url);
-		return $dirs[(count($dirs)-1)];
-	}
-	
-	/**
-	 * 외부 이미지 로컬에 저장하기
-	 */
-	public function save_url_image($url, $local_image) {
-		$ch = curl_init($url);
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_BINARYTRANSFER,1);
-		$rawdata = curl_exec($ch);
-		curl_close ($ch);
-		
-		if(file_exists($local_image)){
-			unlink($local_image);
-		}
-		$fp = fopen($local_image,'x');
-		fwrite($fp, $rawdata);
-		fclose($fp);
-	}
-	
-	/**
-	 * 다운로드된 비디오 이미지 파일을 썸네일화
-	 */
-	public function make_thumb_video_image ($bo_table, $wr_id, $filename, $width, $height) {
-		
-		$img_info = '/file/' . $bo_table . '/vlist_img_' . $wr_id . '_' . $filename;
-		$img = G5_DATA_PATH . $img_info;
-
-		if (file_exists($img)) {
-			$size = getimagesize($img);
-			switch ($size['mime']) {
-				case "image/jpeg"	: $source = @imagecreatefromjpeg($img); $ext = 'jpg'; break;
-				case "image/gif"	: $source = @imagecreatefromgif($img); $ext = 'gif'; break;
-				case "image/png"	: $source = @imagecreatefrompng($img); $ext = 'png'; break;
-			}
-
-			if(!$height) {
-				$height = $width*($size[1]/$size[0]);
-			}
-			
-			$dest = @imagecreatetruecolor($width, $height);
-			$out_file = G5_DATA_PATH . '/file/' . $bo_table . '/vlist_thumb_' . $wr_id . '_' . $filename;
-			$out_url = G5_DATA_URL . '/file/' . $bo_table . '/vlist_thumb_' . $wr_id . '_' . $filename;
-			@imagecopyresampled($dest, $source, 0, 0, 0, 0, $width , $height, $size[0], $size[1]);
-			@imagejpeg($dest, $out_file , 100);
-			@imagedestroy($dest);
-			@imagedestroy($source);
-			@unlink($img);
-			
-			return $out_url;
-
-		} else return false;
 	}
 
 	public function emoticon_content($emoticon) {
@@ -1103,17 +968,6 @@ class eyoom extends qfile
 		if(!$mb_id || !$bo_table || !$wr_id) return false;
 		else {
 			$sql = "select * from {$g5['board_good_table']} where bo_table='{$bo_table}' and wr_id='{$wr_id}' and mb_id='{$mb_id}' limit 1";
-			$info = sql_fetch($sql,false);
-			return $info;
-		}
-	}
-	
-	// 
-	public function mb_yellow_card($mb_id, $bo_table, $wr_id) {
-		global $g5;
-		if(!$mb_id || !$bo_table || !$wr_id) return false;
-		else {
-			$sql = "select * from {$g5['eyoom_yellowcard']} where bo_table='{$bo_table}' and wr_id='{$wr_id}' and mb_id='{$mb_id}' limit 1";
 			$info = sql_fetch($sql,false);
 			return $info;
 		}
