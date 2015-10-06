@@ -14,6 +14,7 @@ if($eyoom_board['bo_sel_nameview'] == '1') $checked['bo_sel_nameview1'] = true; 
 if($eyoom_board['bo_use_level_icon'] == '1') $checked['bo_use_level_icon'] = true; else $checked['bo_use_level_icon'] = false;
 if($eyoom_board['bo_use_hotgul'] == '1') $checked['bo_use_hotgul'] = true; else $checked['bo_use_hotgul'] = false;
 if($eyoom_board['bo_use_anonymous'] == '1') $checked['bo_use_anonymous'] = true; else $checked['bo_use_anonymous'] = false;
+if($eyoom_board['bo_use_infinite_scroll'] == '1') $checked['bo_use_infinite_scroll'] = true; else $checked['bo_use_infinite_scroll'] = false;
 if($eyoom_board['bo_use_point_explain'] == '1') $checked['bo_use_point_explain'] = true; else $checked['bo_use_point_explain'] = false;
 
 $frm_submit = '
@@ -99,6 +100,18 @@ $frm_submit = '
                 <label for="chk_grp_anonymous">그룹적용</label>
                 <input type="checkbox" name="chk_all_anonymous" value="1" id="chk_all_anonymous">
                 <label for="chk_all_anonymous">전체적용</label>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row"><label for="bo_use_infinite_scroll">목록에서 무한스크롤</label></th>
+            <td>
+				<label for="bo_use_infinite_scroll"><input type="checkbox" name="bo_use_infinite_scroll" value="1" id="bo_use_infinite_scroll" <?php echo $checked['bo_use_infinite_scroll']?'checked':''; ?>> 사용</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_infinite_scroll" value="1" id="chk_grp_infinite_scroll">
+                <label for="chk_grp_infinite_scroll">그룹적용</label>
+                <input type="checkbox" name="chk_all_infinite_scroll" value="1" id="chk_all_infinite_scroll">
+                <label for="chk_all_infinite_scroll">전체적용</label>
             </td>
         </tr>
         </tbody>

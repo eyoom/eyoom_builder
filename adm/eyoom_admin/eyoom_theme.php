@@ -17,8 +17,15 @@
 	foreach($eyoom_basic as $key => $val) {
 		$_eyoom[$key] = $eyoom[$key] ? $eyoom[$key]: $val;
 	}
-	$_eyoom['theme'] = $eyoom[$key];
-	$_tpl_name = $_eyoom['bootstrap'] ? 'bs':'pc';
+	$_eyoom['theme'] = $eyoom['theme'];
+	$_eyoom['bootstrap'] = $eyoom['bootstrap'];
+	$_tpl_name = $eyoom['bootstrap'] ? 'bs':'pc';
+
+	if(preg_match('/mlang/',$_theme)) {
+		$_eyoom['theme_lang_type'] = 'm';
+	} else {
+		unset($_eyoom['theme_lang_type']);
+	}
 	unset($eyoom);
 
 	// 게시판 설정 다시 가져오기

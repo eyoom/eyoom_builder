@@ -16,6 +16,7 @@ form label {margin-left:10px;}
 .themes .btn_community {margin-left:15px;}
 .themes .btn_clone a,.themes .btn_delete a,.themes .btn_chname a {color:#fff;border:1px solid #555;background:#777;}
 .themes .btn_community a, .themes .btn_shop a {color:#fff;border:1px solid #000;background:#333;}
+.themes .refresh {float:left;width:100px;text-align:center;margin:2px;}
 
 .bo_btns div {margin:0 auto;width:70px;text-align:center;}
 

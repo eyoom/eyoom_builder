@@ -167,6 +167,7 @@ CREATE TABLE IF NOT EXISTS `g5_eyoom_board` (
   `bo_sel_date_type` enum('1','2') NOT NULL DEFAULT '1',
   `bo_use_hotgul` char(1) NOT NULL DEFAULT '1',
   `bo_use_anonymous` char(1) NOT NULL DEFAULT '2',
+  `bo_use_infinite_scroll` char(1) NOT NULL DEFAULT '2',
   `bo_use_point_explain` char(1) NOT NULL default '1',
   `bo_firstcmt_point` int(7) NOT NULL default '0',
   `bo_firstcmt_point_type` char(1) NOT NULL default '1',
@@ -218,6 +219,7 @@ CREATE TABLE IF NOT EXISTS `g5_eyoom_menu` (
   `me_link` varchar(255) NOT NULL default '',
   `me_target` varchar(255) NOT NULL default '',
   `me_order` int(11) NOT NULL default '0',
+  `me_side` enum('y', 'n') NOT NULL default 'y',
   `me_use` enum('y','n') NOT NULL default 'y',
   `me_use_nav` enum('y','n') NOT NULL default 'y',
   PRIMARY KEY  (`me_id`)

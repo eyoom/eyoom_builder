@@ -244,7 +244,7 @@ class latest extends eyoom
 			$list[$i] = $row;
 			$bo_table = $direct!='y' ? $row['bo_table']:$this->bo_table;
 			if(!$row['wr_subject']) {
-				if(preg_match('/secret/',$row['wr_option']) && !$is_admin && $member['mb_id']!=$row['mb_id'] && !$is_member) {
+				if(preg_match('/secret/',$row['wr_option']) && (($is_member && !$is_admin && $member['mb_id']!=$row['mb_id']) || !$is_member)) {
 					$list[$i]['wr_subject'] = '비밀 댓글입니다.';
 					$list[$i]['wr_content'] = '비밀 댓글입니다.';
 				} else {
@@ -252,7 +252,7 @@ class latest extends eyoom
 				}
 				$list[$i]['href'] = G5_BBS_URL."/board.php?bo_table={$bo_table}&amp;wr_id={$row['wr_id']}#c_{$row['wr_id']}";
 			} else {
-				if(preg_match('/secret/',$row['wr_option']) && !$is_admin && $member['mb_id']!=$row['mb_id'] && !$is_member) {
+				if(preg_match('/secret/',$row['wr_option']) && (($is_member && !$is_admin && $member['mb_id']!=$row['mb_id']) || !$is_member)) {
 					$list[$i]['wr_subject'] = '비밀글입니다.';
 					$list[$i]['wr_content'] = '비밀글입니다.';
 				} else {

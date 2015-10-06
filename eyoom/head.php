@@ -27,8 +27,8 @@
 
 	// 서브페이지 메뉴정보, 타이틀 및 Path 정보
 	if(!defined('_INDEX_'))	{
-		if($menu_flag = 'eyoom') $sidemenu = $thema->submenu_create($menu_flag);
 		$subinfo = $thema->subpage_info($menu);
+		if($subinfo['registed'] == 'y') $sidemenu = $thema->submenu_create($menu_flag);
 	} else {
 		// 팝업창  
 		if($eyoom['use_gnu_newwin'] == 'n') {

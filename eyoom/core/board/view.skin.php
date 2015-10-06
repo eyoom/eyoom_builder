@@ -11,8 +11,8 @@
 
 	// 읽는사람 포인트 주기 및 이윰뉴 테이블의 히트수/댓글수 일치 시키기
     $spv_name = 'spv_board_'.$bo_table.'_'.$wr_id;
-    if (!get_session($spv_name) && $is_member) {
-		$eb->level_point($levelset['read']);
+    if (!get_session($spv_name)) {
+		if($is_member) $eb->level_point($levelset['read']);
         set_session($spv_name, TRUE);
 
 		// 이윰뉴 테이블에 wr_hit 적용

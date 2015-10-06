@@ -14,6 +14,31 @@ while ($file = @readdir($handle)) {
 @closedir($handle);
 
 if(is_writable($theme_path) && count($result_array) > 0) {
+	foreach($result_array as $key => $dir) {
+		if($dir == 'basic') $theme_dir['basic'] = true;
+		if($dir == 'pc_basic') $theme_dir['pc_basic'] = true;
+	}
+	$theme_count = count($theme_dir);
+	if($theme_count == 2) {
+		$ins_type = 'c'; //choice
+	} else if($theme_count == 1) {
+		if($theme_dir['basic']) $ins_type = 'b'; // basic
+		if($theme_dir['pc_basic']) $ins_type = 'p'; // pc_basic
+	} else {
+?>
+<h1>이윰빌더를 설치하기 위해서는 테마가 필요합니다.</h1>
+
+<div class="ins_inner">
+    <p>이윰빌더(Eyoom Builder)를 설치하시려면 반드시 테마를 다운로드 하시고, 서버에 업로드하셔야 합니다.</p>
+</div>
+<div class="ins_inner">
+    <div class="inner_btn">
+        <a href="../../">다시 시도하기</a>
+    </div>
+</div>
+<?php
+		exit;
+	}
 ?>
 <h1>EYOOM BUILDER <b>INSTALLATION</b></h1>
 
@@ -28,6 +53,19 @@ if(is_writable($theme_path) && count($result_array) > 0) {
 		</ul>
 
 		<span class='uninstall'>&gt;&gt; 설치를 원하지 않으신다면 <?php echo G5_EXTEND_PATH.'/xeyoom.extend.php';?> 파일 및 업로드하신 Eyoom Builder 관련 파일들을 삭제하시면 됩니다.</span><br><br>
+
+		<?php if($ins_type == 'c') { ?>
+		<p>
+		<strong>중요 [기본테마 선택하기]</strong><br>
+		<select name="ins_theme">
+			<option value='b'>베이직 테마 [반응형웹 테마]</option>
+			<option value='p'>PC 베이직 테마 [PC/Mobile지원 테마]</option>
+		</select>
+		<br><br>
+		</p>
+		<?php } else { ?>
+		<input type="hidden" name="ins_theme" value="<?php echo $ins_type; ?>">
+		<?php } ?>
 
 		<div class="caution"><b>※ 알림</b> <br>
 		- 이윰빌더를 재설치하는 경우, 기존 테이블 정보를 그대로 유지할지 초기화시킬지 선택해 주세요.<br>

@@ -47,6 +47,9 @@ class Template extends Template_
 			'index_pc'	=> 'main/index_pc.html',
 			'index_mo'	=> 'main/index_mo.html',
 			'index_bs'	=> 'main/index_bs.html',
+			'misc_pc'	=> 'layout/misc_pc.html',
+			'misc_mo'	=> 'layout/misc_mo.html',
+			'misc_bs'	=> 'layout/misc_bs.html',
 		));
 
 		// 중요변수 기본할당

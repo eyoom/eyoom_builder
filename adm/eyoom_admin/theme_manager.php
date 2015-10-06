@@ -11,6 +11,20 @@
 ?>
 <section>
 	<h2><?php echo _EYOOM_VESION_;?></h2>
+    <div class="tbl_frm01 tbl_wrap">
+        <table style="background:#fafafa;border:1px solid #eaeaea;">
+        <caption>테마설정</caption>
+        <tbody>
+        <tr>
+            <td>
+				<div class="themes">
+					<div class="refresh btn_latest"><a href="javascript:;" class="refresh_latest" onclick="return refresh_db_record('latest');">최신글정리</a></div>
+					<div class="refresh btn_respond"><a href="javascript:;" class="refresh_respond" onclick="return refresh_db_record('respond');">내글반응정리</a></div>
+				</div>
+			</td>
+		</tr>
+		</table>
+	</div>
 </section>
 <?php
 	}
@@ -39,7 +53,6 @@
 				<div><a href="./board_list.php?thema=<?php echo $arr[$i];?>" <?php if($_theme == $arr[$i] && $sub_key=='200') echo "class='active'";?>>게시판설정</a></div>
 				<div><a href="./menu_list.php?thema=<?php echo $arr[$i];?>" <?php if($_theme == $arr[$i] && $sub_key=='300') echo "class='active'";?>>이윰메뉴설정</a></div>
 				<div><a href="./banner_list.php?thema=<?php echo $arr[$i];?>" <?php if($_theme == $arr[$i] && $sub_key=='400') echo "class='active'";?>>배너/광고</a></div>
-				<div class="btn_refresh"><a href="javascript:;" class="refresh_latest" onclick="return refresh_latest('<?php echo $_theme?>');">최신글정리</a></div>
 				<div class="btn_clone"><a href="./theme_clone.php?thema=<?php echo $arr[$i];?>" class="clone_theme" onclick="return false;">복사</a></div>
 				<div class="btn_delete"><a href="./theme_delete.php?thema=<?php echo $arr[$i];?>" class="delete_theme" onclick="return false;">삭제</a></div>
 				<div class="btn_chname"><a href="./theme_alias.php?thema=<?php echo $arr[$i];?>" class="alias_theme" onclick="return false;">별칭설정</a></div>
@@ -86,14 +99,27 @@ function set_theme(theme) {
 		document.ftheme.submit();
 	} else return;
 }
-function refresh_latest() {
-	if(confirm("이윰 최신글을 정리합니다.\n게시물의 수에 따라 시간이 소요될 수 있습니다.\n\n계속 진행하시겠습니까?")) {
-		var url = "./theme_latest_refresh.php";
-		$.post(url, function(data) {
-			if(data.result == 'yes') {
-				alert('정상적으로 정리하였습니다.');
+function refresh_db_record(target) {
+	var msg='';
+	switch(target) {
+		case 'latest': msg = "이윰 최신글을 정리합니다.\n게시물의 수에 따라 시간이 소요될 수 있습니다.\n\n계속 진행하시겠습니까?"; break;
+		case 'respond': msg = "내글반응의 노출숫자를 실 데이타와 일치시킵니다.\n\n계속 진행하시겠습니까?";break;
+	}
+	if(confirm(msg)) {
+		var url = "./eyoom_db_refresh.php";
+		$.ajax({
+			url: url,
+			type: "POST",
+			data: {'tg': target },
+			dataType: "json",
+			async: false,
+			cache: false,
+			success: function(data, textStatus) {
+				if(data.result == 'yes'){
+					alert('정상적으로 처리하였습니다.');
+				}
 			}
-		},"json");
+		});
 	} else return false;
 }
 </script>

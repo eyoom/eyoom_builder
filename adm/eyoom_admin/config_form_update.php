@@ -75,7 +75,11 @@ switch($mode) {
 			$eyoom_config[$key] = $val ? $val : $eyoom[$key];
 		}
 		if(!$eyoom_config['language']) $eyoom_config['language'] = $_POST['language'];
-		if($eyoom['theme'] != 'basic') $eyoom_config['theme_key'] = $eyoom['theme_key'];
+		if($eyoom['theme'] != 'basic') {
+			$eyoom_config['theme_key'] = $eyoom['theme_key'];
+			$eyoom_config['bootstrap'] = $eyoom['bootstrap'];
+		}
+		if(preg_match('/mlang/',$eyoom['theme'])) $eyoom_config['theme_lang_type'] = 'm';
 
 		$qfile->save_file('eyoom',$eyoom_config_file,$eyoom_config);
 		$msg = "설정을 사용테마에 적용하였습니다.";

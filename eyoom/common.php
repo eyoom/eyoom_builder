@@ -5,7 +5,7 @@
 	define('_EYOOM_COMMON_',true);
 
 	// Version
-	define('_EYOOM_VESION_','EyoomBuilder_1.1.2');
+	define('_EYOOM_VESION_','EyoomBuilder_1.1.3');
 
 	// GNUBOARD5 Library
 	include_once(G5_LIB_PATH.'/common.lib.php');
@@ -44,6 +44,7 @@
 			$eyoom_board['bo_sel_date_type']		= 1;
 			$eyoom_board['bo_use_hotgul']			= 1;
 			$eyoom_board['bo_use_anonymous']		= 2;
+			$eyoom_board['bo_use_infinite_scroll']	= 2;
 			$eyoom_board['bo_use_point_explain']	= 1;
 			$eyoom_board['bo_firstcmt_point']		= 0;
 			$eyoom_board['bo_firstcmt_point_type']	= 1;

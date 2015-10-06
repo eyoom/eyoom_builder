@@ -452,7 +452,16 @@ class eyoom extends qfile
 
 	// 그누레벨 자동업/다운
 	public function set_gnu_level($level) {
-		global $g5, $levelset, $member;
+		global $g5, $member;
+		$mb_level = $this->get_gnulevel_from_eyoomlevel($level);
+		if($mb_level != $member['mb_level']) {
+			sql_query("update {$g5['member_table']} set mb_level = '{$mb_level}' where mb_id='{$member['mb_id']}'");
+		} else return false;
+	}
+
+	// 이윰레벨에서 그누레벨 가져오기
+	private function get_gnulevel_from_eyoomlevel($level) {
+		global $levelset;
 		$gnulevel = array();
 		for($i=2;$i<=$levelset['max_use_gnu_level'];$i++) {
 			$lv_key = 'cnt_gnu_level_'.$i;
@@ -468,9 +477,7 @@ class eyoom extends qfile
 				break;
 			}
 		}
-		if($mb_level != $member['mb_level']) {
-			sql_query("update {$g5['member_table']} set mb_level = '{$mb_level}' where mb_id='{$member['mb_id']}'");
-		} else return false;
+		return $mb_level;
 	}
 
 	// 포인트를 통한 레벨 가져오기
@@ -486,6 +493,24 @@ class eyoom extends qfile
 		}
 		if($point < $lvinfo['min']) $level--;
 		return $level;
+	}
+
+	// 레벨포인트에 따른 조정된 이윰레벨 가져오기
+	public function get_eyoom_level($point, $level) {
+		$_level = $this->get_level_from_point($point,$level);
+		if($_level == $level) {
+			return $_level;
+		} else {
+			return $this->get_eyoom_level($point, $_level);
+		}
+	}
+
+	// 이윰레벨에서 최종 조정된 그누레벨 가져오기
+	public function get_gnu_level($level,$mb_level) {
+		$_level = $this->get_gnulevel_from_eyoomlevel($level);
+		if($_level != $mb_level) {
+			return $this->get_gnu_level($level,$_level);
+		} else return $_level;
 	}
 
 	public function eyoom_level_info($member) {

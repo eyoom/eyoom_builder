@@ -546,6 +546,7 @@ class theme extends qfile
 			$page_info['path'] = "<li><a href='".G5_URL."'>Home</a></li>".$path;
 			$page_info['subtitle'] = $me_path[0];
 			$page_info['sidemenu'] = $data['me_side'];
+			$page_info['registed'] = 'y';
 		} else {
 			if($it_id || $ca_id) $page_info = $this->shop_subpage_info();
 			else $page_info = $this->get_default_page();
@@ -699,6 +700,7 @@ class theme extends qfile
 		$pageinfo['title'] = $path['title'];
 		$pageinfo['path'] = "<li><a href='".G5_URL."'>Home</a></li>".$path['path'];
 		$pageinfo['subtitle'] = $cate1['title'];
+		$page_info['registed'] = 'y';
 		return $pageinfo;
 	}
 

@@ -25,7 +25,15 @@ switch($po_calc) {
 	case 'minus': $calc_point = $eyoom_point - $po_point; break;
 }
 
-sql_query("update {$g5['eyoom_member']} set level_point = '{$calc_point}' where mb_id = '{$mb_id}'");
+// 이윰레벨 및 레벨포인트 조정
+$level = $eb->get_eyoom_level($calc_point,$eyoomer['level']);
+sql_query("update {$g5['eyoom_member']} set level = '{$level}', level_point = '{$calc_point}' where mb_id = '{$mb_id}'");
+
+// 그누레벨 조정
+$mb_level = $eb->get_gnu_level($level,$eyoomer['mb_level']);
+if($mb_level != $eyoomer['mb_level']) {
+	sql_query("update {$g5['member_table']} set mb_level = '{$mb_level}' where mb_id='{$eyoomer['mb_id']}'");
+}
 
 goto_url('./member_list.php?'.$qstr);
 

@@ -125,7 +125,9 @@
 		// 기본테마가 아니라면 테마 정보 가져오기
 		if($eyoom['theme_key']) {
 			$tm = sql_fetch("select * from {$g5['eyoom_theme']} where tm_name = '{$theme}'",false);
-		} else $theme = 'basic';
+		} else {
+			$theme = $eyoom['theme'] != 'pc_basic' ? 'basic':'pc_basic';
+		}
 
 		// 언어정의
 		if($eyoom['theme_lang_type']=='m') { // 다국어 테마일 경우
