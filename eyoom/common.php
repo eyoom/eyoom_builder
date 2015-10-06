@@ -68,6 +68,7 @@
 				}
 			} else @include $switcher_admin;
 		}
+		$switcher = $_switcher[$theme];
 	}
 
 	// Eyoom Core Path

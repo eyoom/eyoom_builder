@@ -9,8 +9,9 @@ $g5['title'] = '테마설치';
 
 include_once(G5_PATH.'/head.sub.php');
 $hostname = $eb->eyoom_host();
-
-$row = sql_fetch("select * from {$g5['eyoom_theme']} where tm_name='{$_GET['thema']}' and tm_host='{$hostname}'",false);
+if($_GET['thema'] != 'basic') {
+	$row = sql_fetch("select * from {$g5['eyoom_theme']} where tm_name='{$_GET['thema']}' and tm_host='{$hostname['host']}'",false);
+}
 ?>
 
 <div id="wrapper" style="min-width:100%;">
@@ -32,6 +33,14 @@ $row = sql_fetch("select * from {$g5['eyoom_theme']} where tm_name='{$_GET['them
 				<col>
 			</colgroup>
 			<tbody>
+			<tr>
+				<td colspan="2" style="text-align:center;">
+					복사를 위해 <strong>/eyoom/theme</strong> 폴더, 모든 하위폴더 및 파일에 웹서버의 쓰기권한이 있어야 합니다.<br>
+					<div style="padding:10px;border:2px solid #f30;margin:5px;">
+					chmod -R 707 /eyoom/theme
+					</div>
+				</td>
+			</tr>
 			<tr>
 				<th scope="row"><label for="theme">새로운 테마명</label></th>
 				<td>
@@ -92,8 +101,8 @@ function ftheme_check(f) {
 	}
 	if(f.tm_host.value == '') {
 		alert('홈페이지 주소는 필수항목입니다.');
-		f.tm_theme.focus();
-		f.tm_theme.select();
+		f.tm_host.focus();
+		f.tm_host.select();
 		return false;
 	}
 	if(f.tm_mb_id.value == '') {

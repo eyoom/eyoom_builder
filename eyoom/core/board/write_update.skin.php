@@ -30,7 +30,7 @@
 			$_host = preg_replace("/www\./i","",$_SERVER['HTTP_HOST']);
 
 			$ex_url = '';
-			if(!preg_match("/".$host."/i",$_host,$p['host'])) $ex_url = "http://".$host;
+			if($host != $_host) $ex_url = "http://".$host;
 			$wr_image['url'][$k] = $ex_url . $p['path'];
 		}
 	}
@@ -58,6 +58,7 @@
 			pr_id		= '{$respond['pr_id']}',
 			wr_id		= '{$wr_id}',
 			wr_parent	= '{$wr_id}',
+			ca_name		= '{$ca_name}',
 			wr_subject	= '{$wr_subject}',
 			wr_content	= '{$content}',
 			wr_option	= '{$html},{$secret},{$mail}',
@@ -79,6 +80,7 @@
 			pr_id		= '{$respond['pr_id']}',
 			wr_id		= '{$wr_id}',
 			wr_parent	= '{$wr_id}',
+			ca_name		= '{$ca_name}',
 			wr_subject	= '{$wr_subject}',
 			wr_content	= '{$content}',
 			wr_option	= '{$html},{$secret},{$mail}',

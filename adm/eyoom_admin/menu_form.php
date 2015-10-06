@@ -5,7 +5,7 @@ include_once(G5_EDITOR_LIB);
 include_once(EYOOM_PATH.'/common.php');
 auth_check($auth[$sub_menu], "r");
 
-$g5['title'] = '테마설치';
+$g5['title'] = '이윰메뉴';
 
 include_once(G5_PATH.'/head.sub.php');
 $theme = $_GET['thema'];
@@ -21,7 +21,10 @@ if($theme && $me_code) {
 		$meinfo['me_path'] = $thema->get_path($meinfo['me_code']);
 	}
 	$g5_url = parse_url(G5_URL);
-	$meinfo['me_link'] = preg_replace("#".addslashes($g5_url['path'])."#i","",$meinfo['me_link']);
+	$meinfo['me_link'] = str_replace($g5_url['path'],'',$meinfo['me_link']);
+	if(!preg_match('/(http|https):/i',$meinfo['me_link'])) {
+		$meinfo['me_link'] = G5_URL.$meinfo['me_link'];
+	}
 }
 
 $frm_submit = '
@@ -78,9 +81,18 @@ $frm_submit = '
 				</td>
 			</tr>
 			<tr>
+				<th scope="row"><label for="me_icon">폰트어썸 아이콘</label></th>
+				<td>
+					<div class="themes">
+						<input type="text" name="me_icon" id="me_icon" value="<?php echo $meinfo['me_icon'];?>" class="frm_input" size="24">
+						<a href="http://eyoom.net/page/?pid=eyoomcss-3" target="_blank" style="display:inline-block;width:97px;text-align:center;color:#fff;background:#555;border:1px solid #333;">Font Awesome</a> <span class="exp">예) fa-user</span>
+					</div>
+				</td>
+			</tr>
+			<tr>
 				<th scope="row"><label for="me_name">메뉴명</label></th>
 				<td>
-					<input type="text" name="me_name" id="me_name" value="<?php echo $meinfo['me_name'];?>" required class="required frm_input" size="40">
+					<?php if($meinfo['me_icon']) echo '<i class="fa '.$meinfo['me_icon'].'"></i>';?> <input type="text" name="me_name" id="me_name" value="<?php echo $meinfo['me_name'];?>" required class="required frm_input" size="43">
 					<input type="hidden" name="me_name_prev" id="me_name_prev" value="<?php echo $meinfo['me_name'];?>">
 				</td>
 			</tr>
@@ -91,8 +103,8 @@ $frm_submit = '
 			<tr>
 				<th scope="row"><label for="me_link">메뉴링크</label></th>
 				<td>
-					<input type="text" name="me_link" id="me_link" value="<?php if($meinfo['me_link']) echo G5_URL.$meinfo['me_link'];?>" class="frm_input" size="60">
-					<select name="bn_target" class="frm_input">
+					<input type="text" name="me_link" id="me_link" value="<?php if($meinfo['me_link']) echo $meinfo['me_link'];?>" class="frm_input" size="60">
+					<select name="me_target" id="me_target" class="frm_input">
 					  <option value="">타겟을 선택하세요.</option>
 					  <option value="blank" <?php if($meinfo['me_target']=='blank') echo "selected";?>>새창</option>
 					  <option value="self" <?php if($meinfo['me_target']=='self') echo "selected";?>>현재창</option>
@@ -154,9 +166,18 @@ $frm_submit = '
 				</td>
 			</tr>
 			<tr>
+				<th scope="row"><label for="subme_icon">폰트어썸 아이콘</label></th>
+				<td>
+					<div class="themes">
+						<input type="text" name="subme_icon" id="subme_icon" value="" class="frm_input" size="24">
+						<a href="http://eyoom.net/page/?pid=eyoomcss-3" target="_blank" style="display:inline-block;width:97px;text-align:center;color:#fff;background:#555;border:1px solid #333;">Font Awesome</a> <span class="exp">예) fa-user</span>
+					</div>
+				</td>
+			</tr>
+			<tr>
 				<th scope="row"><label for="subme_name">서브 메뉴명</label></th>
 				<td>
-					<input type="text" name="subme_name" id="subme_name" value="" class="frm_input" size="30">
+					<input type="text" name="subme_name" id="subme_name" value="" class="frm_input" size="43">
 				</td>
 			</tr>
 			<tr>

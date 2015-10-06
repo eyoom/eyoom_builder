@@ -8,6 +8,8 @@ class latest extends eyoom
 	public $cols		= 3;
 	public $img_width	= 500;
 	public $img_height	= 0;
+	public $skip_cnt	= 0;
+	public $ca_view		= 'n';
 
 	public function __construct() {
 	}
@@ -193,6 +195,12 @@ class latest extends eyoom
 			// 이미지 세로사이즈
 			if($optset['img_height']) $this->img_height = $optset['img_height'];
 
+			// 최근 skip_cnt수 만큼 글을 스킵 후 다음 글부터 count수 만큼 추출
+			if($optset['skip_cnt']) $this->skip_cnt = $optset['skip_cnt'];
+
+			// 카테고리 분류명 표시
+			if($optset['ca_view']) $this->ca_view = $optset['ca_view'];
+
 			return $opt;
 
 		} else return false;
@@ -213,16 +221,20 @@ class latest extends eyoom
 	protected function latest_assign($where, $cnt, $cut_subject=20, $cut_content=100, $orderby='', $direct='n') {
 		global $g5, $eb, $is_admin, $member;
 
+		// skip_cnt만큼 제외하기 위해
+		$limit = $this->skip_cnt ? $cnt+$this->skip_cnt: $cnt;
+
 		if($direct == 'n' || $direct == '') {
 			if(!$orderby) $orderby = " bn_datetime desc ";
-			$sql = "select * from {$g5['eyoom_new']} where $where order by $orderby limit $cnt";
+			$sql = "select * from {$g5['eyoom_new']} where $where order by $orderby limit $limit";
 		} else if($direct == 'y') {
 			if(!$orderby) $orderby = " wr_datetime desc ";
-			$sql = "select * from ".$g5['write_prefix'].$this->bo_table." where $where order by $orderby limit $cnt";
+			$sql = "select * from ".$g5['write_prefix'].$this->bo_table." where $where order by $orderby limit $limit";
 		}
 
 		$result = sql_query($sql, false);
 		for($i=0; $row = sql_fetch_array($result); $i++) {
+			if($this->skip_cnt && $i<$this->skip_cnt) continue;
 			$list[$i] = $row;
 			$bo_table = $direct!='y' ? $row['bo_table']:$this->bo_table;
 			if(!$row['wr_subject']) {
@@ -248,6 +260,7 @@ class latest extends eyoom
 				}
 				$list[$i]['href'] = G5_BBS_URL."/board.php?bo_table={$bo_table}&amp;wr_id={$row['wr_parent']}";
 			}
+			if($this->ca_view == 'y' && $list[$i]['ca_name']) $list[$i]['wr_subject'] = '<span class="ca_name">'.$list[$i]['ca_name'].'</span> '. $list[$i]['wr_subject'];
 
 			$list[$i]['wr_hit'] = $row['wr_hit'];
 			if($direct == 'y') {
@@ -284,7 +297,7 @@ class latest extends eyoom
 	}
 
 	protected function latest_image($source,$direct='n') {
-		global $g5;
+		global $g5, $eb;
 		switch($direct) {
 			case 'y':
 				$thumb = get_list_thumbnail($this->bo_table, $source['wr_id'], $this->img_width, $this->img_height);
@@ -297,6 +310,7 @@ class latest extends eyoom
 						if(!$images['bf'][$k]) continue;
 						else {
 							$img = $images['bf'][$k];
+							$g5_root = $eb->g5_root;
 							break;
 						}
 					}
@@ -305,22 +319,34 @@ class latest extends eyoom
 							if(!$images['url'][$j]) continue;
 							else {
 								$img = $images['url'][$j];
-								if($this->g5_root) $img = str_replace($this->g5_root,'',$img);
+								$p = parse_url($img);
+								$host = preg_replace("/www\./i","",$p['host']);
+								$_host = preg_replace("/www\./i","",$_SERVER['HTTP_HOST']);
+								if($host == $_host) {
+									$g5_root = $eb->g5_root;
+									$img = str_replace($g5_root,'',$img);
+								}
 								break;
 							}
 						}
 					}
-					$imgfile = G5_PATH.$img;
-					if(file_exists($imgfile)) {
-						$img_path = explode('/',$img);
-						for($i=0;$i<count($img_path)-1;$i++) {
-							$path[$i] = $img_path[$i]; 
+
+					// 파일첨부 또는 에디터 이미지 처리
+					if($g5_root) {
+						$imgfile = G5_PATH.$img;
+						if(@file_exists($imgfile)) {
+							$img_path = explode('/',$img);
+							for($i=0;$i<count($img_path)-1;$i++) {
+								$path[$i] = $img_path[$i]; 
+							}
+							if(is_array($path)) {
+								$filename = $img_path[count($img_path)-1];
+								$filepath = G5_PATH.implode('/',$path);
+								$tname = thumbnail($filename, $filepath, $filepath, $this->img_width, $this->img_height,'');
+								$image = G5_URL.implode('/',$path).'/'.$tname;
+							}
 						}
-						$filename = $img_path[count($img_path)-1];
-						$filepath = G5_PATH.implode('/',$path);
-						$tname = thumbnail($filename, $filepath, $filepath, $this->img_width, $this->img_height,'');
-						$image = G5_URL.implode('/',$path).'/'.$tname;
-					}
+					} else $image = $img; // 외부이미지는 썸네일화 기능을 지원하지 않습니다.
 				}
 				break;
 		}

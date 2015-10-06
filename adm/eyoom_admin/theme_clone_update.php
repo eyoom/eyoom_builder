@@ -51,6 +51,23 @@ if($_POST['clone_board'] == 'y') {
 	}
 }
 
+// 메뉴설정 복사
+if($_POST['clone_menu'] == 'y') {
+	$sql = "select * from {$g5['eyoom_menu']} where me_theme = '{$_POST['tm_theme']}'";
+	$res = sql_query($sql,false);
+	for($i=0;$row=sql_fetch_array($res);$i++) {
+		$sql = "insert into {$g5['eyoom_menu']} set ";
+		foreach($row as $key => $val) {
+			if($key == "me_id") continue;
+			if($key == "me_theme") $val = $tm_theme;
+			$sql .= "$key = '{$val}',";
+		}
+		$sql = substr($sql,0,-1);
+		sql_query($sql,false);
+		unset($sql);
+	}
+}
+
 $where = "tm_name='{$tm_theme}' and tm_ordno='{$_POST['tm_ordno']}'";
 $row = sql_fetch("select count(*) as cnt from {$g5['eyoom_theme']} where $where");
 $set = "

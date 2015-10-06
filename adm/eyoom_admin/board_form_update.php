@@ -15,7 +15,7 @@ $set = "
 	bo_use_hotgul			= '{$_POST['bo_use_hotgul']}',
 	bo_use_anonymous		= '{$_POST['bo_use_anonymous']}'
 ";
-if($theme!='basic') {
+if(preg_match('/community/',$_theme)) {
 $set .= ",
 	bo_use_point_explain	= '{$_POST['bo_use_point_explain']}',
 	bo_firstcmt_point		= '{$_POST['bo_firstcmt_point']}',

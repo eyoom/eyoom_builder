@@ -9,8 +9,9 @@ $g5['title'] = '테마삭제';
 
 include_once(G5_PATH.'/head.sub.php');
 $hostname = $eb->eyoom_host();
-
-$row = sql_fetch("select * from {$g5['eyoom_theme']} where tm_name='{$_GET['thema']}' and tm_host='{$hostname}'",false);
+if($_GET['thema'] != 'basic') {
+	$row = sql_fetch("select * from {$g5['eyoom_theme']} where tm_name='{$_GET['thema']}' and tm_host='{$hostname['host']}'",false);
+}
 ?>
 
 <div id="wrapper" style="min-width:100%;">
@@ -68,15 +69,20 @@ function ftheme_check(f) {
 	var host = f.tm_host.value;
 	var user = f.tm_mb_id.value;
 	var ordno = f.tm_ordno.value;
-	$.ajax({
-		url: '<?php echo EYOOM_AJAX_URL;?>',
-		data: {type: type, theme: theme, host: host, user: user, ordno: ordno},
-		dataType: 'jsonp',
-		jsonp: 'callback',
-		jsonpCallback: 'setCode',
-		success: function(){}
-	});
-	return false;
+	if(ordno) {
+		$.ajax({
+			url: '<?php echo EYOOM_AJAX_URL;?>',
+			data: {type: type, theme: theme, host: host, user: user, ordno: ordno},
+			dataType: 'jsonp',
+			jsonp: 'callback',
+			jsonpCallback: 'setCode',
+			success: function(){}
+		});
+		return false;
+	} else {
+		var f = document.ftheme;
+		f.submit();
+	}
 }
 function setCode(data) {
 	var f = document.ftheme;

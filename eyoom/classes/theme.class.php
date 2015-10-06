@@ -37,10 +37,15 @@ class theme extends qfile
 	public function set_user_theme($arr) {
 		global $g5;
 
-		//$theme = sql_fetch("select * from {$g5['eyoom_theme']} where tm_name='{$arr['theme']}' || tm_alias='{$arr['theme']}'",false);
+		// 테마정보 가져오기
+		$theme = sql_fetch("select * from {$g5['eyoom_theme']} where tm_name='{$arr['theme']}' || tm_alias='{$arr['theme']}'",false);
 
 		// 지정한 사용자 테마가 없다면 디폴트 테마로
-		//$arr['theme'] = !is_dir($this->theme_path.'/'.$theme['tm_name']) ? '' : $theme['tm_name'];
+		if($theme['tm_name'] && is_dir($this->theme_path.'/'.$theme['tm_name'])) {
+			$arr['theme'] = $theme['tm_name'];
+		} else {
+			$arr['theme'] = '';
+		}
 
 		// 유니크 아이디 쿠키 생성
 		if(get_cookie('unique_theme_id')) {
@@ -314,7 +319,7 @@ class theme extends qfile
 	// 페이지 정보 가져오기
 	private function eyoom_pagemenu_info() {
 		global $g5, $theme;
-		$url = $_SERVER['REQUEST_URI'];
+		$url = $this->compare_host_from_link($_SERVER['REQUEST_URI']);
 		$info = $this->get_meinfo_link($url);
 		$sql = "select * from {$g5['eyoom_menu']} where me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}'";
 		$data = sql_fetch($sql,false);
@@ -326,8 +331,9 @@ class theme extends qfile
 		global $g5, $theme;
 
 		if(!$data) $data = $this->eyoom_pagemenu_info($theme);
+		if(!$admin_mode) $addwhere = " and me_use = 'y' and me_use_nav = 'y' "; // 감추기 기능 연동 - fm25님이 제보해 주셨습니다.
 		$me_code = str_split($data['me_code'],3);
-		$sql = "select * from {$g5['eyoom_menu']} where me_theme='{$theme}' and me_code like '{$me_code[0]}%' and length(me_code) > 3 order by me_code asc, me_order asc";
+		$sql = "select * from {$g5['eyoom_menu']} where me_theme='{$theme}' and me_code like '{$me_code[0]}%' and length(me_code) > 3 {$addwhere} order by me_code asc, me_order asc";
 		$res = sql_query($sql, false);
 		for($i=0;$row=sql_fetch_array($res);$i++) {
 			$split = str_split($row['me_code'],3);
@@ -398,10 +404,9 @@ class theme extends qfile
 	}
 
 	// 메뉴 링크로 부터 메뉴속성 추출하기
-	public function get_meinfo_link($link) {
-		$str = parse_url($link);
-		if($str['query']) {
-			parse_str($str['query'],$query);
+	public function get_meinfo_link($url) {
+		if($url['query']) {
+			parse_str($url['query'],$query);
 			foreach($query as $key => $val) {
 				if(in_array($key,array('bo_table','gr_id','co_id','ca_id','pid'))) {
 					switch($key) {
@@ -412,17 +417,43 @@ class theme extends qfile
 						case "pid": $info['me_type'] = 'pid'; break;
 					}
 					$info['me_pid']  = $val;
-					$info['me_link'] = $str['path']."?".$str['query'];
+					$info['me_link'] = $url['path']."?".$url['query'];
 					break;
 				}
 			}
-		} else {
-			$path = explode("/",$str['path']);
-			$info['me_pid'] = $path[(count($path)-1)];
-			$info['me_type'] = 'userpage';
-			$info['me_link'] = $str['path'];
+			if(is_array($info)) return $info;
 		}
-		return $info;
+		if($url['path']) {
+			$info['me_pid'] = 'intra';
+			$info['me_type'] = 'userpage';
+			$info['me_link'] = $url['path'];
+			if(is_array($info)) return $info;
+		}
+	}
+
+	// 메뉴링크 정보 가져오기
+	public function get_menu_link($link) {
+		$info = array();
+		$url = $this->compare_host_from_link($link);
+		if($url) {
+			$info = $this->get_meinfo_link($url);
+		} else {
+			$info['me_pid'] = 'extra';
+			$info['me_type'] = 'userpage';
+			$info['me_link'] = $link;
+		}
+		if(is_array($info)) return $info;
+	}
+
+	// 입력한 링크가 해당 도메인인지 아닌지 검토
+	public function compare_host_from_link($link) {
+		$url = parse_url($link);
+		if($url['host']) {
+			$host = preg_replace("/www\./i","",$url['host']);
+			$_host = preg_replace("/www\./i","",$_SERVER['HTTP_HOST']);
+			if($host != $_host) return false;
+		}
+		return $url;
 	}
 
 	// 서브페이지의 title 및 Path 가져오기
@@ -438,8 +469,8 @@ class theme extends qfile
 
 	// 이윰메뉴 서브페이지 정보 가져오기
 	private function eyoom_subpage_info($theme) {
-		global $g5, $tpl, $it_id, $is_admin;
-		$url = $_SERVER['REQUEST_URI'];
+		global $g5, $tpl, $it_id, $is_admin, $ca_id;
+		$url = $this->compare_host_from_link($_SERVER['REQUEST_URI']);
 		$info = $this->get_meinfo_link($url);
 		$sql = "select * from {$g5['eyoom_menu']} where me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}'";
 		$data = sql_fetch($sql,false);
@@ -456,8 +487,9 @@ class theme extends qfile
 			}
 			$page_info['title'] = $data['me_name'];
 			$page_info['path'] = "<li><a href='".G5_URL."'>Home</a></li>".$path;
+			$page_info['subtitle'] = $me_path[0];
 		} else {
-			if($it_id) $page_info = $this->shop_subpage_info();
+			if($it_id || $ca_id) $page_info = $this->shop_subpage_info();
 			else $page_info = $this->get_default_page();
 		}
 		if(!$page_info['title']) {
@@ -474,7 +506,7 @@ class theme extends qfile
 
 	// 그누메뉴 서브페이지 정보 가져오기
 	private function g5_subpage_info($menu_array) {
-		global $g5, $bo_table, $co_id, $board, $co, $gr_id;
+		global $g5, $bo_table, $co_id, $board, $co, $gr_id, $ca_id;
 
 		if($bo_table || $co_id) {
 			$stx = $bo_table ? "bo_table=".$bo_table : "co_id=".$co_id;
@@ -519,7 +551,7 @@ class theme extends qfile
 
 		} else {
 			// 새글 / 1:1문의 / 내글반응 / 회원관련 페이지 등 정해진 페이지 정보
-			if($it_id) $page_info = $this->shop_subpage_info();
+			if($it_id || $ca_id) $page_info = $this->shop_subpage_info();
 			else $page_info = $this->get_default_page();
 		}
 		if(!$page_info['title']) {
@@ -560,6 +592,7 @@ class theme extends qfile
 			case 'register_result': $cate_name='회원가입'; $title = '회원가입완료'; break;
 			case 'cart'		: $title = '장바구니'; $cate_name = '쇼핑몰'; break;
 			case 'wishlist'	: $title = '위시리스트'; $cate_name = '쇼핑몰'; break;
+			case 'orderform': $title = '주문하기'; $cate_name = '쇼핑몰'; break;
 			case 'orderinquiryview'	: $title = '구매내역 상세보기'; $cate_name = '쇼핑몰'; break;
 			case 'orderinquiry'	: $title = '구매내역'; $cate_name = '쇼핑몰'; break;
 			case 'listtype':
@@ -572,7 +605,9 @@ class theme extends qfile
 				}
 				break;
 			case 'mypage': $title = '마이페이지'; $cate_name = '쇼핑몰'; break;
-			case 'personalpay': $title = '개인결제'; $cate_name = '쇼핑몰'; break;
+			case 'personalpay':
+			case 'personalpayform':
+			case 'personalpayresult': $title = '개인결제'; $cate_name = '쇼핑몰'; break;
 			case 'itemqalist': $title = '상품문의'; $cate_name = '쇼핑몰'; break;
 			case 'itemuselist': $title = '사용후기'; $cate_name = '쇼핑몰'; break;
 		}
@@ -582,6 +617,7 @@ class theme extends qfile
 		} else {
 			$page_info['title'] = $title;
 			$page_info['path'] = "<li><a href='".G5_URL."'>Home</a></li><li>".$cate_name."</li><li class='active'>".$title."</li>";
+			$page_info['subtitle'] = $cate_name;
 		}
 		return $page_info;
 	}
@@ -598,10 +634,12 @@ class theme extends qfile
 			} else if($row['ca_id1']) {
 				$ca_id = $row['ca_id1'];
 			}
+			$cate1 = $shop->get_navi($row['ca_id1']);
 		}
 		$path = $shop->get_navi($ca_id);
 		$pageinfo['title'] = $path['title'];
 		$pageinfo['path'] = "<li><a href='".G5_URL."'>Home</a></li>".$path['path'];
+		$pageinfo['subtitle'] = $cate1['title'];
 		return $pageinfo;
 	}
 

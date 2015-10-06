@@ -655,7 +655,6 @@ class eyoom extends qfile
 
 	public function syntaxhighlighter($content) {
 		$content = preg_replace("/^<span.*?>(.*?)<\/span>/is","\n\\1",$content);
-		$content = preg_replace("/\\t/i","&nbsp;&nbsp;&nbsp;&nbsp;",$content);
 		$content = preg_replace("/{CODE\s*\:([^}]*)}/i","<pre class=\"brush: \\1;\">",$content);
 		$content = preg_replace("/{\/CODE}/i","</pre>",$content);
 		$content = preg_replace_callback("/<pre[^>]*>(.*?)<\/pre>/s",array($this,'syntaxhighlighter_remove_tag'),$content);
@@ -715,6 +714,7 @@ class eyoom extends qfile
 				break;
 			case 'channel.pandora.tv':
 				$video['key'] = $query['prgid'];
+				$video['userid'] = $query['ch_userid'];
 				break;
 			case 'tvpot.daum.net':
 				if($query['clipid']) {
@@ -819,10 +819,10 @@ class eyoom extends qfile
 				$source = '<iframe width="'.$video['width'].'" height="'.$video['height'].'" src="http://videofarm.daum.net/controller/video/viewer/Video.html?vid='.$video['key'].'&play_loc=undefined&wmode=opaque" frameborder="0" scrolling="no"></iframe>';
 				break;
 			case 'channel.pandora.tv':
-				$source = '<iframe width="'.$video['width'].'" height="'.$video['height'].'" src="http://channel.pandora.tv/php/embed.fr1.ptv?userid=dksll&prgid='.$video['key'].'&skin=1&autoPlay=false&share=on" frameborder="0" allowfullscreen></iframe>';
+				$source = '<iframe width="'.$video['width'].'" height="'.$video['height'].'" src="http://channel.pandora.tv/php/embed.fr1.ptv?userid='.$video['userid'].'&prgid='.$video['key'].'&skin=1&autoPlay=false&share=on" frameborder="0" allowfullscreen></iframe>';
 				break;
 			case 'tagstory.com':
-				$source = '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=10,0,0,0" width="'.$video['width'].'" height="'.$video['height'].'" id="'.$video['key'].'" ><param name="allowScriptAccess" value="always" /><param name="allowNetworking" value="all" /><param name="allowFullScreen" value="true" /><param name="movie" value="http://www.tagstory.com/player/basic/'.$video['key'].'" /><embed src="http://www.tagstory.com/player/basic/100630743" width="'.$video['width'].'" height="'.$video['height'].'" name="'.$video['key'].'" allowScriptAccess="always" allowNetworking="all" allowFullScreen="true" type="application/x-shockwave-flash" pluginspage="http://www.adobe.com/go/getflashplayer" /></object>';
+				$source = '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=10,0,0,0" width="'.$video['width'].'" height="'.$video['height'].'" id="'.$video['key'].'" ><param name="allowScriptAccess" value="always" /><param name="allowNetworking" value="all" /><param name="allowFullScreen" value="true" /><param name="movie" value="http://www.tagstory.com/player/basic/'.$video['key'].'" /><embed src="http://www.tagstory.com/player/basic/'.$video['key'].'" width="'.$video['width'].'" height="'.$video['height'].'" name="'.$video['key'].'" allowScriptAccess="always" allowNetworking="all" allowFullScreen="true" type="application/x-shockwave-flash" pluginspage="http://www.adobe.com/go/getflashplayer" /></object>';
 				break;
 			case 'dailymotion.com':
 				$source = '<iframe frameborder="0" width="'.$video['width'].'" height="'.$video['height'].'" src="http://www.dailymotion.com/embed/video/'.$video['key'].'"></iframe>';
@@ -930,5 +930,6 @@ class eyoom extends qfile
 
 		return $result_array;
 	}
+
 }
 ?>

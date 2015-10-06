@@ -33,6 +33,10 @@ if($tm_theme == 'basic') {
 	$sql = "delete from {$g5['eyoom_theme']} where tm_name = '{$tm_theme}'";
 	sql_query($sql,false);
 
+	// 이윰메뉴정보 삭제
+	$sql = "delete from {$g5['eyoom_menu']} where me_theme = '{$tm_theme}'";
+	sql_query($sql,false);
+
 	// 배너/광고파일 삭제
 	$banner_path = G5_DATA_PATH.'/banner';
 	$banner_config = $banner_path.'/banner.'.$tm_theme.'.config.php';

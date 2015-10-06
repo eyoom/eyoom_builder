@@ -11,20 +11,28 @@
 		@mkdir($switcher_path, G5_DIR_PERMISSION);
 		@chmod($switcher_path, G5_DIR_PERMISSION);
 	}
-	
-	foreach($_POST as $key => $val) {
-		$switcher[$key] = $val;
-	}
-	if($is_admin) {
-		$eyoom_config = config_file;
-		$eyoom['use_switcher'] = $switcher['sw_use'];
-		$qfile->save_file('eyoom', $eyoom_config, $eyoom);
-	}
-	unset($switcher['sw_use']);
 
 	$sw_file = $switcher_path.'/'.$member['mb_id'].'.config.php';
+	
+	$switcher = set_switcher();
+	$switcher_config = is_array($_switcher) ? array_merge($_switcher,$switcher) : $switcher;
 
-	$qfile->save_file('switcher', $sw_file, $switcher);
+	if($is_admin) {
+		$eyoom_config = config_file;
+		$eyoom['use_switcher'] = $_switcher[$theme]['sw_use'];
+		$qfile->save_file('eyoom', $eyoom_config, $eyoom);
+	}
+	unset($_switcher[$theme]['sw_use']);
+
+	function set_switcher() {
+		global $theme;
+		foreach($_POST as $key => $val) {
+			$switcher[$theme][$key] = $val;
+		}
+		return $switcher;
+	}
+
+	$qfile->save_file('_switcher', $sw_file, $switcher_config);
 	echo "
 		<script>parent.switcher_hide();</script>
 	";

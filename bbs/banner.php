@@ -6,9 +6,9 @@ $tocken = $_GET['tocken'];
 // GET 변수 처리
 $getvar = $eb->decrypt_md5($tocken);
 list($bn_no, $ip, $link) = explode("||",$getvar);
-if(!$bn_no) { alert('잘못된 접금입니다.',G5_URL); exit; }
-if($ip != $_SERVER['REMOTE_ADDR']) { alert('잘못된 접금입니다.',G5_URL); exit; }
-if(!$link) { alert('잘못된 접금입니다.',G5_URL); exit; }
+if(!$bn_no) { alert('잘못된 접근입니다.',G5_URL); exit; }
+if($ip != $_SERVER['REMOTE_ADDR']) { alert('잘못된 접근입니다.',G5_URL); exit; }
+if(!$link) { alert('잘못된 접근입니다.',G5_URL); exit; }
 
 // 클릭 로그 남기기
 // 다음버전에서 개발

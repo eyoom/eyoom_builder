@@ -9,6 +9,13 @@
 	if ($is_nogood) $colspan++;
 	if ($eyoom_board['bo_use_profile_photo']) $colspan++;
 
+	// 갤러리 스킨의 경우, 가로 이미지 갯수 자동처리
+	if ($bo_gallery_cols && 12%$bo_gallery_cols == 0) {
+		$cols = 12/$bo_gallery_cols;
+	} else {
+		$cols = 4;
+	}
+
 	// 제목에서 구분자로 회원정보 추출
 	foreach($list as $key => $val) {
 		$level = $list[$key]['wr_1'] ? $eb->level_info($list[$key]['wr_1']):'';

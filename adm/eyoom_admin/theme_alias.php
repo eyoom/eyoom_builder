@@ -9,8 +9,11 @@ $g5['title'] = '테마별칭설정';
 
 include_once(G5_PATH.'/head.sub.php');
 $hostname = $eb->eyoom_host();
-
-$row = sql_fetch("select * from {$g5['eyoom_theme']} where tm_name='{$_GET['thema']}' and tm_host='{$hostname}'",false);
+if($_GET['thema'] != 'basic') {
+	$row = sql_fetch("select * from {$g5['eyoom_theme']} where tm_name='{$_GET['thema']}' and tm_host='{$hostname['host']}'",false);
+} else {
+	$row = sql_fetch("select * from {$g5['eyoom_theme']} where tm_name='basic'",false);
+}
 ?>
 
 <div id="wrapper" style="min-width:100%;">
@@ -32,7 +35,7 @@ $row = sql_fetch("select * from {$g5['eyoom_theme']} where tm_name='{$_GET['them
 			<tbody>
 			<tr>
 				<th scope="row"><label for="theme">별칭입력</label></th>
-				<td><?php echo G5_URL?>/?theme=<input type="text" name="tm_alias" value="<?php echo $row['tm_alias']?>" id="tm_alias" required class="required frm_input" size="15"></td>
+				<td><?php echo G5_URL?>/?theme=<input type="text" name="tm_alias" value="<?php echo $row['tm_alias']?>" id="tm_alias" class="frm_input" size="15"></td>
 			</tr>
 			<tr>
 				<td colspan="2" style="line-height:20px;">

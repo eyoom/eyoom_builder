@@ -54,7 +54,7 @@ $frm_submit = '
 			</td>
 			<td valign="top">
 				<h2 class="h2_frm"><b style='color:#f30;'>메뉴 등록/수정/삭제</b> <span class='exp' style='margin-left:10px;color:#777;font-weight:normal;font-size:11px;'>입력후 반드시 아래 적용하기 버튼을 누르세요</span></h2>
-				<iframe id="ifrm_menu" name="ifrm_menu" src="menu_form.php?thema=<?php echo $_theme;?><?php if($me_id) echo "&id=".$me_id;?>" scrolling="no" style="overflow-x:hidden;overflow:auto;width:100%;min-height:700px" frameborder=0></iframe>
+				<iframe id="ifrm_menu" name="ifrm_menu" src="menu_form.php?thema=<?php echo $_theme;?><?php if($me_id) echo "&id=".$me_id;?>" scrolling="no" style="overflow-x:hidden;overflow:auto;width:100%;min-height:780px" frameborder=0></iframe>
 			</td>
 		</tr>
 		</tbody>

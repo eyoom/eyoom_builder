@@ -11,7 +11,7 @@ switch($_POST['mode']) {
 
 		if($_POST['subme_name']) {
 			// 서브메뉴 추가하기
-			$subme_info = $thema->get_meinfo_link($_POST['subme_link']);
+			$subme_info = $thema->get_menu_link($_POST['subme_link']);
 			$subme_path = $_POST['me_path'] ? $_POST['me_path'].' > '.$_POST['subme_name']:$_POST['subme_name'];
 
 			$length = strlen($_POST['me_code'])+3;
@@ -37,6 +37,7 @@ switch($_POST['mode']) {
 				me_theme	= '{$_POST['theme']}',
 				me_code		= '{$me_code}',
 				me_order	= '{$me_order}',
+				me_icon		= '{$_POST['subme_icon']}',
 				me_name		= '{$_POST['subme_name']}',
 				me_path		= '{$subme_path}',
 				me_type		= '{$subme_info['me_type']}',
@@ -51,7 +52,7 @@ switch($_POST['mode']) {
 
 		} else {
 			// 메뉴 수정하기
-			$me_info = $thema->get_meinfo_link($_POST['me_link']);
+			$me_info = $thema->get_menu_link($_POST['me_link']);
 
 			// 출력순서 중복값 예외처리
 			if($_POST['me_order'] != $_POST['me_order_prev']) {
@@ -76,11 +77,13 @@ switch($_POST['mode']) {
 
 			$set = "
 				me_order	= '{$_POST['me_order']}',
+				me_icon		= '{$_POST['me_icon']}',
 				me_name		= '{$_POST['me_name']}',
 				me_path		= '{$_POST['me_path']}',
 				me_type		= '{$me_info['me_type']}',
 				me_pid		= '{$me_info['me_pid']}',
 				me_link		= '{$me_info['me_link']}',
+				me_target	= '{$_POST['me_target']}',
 				me_use		= '{$_POST['me_use']}',
 				me_use_nav	= '{$me_use_nav}'
 			";
