@@ -1,6 +1,13 @@
 <?php
 	if (!defined('_GNUBOARD_')) exit;
 
+	if($eyoom_board['bo_use_yellow_card'] == '1') {
+		// 바로 블라인드 처리할 수 있는 권한인지 체크
+		if($is_admin || $member['mb_level'] >= $eyoom_board['bo_blind_direct'] ) {
+			$blind_direct = true;
+		}
+	}
+
 	unset($comment);
 	$cmt_amt = count($list);
 	for ($i=0; $i<$cmt_amt; $i++) {
@@ -91,13 +98,25 @@
 		}
 		
 		// 블라인드 처리
-		$cmt_ycard = unserialize($list[$i]['wr_4']);
-		if(!$cmt_ycard) $cmt_ycard = array();
-		$comment[$i]['yc_count'] = $cmt_ycard['yc_count'];
-		if($cmt_ycard['yc_blind'] == 'y') {
-			$comment[$i]['yc_blind'] = true;
+		if($eyoom_board['bo_use_yellow_card'] == '1') {
+			$cmt_ycard = unserialize($list[$i]['wr_4']);
+			if(!$cmt_ycard) $cmt_ycard = array();
+			$comment[$i]['yc_count'] = $cmt_ycard['yc_count'];
+			if($cmt_ycard['yc_blind'] == 'y') {
+				if(!$is_admin && $member['mb_level'] < $eyoom_board['bo_blind_view']) {
+					$comment[$i]['mb_ycard'] = $eb->mb_yellow_card($member['mb_id'],$bo_table, $comment[$i]['comment_id']);
+					if(!$comment[$i]['mb_ycard']) {
+						$comment[$i]['yc_cannotsee'] = true;
+					}
+				}
+				$comment[$i]['yc_blind'] = true;
+			}
+			
+			// 바로 블라인드 처리할 수 있는 권한인지 체크
+			if($is_admin || $member['mb_level'] >= $eyoom_board['bo_blind_direct'] ) {
+				$blind_direct = true;
+			}
 		}
-		$comment[$i]['mb_ycard'] = $eb->mb_yellow_card($member['mb_id'],$bo_table, $comment[$i]['comment_id']);
 	}
 
 	// 댓글에 이미지 첨부파일 용량 제한

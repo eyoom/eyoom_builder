@@ -5,7 +5,7 @@
 	define('_EYOOM_COMMON_',true);
 
 	// Version
-	define('_EYOOM_VESION_','EyoomBuilder_1.1.10');
+	define('_EYOOM_VESION_','EyoomBuilder_1.1.11');
 
 	// GNUBOARD5 Library
 	include_once(G5_LIB_PATH.'/common.lib.php');
@@ -34,35 +34,14 @@
 
 	// Eyoom Board 설정
 	if($bo_table) {
+		
+		// $eyoom_board 설정값 가져오기
 		$eyoom_board = $eb->eyoom_board_info($bo_table, $theme);
 		if(!$eyoom_board) {
-			$eyoom_board['bo_table']				= $board['bo_table'];
-			$eyoom_board['bo_theme']				= $theme;
-			$eyoom_board['bo_skin']					= 'basic';
-			$eyoom_board['use_gnu_skin']			= 'n';
-			$eyoom_board['bo_use_profile_photo']	= 1;
-			$eyoom_board['bo_sel_date_type']		= 1;
-			$eyoom_board['bo_use_hotgul']			= 1;
-			$eyoom_board['bo_use_anonymous']		= 2;
-			$eyoom_board['bo_use_infinite_scroll']	= 2;
-			$eyoom_board['bo_use_point_explain']	= 1;
-			$eyoom_board['bo_use_video_photo']		= 2;
-			$eyoom_board['bo_use_list_image']		= 1;
-			$eyoom_board['bo_use_yellow_card']		= 0;
-			$eyoom_board['bo_blind_limit']			= 5;
-			$eyoom_board['bo_blind_view']			= 10;
-			$eyoom_board['bo_blind_direct']			= 10;
-			$eyoom_board['bo_firstcmt_point']		= 0;
-			$eyoom_board['bo_firstcmt_point_type']	= 1;
-			$eyoom_board['bo_bomb_point']			= 0;
-			$eyoom_board['bo_bomb_point_type']		= 1;
-			$eyoom_board['bo_bomb_point_limit']		= 10;
-			$eyoom_board['bo_bomb_point_cnt']		= 1;
-			$eyoom_board['bo_lucky_point']			= 0;
-			$eyoom_board['bo_lucky_point_type']		= 1;
-			$eyoom_board['bo_lucky_point_ratio']	= 1;
-			$eyoom_board['download_fee_ratio']		= 0;
+			// DB에 입력된 정보가 없을 때, 기본값 가져오기
+			$eyoom_board = $eb->eyoom_board_default($bo_table);
 		}
+		
 		// 익명글쓰기 체크
 		$is_anonymous = $eyoom_board['bo_use_anonymous'] == 1 ? true:false;
 
@@ -76,9 +55,6 @@
 				$eyoom_board['bo_use_infinite_scroll'] = 2;
 			}
 		}
-
-		// 베이직스킨이 아니면 목록에서 이미지 보이게 처리
-		if($eyoom_board['bo_skin'] != 'basic') $board['bo_use_list_file'] = true;
 	}
 
 	// switcher 설정

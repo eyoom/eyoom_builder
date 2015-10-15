@@ -112,6 +112,46 @@ class eyoom extends qfile
 		$board_info = sql_fetch($sql,false);
 		return sql_fetch($sql);
 	}
+	
+	// 이윰보드 설정값이 DB에 없는 상태에서 기본값 설정
+	public function eyoom_board_default($bo_table) {
+		global $theme;
+		if($bo_table) {
+			$eyoom_board = array(
+				'bo_table'					=> $bo_table,
+				'bo_theme'					=> $theme,
+				'bo_skin'					=> 'basic',
+				'use_gnu_skin'				=> 'n',
+				'bo_use_profile_photo'		=> 1,
+				'bo_sel_date_type'			=> 1,
+				'bo_use_hotgul'				=> 1,
+				'bo_use_anonymous'			=> 2,
+				'bo_use_infinite_scroll'	=> 2,
+				'bo_use_point_explain'		=> 1,
+				'bo_use_video_photo'		=> 2,
+				'bo_use_list_image'			=> 1,
+				'bo_use_yellow_card'		=> 0,
+				'bo_use_exif'				=> 0,
+				'bo_blind_limit'			=> 5,
+				'bo_blind_view'				=> 10,
+				'bo_blind_direct'			=> 10,
+				'bo_firstcmt_point'			=> 0,
+				'bo_firstcmt_point_type' 	=> 1,
+				'bo_bomb_point'				=> 0,
+				'bo_bomb_point_type'		=> 1,
+				'bo_bomb_point_limit'		=> 10,
+				'bo_bomb_point_cnt'			=> 1,
+				'bo_lucky_point'			=> 0,
+				'bo_lucky_point_type'		=> 1,
+				'bo_lucky_point_ratio'		=> 1,
+				'download_fee_ratio'		=> 0,
+			);
+			return $eyoom_board;
+			
+		} else {
+			return false;
+		}
+	}
 
 	// 내글반응 - 내글반응 등록 및 업데이트
 	public function respond($respond = array()) {
@@ -661,7 +701,7 @@ class eyoom extends qfile
 		$content = $this->syntaxhighlighter($content);
 
 		// 썸네일화하기
-		$content = get_view_thumbnail($content);
+		$content = $this->get_thumbnail($content);
 
 		// 동영상 처리하기
 		$content = preg_replace("/{동영상\s*\:([^}]*)}/ie", "\$this->video_content('\\1')", $content);
@@ -902,7 +942,7 @@ class eyoom extends qfile
 	 * 동영상 URL를 이용하여 목록이미지 thumbnail 생성하기
 	 */
 	public function make_thumb_from_video($src, $bo_table, $wr_id, $width, $height) {
-		
+		global $w;
 		$src = preg_replace('/&nbsp;/', '', $src);
 		
 		$video = $this->get_imgurl_from_video($src);
@@ -912,7 +952,7 @@ class eyoom extends qfile
 		$vlist_thumb_url = G5_DATA_URL . $thumb_info;
 		
 		if($video['img_url']) {
-			if( file_exists($vlist_thumb_path) ) {
+			if( file_exists($vlist_thumb_path) && $w != 'u') {
 				return $vlist_thumb_url;
 			} else {
 				if($video['host'] != 'ted.com') { // TED 이미지는 용량이 너무 커서 로컬에 저장하는 시간이 너무 길어서 제외
@@ -1095,6 +1135,329 @@ class eyoom extends qfile
 		foreach($b_file as $key => $bf) {
 			@unlink(G5_DATA_PATH.'/file/'.$bo_table.'/'.$bf['file']);
 		}
+	}
+	
+	/**
+	 * EXIF 정보 가져오기
+	 */
+	public function get_exif_info($source) {
+		global $eyoom_board;
+		
+		// exif_read_data 함수를 지원하는가?
+		if( function_exists('exif_read_data') ) {
+			$exif = @exif_read_data($source);
+			if($exif) {
+				$i=0;
+				// 카메라 
+				if(isset($exif['Make'])) {
+					$exif_data[$i] = 'Make : ' . $exif['Make'];
+					$i++;
+				}
+				
+				// 카메라 기종
+				if(isset($exif['Model'])) {
+					$exif_data[$i] = 'Model : ' . $exif['Model'];
+					$i++;
+				}
+				
+				// 촬영시간
+				if(isset($exif['DateTimeOriginal'])) {
+					$exif_data[$i] = '촬영일시 : ' . $exif['DateTimeOriginal'];
+					$i++;
+				}
+				
+				// 포토사이즈
+				if(isset($exif['COMPUTED']['Width']) && isset($exif['COMPUTED']['Height'])) {
+					$exif_data[$i] = '사이즈 : ' . number_format($exif['COMPUTED']['Width']) . 'px X ' . number_format($exif['COMPUTED']['Height']) . 'px';
+					$i++;
+				}
+				
+				// 촬영모드
+				if (isset($exif['ExposureProgram'])) {
+					$exif_data[$i] = '촬영모드 : ' . $this->get_exprogram_mode($exif['ExposureProgram']);
+					$i++;
+				}
+				
+				// 측광모드
+				if (isset($exif['MeteringMode'])) {
+					$exif_data[$i] = '측광모드 : ' . $this->get_metering_mode($exif['MeteringMode']);
+					$i++;
+				}
+				
+				// 초점거리
+				if (isset($exif['FocalLength'])) {
+					$exif_data[$i] = '초점거리 : ' . $this->get_focal_length($exif['FocalLength']);
+					$i++;
+				}
+				
+				// 환산거리
+				if(isset($exif['FocalLengthIn35mmFilm'])) {
+					$exif_data[$i] = '35mm환산거리 : ' . $exif['FocalLengthIn35mmFilm'] . 'mm';
+					$i++;
+				}
+				
+				// 조리개
+				if (isset($exif['COMPUTED']['ApertureFNumber'])) {
+					$exif_data[$i] = '조리개 : ' . $exif['COMPUTED']['ApertureFNumber'];
+					$i++;
+				}
+				
+				// ISO
+				if (isset($exif['ISOSpeedRatings'])) {
+					$exif_data[$i] = 'ISO : ' . $exif['ISOSpeedRatings'];
+					$i++;
+				}
+				
+				// 화이트밸런스
+				if (isset($exif['WhiteBalance'])) {
+					$exif_data[$i] = '화이트밸러스 : ' . $this->get_white_balance($exif['WhiteBalance']);
+					$i++;
+				}
+				
+				// 노출시간
+				if (isset($exif['ExposureTime'])) {
+					$exif_data[$i] = '노출시간 : ' . $this->get_expose_time($exif['ExposureTime']);
+					$i++;
+				}
+				
+				// 노출보정
+				if (isset($exif['ExposureBiasValue'])) {
+					$exif_data[$i] = '노출보정(EV) : ' . $this->get_expose_bias($exif['ExposureBiasValue']);
+					$i++;
+				}
+				
+				// CCD
+				if (isset($exif['COMPUTED']['CCDWidth'])) {
+					$exif_data[$i] = 'CCD : ' . $exif['COMPUTED']['CCDWidth'];
+					$i++;
+				}
+				
+				//플래쉬
+				if (isset($exif['Flash'])) {
+					$exif_data[$i] = 'Flash : ' . $this->get_exif_flash($exif['Flash']);
+					$i++;
+				}
+				
+				$exif_info  = '<div class="exif_info"><ul><li>';
+				$exif_info .= implode('</li><li>', $exif_data);
+				$exif_info .= '</li></ul></div>';
+				
+				return $exif_info;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * 촬영모드
+	 */
+	private function get_exprogram_mode($exif_ep) {
+		switch($exif_ep) {
+			case 0 : $ep_mode = '자동모드'; break;
+			case 1 : $ep_mode = '수동모드'; break;
+			case 2 : $ep_mode = '프로그램모드'; break;
+			case 3 : $ep_mode = '조리개모드'; break;
+			case 4 : $ep_mode = '서터스피드모드'; break;
+			default : $ep_mode = '자동모드'; break;
+		}
+		return $ep_mode;
+	}
+	
+	/**
+	 * 측광모드
+	 */
+	private function get_metering_mode($exif_mm) {
+		switch($exif_mm) {
+			case 0 : $mm_mode = 'Unknow'; break;
+			case 1 : $mm_mode = 'Average'; break;
+			case 2 : $mm_mode = 'Center weighted averaget'; break;
+			case 3 : $mm_mode = 'Spot'; break;
+			case 4 : $mm_mode = 'Unknow'; break;
+			case 5 : $mm_mode = 'Multi Segment'; break;
+			case 6 : $mm_mode = 'Partial'; break;
+			default : $mm_mode = 'Unknown'; break;
+		}
+		return $mm_mode;
+	}
+	
+	/**
+	 * 초점거리
+	 */
+	private function get_focal_length($exif_fl) {
+		$tmp = explode("/", $exif_fl);
+		return ($tmp[0] / $tmp[1]) . 'mm';
+	}
+	
+	/**
+	 * 화이트밸런스
+	 */
+	private function get_white_balance($exif_wb) {
+		switch($exif_wb) {
+			case 0 : $white_balance = 'Auto'; break;
+			case 1 : $$white_balance = 'Manual'; break;
+			default : $white_balance = 'Auto'; break;
+		}
+		return $white_balance;
+	}
+	
+	/**
+	 * 노출시간
+	 */
+	private function get_expose_time($exif_et) {
+		$leng=explode("/", $exif_et); 
+		if ($leng[0]/$leng[1] > 1) {
+			$expose_time = ($leng[0]/$leng[1]);              
+		} else {
+			$expose_time = $et; 
+		}
+		return $expose_time;
+	}
+	
+	/**
+	 * 노출보정
+	 */
+	private function get_expose_bias($exif_eb) {
+		$tmp = explode("/", $exif_eb);
+		$expose_bias = $tmp[0] / $tmp[1];
+		$expose_bias = substr(strval($expose_bias),0,4);
+		$expose_bias = $expose_bias . 'EV';
+		return $expose_bias;
+	}
+	
+	/**
+	 * Flash
+	 */
+	private function get_exif_flash($exif_fl) {
+		switch($exif_fl) {
+			case 16 : $exif_flash = 'Off Compulsory'; break;
+			case 73 : $exif_flash = 'On Compulsory Red-eye reduction'; break;
+			case 9  : $exif_flash = 'On Compulsory'; break;
+			case 7  : $exif_flash = 'On'; break;
+			default : $exif_flash = 'Unknown'; break;
+		}
+		return $exif_flash;
+	}
+	
+	// 게시글보기 썸네일 생성
+	private function get_thumbnail($contents, $thumb_width=0) {
+	    global $board, $config, $eyoom_board;
+	
+	    if (!$thumb_width) $thumb_width = $board['bo_image_width'];
+	
+	    // $contents 중 img 태그 추출
+	    $matches = get_editor_image($contents, true);
+	
+	    if(empty($matches)) return $contents;
+	
+	    for($i=0; $i<count($matches[1]); $i++) {
+	
+	        $img = $matches[1][$i];
+	        preg_match("/src=[\'\"]?([^>\'\"]+[^>\'\"]+)/i", $img, $m);
+	        $src = $m[1];
+	        preg_match("/style=[\"\']?([^\"\'>]+)/i", $img, $m);
+	        $style = $m[1];
+	        preg_match("/width:\s*(\d+)px/", $style, $m);
+	        $width = $m[1];
+	        preg_match("/height:\s*(\d+)px/", $style, $m);
+	        $height = $m[1];
+	        preg_match("/alt=[\"\']?([^\"\']*)[\"\']?/", $img, $m);
+	        $alt = get_text($m[1]);
+	
+	        // 이미지 path 구함
+	        $p = parse_url($src);
+	        if(strpos($p['path'], '/'.G5_DATA_DIR.'/') != 0)
+	            $data_path = preg_replace('/^\/.*\/'.G5_DATA_DIR.'/', '/'.G5_DATA_DIR, $p['path']);
+	        else
+	            $data_path = $p['path'];
+	
+	        $srcfile = G5_PATH.$data_path;
+	
+	        if(is_file($srcfile)) {
+		        // EXIF 정보
+		        if($eyoom_board['bo_use_exif']) {
+		        	$exif_info = $this->get_exif_info($srcfile);
+		        }
+		        
+	            $size = @getimagesize($srcfile);
+	            if(empty($size))
+	                continue;
+	
+	            // jpg 이면 exif 체크
+	            if($size[2] == 2 && function_exists('exif_read_data')) {
+	                $degree = 0;
+	                $exif = @exif_read_data($srcfile);
+	                if(!empty($exif['Orientation'])) {
+	                    switch($exif['Orientation']) {
+	                        case 8:
+	                            $degree = 90;
+	                            break;
+	                        case 3:
+	                            $degree = 180;
+	                            break;
+	                        case 6:
+	                            $degree = -90;
+	                            break;
+	                    }
+	
+	                    // 세로사진의 경우 가로, 세로 값 바꿈
+	                    if($degree == 90 || $degree == -90) {
+	                        $tmp = $size;
+	                        $size[0] = $tmp[1];
+	                        $size[1] = $tmp[0];
+	                    }
+	                }
+	            }
+	
+	            // 원본 width가 thumb_width보다 작다면
+	            if($size[0] <= $thumb_width)
+	                continue;
+	
+	            // Animated GIF 체크
+	            $is_animated = false;
+	            if($size[2] == 1) {
+	                $is_animated = is_animated_gif($srcfile);
+	            }
+	
+	            // 썸네일 높이
+	            $thumb_height = round(($thumb_width * $size[1]) / $size[0]);
+	            $filename = basename($srcfile);
+	            $filepath = dirname($srcfile);
+	
+	            // 썸네일 생성
+	            if(!$is_animated)
+	                $thumb_file = thumbnail($filename, $filepath, $filepath, $thumb_width, $thumb_height, false);
+	            else
+	                $thumb_file = $filename;
+	
+	            if(!$thumb_file)
+	                continue;
+	
+	            if ($width) {
+	                $thumb_tag = '<img src="'.G5_URL.str_replace($filename, $thumb_file, $data_path).'" alt="'.$alt.'" width="'.$width.'" height="'.$height.'"/>';
+	            } else {
+	                $thumb_tag = '<img src="'.G5_URL.str_replace($filename, $thumb_file, $data_path).'" alt="'.$alt.'"/>';
+	            }
+	
+	            // $img_tag에 editor 경로가 있으면 원본보기 링크 추가
+	            $img_tag = $matches[0][$i];
+	            if(strpos($img_tag, G5_DATA_DIR.'/'.G5_EDITOR_DIR) && preg_match("/\.({$config['cf_image_extension']})$/i", $filename)) {
+	                $imgurl = str_replace(G5_URL, "", $src);
+	                $thumb_tag = '<a href="'.G5_BBS_URL.'/view_image.php?fn='.urlencode($imgurl).'" target="_blank" class="view_image">'.$thumb_tag.'</a>';
+	            }
+	            
+	            // EXIF 정보
+	            if($exif_info && $eyoom_board['bo_use_exif']) {
+		            $thumb_tag .= $exif_info;
+		        }
+	
+	            $contents = str_replace($img_tag, $thumb_tag, $contents);
+	        }
+	    }
+	
+	    return $contents;
 	}
 
 	// 회원의 추천/비추천 정보 가져오기

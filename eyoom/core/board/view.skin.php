@@ -14,14 +14,20 @@
 		$ycard = unserialize($view['wr_4']);
 		if(!$ycard) $ycard = array();
 		
-		if($ycard['yc_blind'] == 'y' && !$is_admin && $member['mb_level'] < $eyoom_board['bo_blind_view']) {
-			$yc_data = sql_fetch("select mb_id from {$g5['eyoom_yellowcard']} where bo_table = '{$bo_table}' and wr_id = '{$wr_id}' and mb_id = '{$member['mb_id']}' ");
-			if(!$yc_data['mb_id']) {
-				alert('이 게시물은 블라인드 처리된 게시물입니다.');
-				exit;
+		$mb_ycard = $eb->mb_yellow_card($member['mb_id'],$bo_table, $wr_id);
+		if($ycard['yc_blind'] == 'y') {
+			if(!$is_admin && $member['mb_level'] < $eyoom_board['bo_blind_view']) {
+				if(!$mb_ycard['mb_id']) {
+					alert('이 게시물은 블라인드 처리된 게시물입니다.');
+					exit;
+				}
 			}
 		}
-		$mb_ycard = $eb->mb_yellow_card($member['mb_id'],$bo_table, $wr_id);
+		
+		// 바로 블라인드 처리할 수 있는 권한인지 체크
+		if($is_admin || $member['mb_level'] >= $eyoom_board['bo_blind_direct'] ) {
+			$blind_direct = true;
+		}
 	}
 
 	// 읽는사람 포인트 주기 및 이윰뉴 테이블의 히트수/댓글수 일치 시키기
@@ -71,6 +77,11 @@
 			if ($view['file'][$i]['view']) {
 				//echo $view['file'][$i]['view'];
 				$file_conts .= get_view_thumbnail($view['file'][$i]['view']);
+				
+				// EXIF contents
+				if($eyoom_board['bo_use_exif']) {
+					$file_conts .= $eb->get_exif_info($view['file'][$i]['path'] . '/' . $view['file'][$i]['file']);
+				}
 			}
 		}
 		$file_conts .= "</div>\n";

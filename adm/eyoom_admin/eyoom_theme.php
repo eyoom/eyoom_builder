@@ -31,4 +31,7 @@
 
 	// 게시판 설정 다시 가져오기
 	if($bo_table) $eyoom_board = $eb->eyoom_board_info($bo_table, $_theme);
+	if(!$eyoom_board) {
+		$eyoom_board = $eb->eyoom_board_default($bo_table);
+	}
 ?>

@@ -19,6 +19,7 @@ if($eyoom_board['bo_use_point_explain'] == '1') $checked['bo_use_point_explain']
 if($eyoom_board['bo_use_list_image'] == '1') $checked['bo_use_list_image'] = true; else $checked['bo_use_list_image'] = false;
 if($eyoom_board['bo_use_video_photo'] == '1') $checked['bo_use_video_photo'] = true; else $checked['bo_use_video_photo'] = false;
 if($eyoom_board['bo_use_yellow_card'] == '1') $checked['bo_use_yellow_card'] = true; else $checked['bo_use_yellow_card'] = false;
+if($eyoom_board['bo_use_exif'] == '1') $checked['bo_use_exif'] = true; else $checked['bo_use_exif'] = false;
 if($eyoom_board['bo_cmtpoint_target'] == '2') $checked['bo_cmtpoint_target2'] = true; else $checked['bo_cmtpoint_target1'] = true;
 
 // 쇼핑몰 테마인가?
@@ -169,6 +170,18 @@ $frm_submit = '
                 <label for="chk_grp_video_photo">그룹적용</label>
                 <input type="checkbox" name="chk_all_video_photo" value="1" id="chk_all_video_photo">
                 <label for="chk_all_video_photo">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="bo_use_exif">포토이미지 EXIF 정보보기 사용</label></th>
+            <td>
+				<label for="bo_use_exif"><input type="checkbox" name="bo_use_exif" value="1" id="bo_use_exif" <?php echo $checked['bo_use_exif']?'checked':''; ?>> 사용</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_exif" value="1" id="chk_grp_exif">
+                <label for="chk_grp_exif">그룹적용</label>
+                <input type="checkbox" name="chk_all_exif" value="1" id="chk_all_exif">
+                <label for="chk_all_exif">전체적용</label>
             </td>
         </tr>
         <tr>
