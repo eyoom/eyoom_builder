@@ -76,12 +76,7 @@
 		for ($i=0; $i<=count($view['file']); $i++) {
 			if ($view['file'][$i]['view']) {
 				//echo $view['file'][$i]['view'];
-				$file_conts .= get_view_thumbnail($view['file'][$i]['view']);
-				
-				// EXIF contents
-				if($eyoom_board['bo_use_exif']) {
-					$file_conts .= $eb->get_exif_info($view['file'][$i]['path'] . '/' . $view['file'][$i]['file']);
-				}
+				$file_conts .= $eb->get_thumbnail($view['file'][$i]['view']);
 			}
 		}
 		$file_conts .= "</div>\n";

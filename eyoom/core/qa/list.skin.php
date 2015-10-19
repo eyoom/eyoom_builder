@@ -1,4 +1,5 @@
-<?php 
+<?php
+ 
 	if (!defined('_GNUBOARD_')) exit;
 
 	// 선택옵션으로 인해 셀합치기가 가변적으로 변함

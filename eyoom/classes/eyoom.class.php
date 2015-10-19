@@ -202,7 +202,7 @@ class eyoom extends qfile
 			// 내글 반응 등록
 			$insert = " insert into {$g5['eyoom_respond']} set $set regdt = '".G5_TIME_YMDHIS."' ";
 			sql_query($insert, false);
-			$rid = mysql_insert_id();
+			$rid = sql_insert_id();
 
 			// 원본글 작성자의 반응글 적용
 			$row = sql_fetch("select mb_id from {$g5['eyoom_member']} where mb_id = '{$wr_mb_id}'", false);
@@ -1137,213 +1137,9 @@ class eyoom extends qfile
 		}
 	}
 	
-	/**
-	 * EXIF 정보 가져오기
-	 */
-	public function get_exif_info($source) {
-		global $eyoom_board;
-		
-		// exif_read_data 함수를 지원하는가?
-		if( function_exists('exif_read_data') ) {
-			$exif = @exif_read_data($source);
-			if($exif) {
-				$i=0;
-				// 카메라 
-				if(isset($exif['Make'])) {
-					$exif_data[$i] = 'Make : ' . $exif['Make'];
-					$i++;
-				}
-				
-				// 카메라 기종
-				if(isset($exif['Model'])) {
-					$exif_data[$i] = 'Model : ' . $exif['Model'];
-					$i++;
-				}
-				
-				// 촬영시간
-				if(isset($exif['DateTimeOriginal'])) {
-					$exif_data[$i] = '촬영일시 : ' . $exif['DateTimeOriginal'];
-					$i++;
-				}
-				
-				// 포토사이즈
-				if(isset($exif['COMPUTED']['Width']) && isset($exif['COMPUTED']['Height'])) {
-					$exif_data[$i] = '사이즈 : ' . number_format($exif['COMPUTED']['Width']) . 'px X ' . number_format($exif['COMPUTED']['Height']) . 'px';
-					$i++;
-				}
-				
-				// 촬영모드
-				if (isset($exif['ExposureProgram'])) {
-					$exif_data[$i] = '촬영모드 : ' . $this->get_exprogram_mode($exif['ExposureProgram']);
-					$i++;
-				}
-				
-				// 측광모드
-				if (isset($exif['MeteringMode'])) {
-					$exif_data[$i] = '측광모드 : ' . $this->get_metering_mode($exif['MeteringMode']);
-					$i++;
-				}
-				
-				// 초점거리
-				if (isset($exif['FocalLength'])) {
-					$exif_data[$i] = '초점거리 : ' . $this->get_focal_length($exif['FocalLength']);
-					$i++;
-				}
-				
-				// 환산거리
-				if(isset($exif['FocalLengthIn35mmFilm'])) {
-					$exif_data[$i] = '35mm환산거리 : ' . $exif['FocalLengthIn35mmFilm'] . 'mm';
-					$i++;
-				}
-				
-				// 조리개
-				if (isset($exif['COMPUTED']['ApertureFNumber'])) {
-					$exif_data[$i] = '조리개 : ' . $exif['COMPUTED']['ApertureFNumber'];
-					$i++;
-				}
-				
-				// ISO
-				if (isset($exif['ISOSpeedRatings'])) {
-					$exif_data[$i] = 'ISO : ' . $exif['ISOSpeedRatings'];
-					$i++;
-				}
-				
-				// 화이트밸런스
-				if (isset($exif['WhiteBalance'])) {
-					$exif_data[$i] = '화이트밸러스 : ' . $this->get_white_balance($exif['WhiteBalance']);
-					$i++;
-				}
-				
-				// 노출시간
-				if (isset($exif['ExposureTime'])) {
-					$exif_data[$i] = '노출시간 : ' . $this->get_expose_time($exif['ExposureTime']);
-					$i++;
-				}
-				
-				// 노출보정
-				if (isset($exif['ExposureBiasValue'])) {
-					$exif_data[$i] = '노출보정(EV) : ' . $this->get_expose_bias($exif['ExposureBiasValue']);
-					$i++;
-				}
-				
-				// CCD
-				if (isset($exif['COMPUTED']['CCDWidth'])) {
-					$exif_data[$i] = 'CCD : ' . $exif['COMPUTED']['CCDWidth'];
-					$i++;
-				}
-				
-				//플래쉬
-				if (isset($exif['Flash'])) {
-					$exif_data[$i] = 'Flash : ' . $this->get_exif_flash($exif['Flash']);
-					$i++;
-				}
-				
-				$exif_info  = '<div class="exif_info"><ul><li>';
-				$exif_info .= implode('</li><li>', $exif_data);
-				$exif_info .= '</li></ul></div>';
-				
-				return $exif_info;
-			} else {
-				return false;
-			}
-		} else {
-			return false;
-		}
-	}
-	
-	/**
-	 * 촬영모드
-	 */
-	private function get_exprogram_mode($exif_ep) {
-		switch($exif_ep) {
-			case 0 : $ep_mode = '자동모드'; break;
-			case 1 : $ep_mode = '수동모드'; break;
-			case 2 : $ep_mode = '프로그램모드'; break;
-			case 3 : $ep_mode = '조리개모드'; break;
-			case 4 : $ep_mode = '서터스피드모드'; break;
-			default : $ep_mode = '자동모드'; break;
-		}
-		return $ep_mode;
-	}
-	
-	/**
-	 * 측광모드
-	 */
-	private function get_metering_mode($exif_mm) {
-		switch($exif_mm) {
-			case 0 : $mm_mode = 'Unknow'; break;
-			case 1 : $mm_mode = 'Average'; break;
-			case 2 : $mm_mode = 'Center weighted averaget'; break;
-			case 3 : $mm_mode = 'Spot'; break;
-			case 4 : $mm_mode = 'Unknow'; break;
-			case 5 : $mm_mode = 'Multi Segment'; break;
-			case 6 : $mm_mode = 'Partial'; break;
-			default : $mm_mode = 'Unknown'; break;
-		}
-		return $mm_mode;
-	}
-	
-	/**
-	 * 초점거리
-	 */
-	private function get_focal_length($exif_fl) {
-		$tmp = explode("/", $exif_fl);
-		return ($tmp[0] / $tmp[1]) . 'mm';
-	}
-	
-	/**
-	 * 화이트밸런스
-	 */
-	private function get_white_balance($exif_wb) {
-		switch($exif_wb) {
-			case 0 : $white_balance = 'Auto'; break;
-			case 1 : $$white_balance = 'Manual'; break;
-			default : $white_balance = 'Auto'; break;
-		}
-		return $white_balance;
-	}
-	
-	/**
-	 * 노출시간
-	 */
-	private function get_expose_time($exif_et) {
-		$leng=explode("/", $exif_et); 
-		if ($leng[0]/$leng[1] > 1) {
-			$expose_time = ($leng[0]/$leng[1]);              
-		} else {
-			$expose_time = $et; 
-		}
-		return $expose_time;
-	}
-	
-	/**
-	 * 노출보정
-	 */
-	private function get_expose_bias($exif_eb) {
-		$tmp = explode("/", $exif_eb);
-		$expose_bias = $tmp[0] / $tmp[1];
-		$expose_bias = substr(strval($expose_bias),0,4);
-		$expose_bias = $expose_bias . 'EV';
-		return $expose_bias;
-	}
-	
-	/**
-	 * Flash
-	 */
-	private function get_exif_flash($exif_fl) {
-		switch($exif_fl) {
-			case 16 : $exif_flash = 'Off Compulsory'; break;
-			case 73 : $exif_flash = 'On Compulsory Red-eye reduction'; break;
-			case 9  : $exif_flash = 'On Compulsory'; break;
-			case 7  : $exif_flash = 'On'; break;
-			default : $exif_flash = 'Unknown'; break;
-		}
-		return $exif_flash;
-	}
-	
 	// 게시글보기 썸네일 생성
-	private function get_thumbnail($contents, $thumb_width=0) {
-	    global $board, $config, $eyoom_board;
+	public function get_thumbnail($contents, $thumb_width=0) {
+	    global $board, $config, $eyoom_board, $exif;
 	
 	    if (!$thumb_width) $thumb_width = $board['bo_image_width'];
 	
@@ -1378,7 +1174,7 @@ class eyoom extends qfile
 	        if(is_file($srcfile)) {
 		        // EXIF 정보
 		        if($eyoom_board['bo_use_exif']) {
-		        	$exif_info = $this->get_exif_info($srcfile);
+				   $exif_info = $exif->get_exif_info($srcfile);
 		        }
 		        
 	            $size = @getimagesize($srcfile);
@@ -1388,9 +1184,9 @@ class eyoom extends qfile
 	            // jpg 이면 exif 체크
 	            if($size[2] == 2 && function_exists('exif_read_data')) {
 	                $degree = 0;
-	                $exif = @exif_read_data($srcfile);
-	                if(!empty($exif['Orientation'])) {
-	                    switch($exif['Orientation']) {
+	                $_exif = @exif_read_data($srcfile);
+	                if(!empty($_exif['Orientation'])) {
+	                    switch($_exif['Orientation']) {
 	                        case 8:
 	                            $degree = 90;
 	                            break;
@@ -1431,21 +1227,27 @@ class eyoom extends qfile
 	                $thumb_file = thumbnail($filename, $filepath, $filepath, $thumb_width, $thumb_height, false);
 	            else
 	                $thumb_file = $filename;
-	
-	            if(!$thumb_file)
-	                continue;
-	
-	            if ($width) {
-	                $thumb_tag = '<img src="'.G5_URL.str_replace($filename, $thumb_file, $data_path).'" alt="'.$alt.'" width="'.$width.'" height="'.$height.'"/>';
+	                
+	            if($thumb_file) {
+		            if ($width) {
+		                $thumb_tag = '<img src="'.G5_URL.str_replace($filename, $thumb_file, $data_path).'" alt="'.$alt.'" width="'.$width.'" height="'.$height.'"/>';
+		            } else {
+		                $thumb_tag = '<img src="'.G5_URL.str_replace($filename, $thumb_file, $data_path).'" alt="'.$alt.'"/>';
+		            }
+		
+		            // $img_tag에 editor 경로가 있으면 원본보기 링크 추가
+		            $img_tag = $matches[0][$i];
+		            if(strpos($img_tag, G5_DATA_DIR.'/'.G5_EDITOR_DIR) && preg_match("/\.({$config['cf_image_extension']})$/i", $filename)) {
+		                $imgurl = str_replace(G5_URL, "", $src);
+		                $thumb_tag = '<a href="'.G5_BBS_URL.'/view_image.php?fn='.urlencode($imgurl).'" target="_blank" class="view_image">'.$thumb_tag.'</a>';
+		            }
 	            } else {
-	                $thumb_tag = '<img src="'.G5_URL.str_replace($filename, $thumb_file, $data_path).'" alt="'.$alt.'"/>';
-	            }
-	
-	            // $img_tag에 editor 경로가 있으면 원본보기 링크 추가
-	            $img_tag = $matches[0][$i];
-	            if(strpos($img_tag, G5_DATA_DIR.'/'.G5_EDITOR_DIR) && preg_match("/\.({$config['cf_image_extension']})$/i", $filename)) {
-	                $imgurl = str_replace(G5_URL, "", $src);
-	                $thumb_tag = '<a href="'.G5_BBS_URL.'/view_image.php?fn='.urlencode($imgurl).'" target="_blank" class="view_image">'.$thumb_tag.'</a>';
+		            if ($width) {
+		                $thumb_tag = '<img src="'.G5_URL.$data_path.'" alt="'.$alt.'" width="'.$width.'" height="'.$height.'"/>';
+		            } else {
+		                $thumb_tag = '<img src="'.G5_URL.$data_path.'" alt="'.$alt.'"/>';
+		            }
+		            $img_tag = $matches[0][$i];
 	            }
 	            
 	            // EXIF 정보
@@ -1456,7 +1258,6 @@ class eyoom extends qfile
 	            $contents = str_replace($img_tag, $thumb_tag, $contents);
 	        }
 	    }
-	
 	    return $contents;
 	}
 
@@ -1592,7 +1393,7 @@ class eyoom extends qfile
 		global $g5, $bo_table, $wr_id, $theme;
 		$sql = "insert into {$g5['eyoom_link']} set bo_table='{$bo_table}', wr_id = '{$wr_id}', theme = '{$theme}'";
 		sql_query($sql,false);
-		$s_no = mysql_insert_id();
+		$s_no = sql_insert_id();
 		$t = $this->base62_encode($s_no);
 		return G5_BBS_URL . "/?t=".$t;
 	}

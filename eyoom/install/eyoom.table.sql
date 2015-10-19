@@ -174,6 +174,7 @@ CREATE TABLE IF NOT EXISTS `g5_eyoom_board` (
   `bo_use_list_image` char(1) NOT NULL default '1',
   `bo_use_yellow_card` tinyint(2) NOT NULL default '0',
   `bo_use_exif` tinyint(2) NOT NULL default '0',
+  `bo_exif_detail` text NOT NULL,
   `bo_blind_limit` tinyint(2) NOT NULL default '5',
   `bo_blind_view` tinyint(2) NOT NULL default '10',
   `bo_blind_direct` tinyint(2) NOT NULL default '10',

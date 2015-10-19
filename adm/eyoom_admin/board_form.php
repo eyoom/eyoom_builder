@@ -22,6 +22,13 @@ if($eyoom_board['bo_use_yellow_card'] == '1') $checked['bo_use_yellow_card'] = t
 if($eyoom_board['bo_use_exif'] == '1') $checked['bo_use_exif'] = true; else $checked['bo_use_exif'] = false;
 if($eyoom_board['bo_cmtpoint_target'] == '2') $checked['bo_cmtpoint_target2'] = true; else $checked['bo_cmtpoint_target1'] = true;
 
+// EXIF 상세설정값
+if(!$eyoom_board['bo_exif_detail']) {
+	$exif_detail = $eb->get_exif_default();
+} else {
+	$exif_detail = unserialize(stripslashes($eyoom_board['bo_exif_detail']));
+}
+
 // 쇼핑몰 테마인가?
 if(preg_match('/pc_/',$theme)) {
 	$device = 'pc';
@@ -173,18 +180,6 @@ $frm_submit = '
             </td>
         </tr>
         <tr>
-            <th scope="row"><label for="bo_use_exif">포토이미지 EXIF 정보보기 사용</label></th>
-            <td>
-				<label for="bo_use_exif"><input type="checkbox" name="bo_use_exif" value="1" id="bo_use_exif" <?php echo $checked['bo_use_exif']?'checked':''; ?>> 사용</label>
-            </td>
-            <td class="td_grpset">
-                <input type="checkbox" name="chk_grp_exif" value="1" id="chk_grp_exif">
-                <label for="chk_grp_exif">그룹적용</label>
-                <input type="checkbox" name="chk_all_exif" value="1" id="chk_all_exif">
-                <label for="chk_all_exif">전체적용</label>
-            </td>
-        </tr>
-        <tr>
             <th scope="row"><label for="download_fee_ratio">파일다운로드 수수료율</label></th>
             <td>
 				<input type="text" name="download_fee_ratio" value="<?php echo $eyoom_board['download_fee_ratio'] ?>" id="download_fee_ratio" class="frm_input" size="5"> % <span class="exp">공유자료실 스킨 (share)의 다운로드 수수료율 지정</span>
@@ -281,6 +276,53 @@ $frm_submit = '
 				<label for="chk_all_blind_direct">전체적용</label>
 			</td>
 		</tr>
+        </tbody>
+        </table>
+    </div>
+</section>
+
+<section id="anc_bo_basic">
+    <h2 class="h2_frm color-green">포토이미지 EXIF 정보</h2>
+
+    <div class="tbl_frm01 tbl_wrap">
+        <table>
+        <caption>포토이미지 EXIF 정보</caption>
+        <colgroup>
+            <col class="grid_4">
+            <col>
+            <col class="grid_3">
+        </colgroup>
+        <tbody>
+        <tr>
+            <th scope="row"><label for="bo_use_exif">포토이미지 EXIF 정보보기 사용</label></th>
+            <td>
+				<label for="bo_use_exif"><input type="checkbox" name="bo_use_exif" value="1" id="bo_use_exif" <?php echo $checked['bo_use_exif']?'checked':''; ?>> 사용</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_exif" value="1" id="chk_grp_exif">
+                <label for="chk_grp_exif">그룹적용</label>
+                <input type="checkbox" name="chk_all_exif" value="1" id="chk_all_exif">
+                <label for="chk_all_exif">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="bo_exif_detail">EXIF 정보보기 상세설정</label></th>
+            <td>
+            <?php
+	            foreach($exif_item as $key => $val) {
+		    ?>
+		    	<div style="margin:5px;"><span style="display:inline-block;width:100px;"><?php echo $val; ?></span> <input type="text" name="bo_exif_detail[<?php echo $key;?>][item]" value="<?php echo $exif_detail[$key]['item']; ?>" id="bo_exif_detail_<?php echo $key;?>_item" class="frm_input" size="20"> <label for="bo_exif_detail_<?php echo $key;?>_use"><input type="checkbox" name="bo_exif_detail[<?php echo $key;?>][use]" value="1" id="bo_exif_detail_<?php echo $key;?>_use" <?php echo $exif_detail[$key]['use']==1?'checked':''; ?>> 보이기</label></div>
+		    <?php 
+	            }
+            ?>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_exif_detail" value="1" id="chk_grp_exif_detail">
+                <label for="chk_grp_exif_detail">그룹적용</label>
+                <input type="checkbox" name="chk_all_exif_detail" value="1" id="chk_all_exif_detail">
+                <label for="chk_all_exif_detail">전체적용</label>
+            </td>
+        </tr>
         </tbody>
         </table>
     </div>

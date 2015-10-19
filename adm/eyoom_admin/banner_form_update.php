@@ -43,7 +43,7 @@ if (is_uploaded_file($_FILES['bn_img']['tmp_name'])) {
 if ($w == '')
 {
     sql_query(" insert into {$g5['eyoom_banner']} set {$sql_common} bn_regdt = '".G5_TIME_YMDHIS."'");
-	$bn_no = mysql_insert_id();
+	$bn_no = sql_insert_id();
 	$msg = "배너/광고를 추가하였습다.";
 }
 else if ($w == 'u')

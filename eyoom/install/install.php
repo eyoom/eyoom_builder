@@ -279,7 +279,7 @@ $cache_dir = '../..'.G5_DATA_PATH.'/_cache';
 <?php
 // DB 테이블 생성
 $sql = " desc ".G5_TABLE_PREFIX."eyoom_member";
-$result = @mysql_query($sql);
+$result = @sql_query($sql);
 
 if(!$result || (isset($_POST['table_rest']) && $_POST['table_rest'] == 'y')) {
 
@@ -293,7 +293,7 @@ if(!$result || (isset($_POST['table_rest']) && $_POST['table_rest'] == 'y')) {
 
     for ($i=0; $i<count($f); $i++) {
         if (trim($f[$i]) == '') continue;
-        mysql_query($f[$i]) or die(mysql_error());
+        sql_query($f[$i]) or die(mysqli_error());
     }
 }
 ?>

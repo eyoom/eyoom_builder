@@ -1,4 +1,5 @@
-<?php 
+<?php
+ 
 	if (!defined('_GNUBOARD_')) exit;
 
 	foreach( $faq_master_list as $k => $v ){

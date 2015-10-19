@@ -20,6 +20,7 @@ $set = "
 	bo_use_video_photo		= '{$_POST['bo_use_video_photo']}',
 	bo_use_yellow_card		= '{$_POST['bo_use_yellow_card']}',
 	bo_use_exif				= '{$_POST['bo_use_exif']}',
+	bo_exif_detail			= '" . serialize($_POST['bo_exif_detail']) . "',
 	bo_blind_limit			= '{$_POST['bo_blind_limit']}',
 	bo_blind_view			= '{$_POST['bo_blind_view']}',
 	bo_blind_direct			= '{$_POST['bo_blind_direct']}',
@@ -57,6 +58,7 @@ if (is_checked('chk_grp_list_image'))		$grp_fields .= " , bo_use_list_image = '{
 if (is_checked('chk_grp_video_photo'))		$grp_fields .= " , bo_use_video_photo = '{$_POST['bo_use_video_photo']}' ";
 if (is_checked('chk_grp_yellow_card'))		$grp_fields .= " , bo_use_yellow_card = '{$_POST['bo_use_yellow_card']}' ";
 if (is_checked('chk_grp_exif'))				$grp_fields .= " , bo_use_exif = '{$_POST['bo_use_exif']}' ";
+if (is_checked('chk_grp_exif_detail'))		$grp_fields .= " , bo_exif_detail = '" . serialize($_POST['bo_exif_detail']) . "' ";
 if (is_checked('chk_grp_blind_limit'))		$grp_fields .= " , bo_blind_limit = '{$_POST['bo_blind_limit']}' ";
 if (is_checked('chk_grp_blind_view'))		$grp_fields .= " , bo_blind_view = '{$_POST['bo_blind_view']}' ";
 if (is_checked('chk_grp_blind_direct'))		$grp_fields .= " , bo_blind_direct = '{$_POST['bo_blind_direct']}' ";
@@ -95,6 +97,7 @@ if (is_checked('chk_all_list_image'))		$all_fields .= " , bo_use_list_image = '{
 if (is_checked('chk_all_video_photo'))		$all_fields .= " , bo_use_video_photo = '{$_POST['bo_use_video_photo']}' ";
 if (is_checked('chk_all_yellow_card'))		$all_fields .= " , bo_use_yellow_card = '{$_POST['bo_use_yellow_card']}' ";
 if (is_checked('chk_all_exif'))				$all_fields .= " , bo_use_exif = '{$_POST['bo_use_exif']}' ";
+if (is_checked('chk_all_exif_detail'))		$all_fields .= " , bo_exif_detail = '" . serialize($_POST['bo_exif_detail']) . "' ";
 if (is_checked('chk_all_blind_limit'))		$all_fields .= " , bo_blind_limit = '{$_POST['bo_blind_limit']}' ";
 if (is_checked('chk_all_blind_view'))		$all_fields .= " , bo_blind_view = '{$_POST['bo_blind_view']}' ";
 if (is_checked('chk_all_blind_direct'))		$all_fields .= " , bo_blind_direct = '{$_POST['bo_blind_direct']}' ";

@@ -1,4 +1,5 @@
-<?php 
+<?php
+ 
 	if (!defined('_GNUBOARD_')) exit;
 
 	// 그룹정보 가져오기

@@ -5,7 +5,7 @@
 	define('_EYOOM_COMMON_',true);
 
 	// Version
-	define('_EYOOM_VESION_','EyoomBuilder_1.1.11');
+	define('_EYOOM_VESION_','EyoomBuilder_1.1.12');
 
 	// GNUBOARD5 Library
 	include_once(G5_LIB_PATH.'/common.lib.php');
@@ -40,6 +40,31 @@
 		if(!$eyoom_board) {
 			// DB에 입력된 정보가 없을 때, 기본값 가져오기
 			$eyoom_board = $eb->eyoom_board_default($bo_table);
+		}
+		
+		// EXIF정보보기 사용시
+		if($eyoom_board['bo_use_exif'] || $is_admin == 'super') {
+			$exif_item = array(
+				'maker'		=> '제조사',
+				'model'		=> '모델',
+				'datetime'	=> '촬영일',
+				'size'		=> '사이즈',
+				'exprogram'	=> '촬영모드',
+				'metermode'	=> '측광모드',
+				'focallen'	=> '초점거리',
+				'focal35mm'	=> '35mm환산거리',
+				'fnumber'	=> '조리개',
+				'iso'		=> 'ISO',
+				'whitebal'	=> '화이트밸러스',
+				'exptime'	=> '노출시간',
+				'expbias'	=> '노출보정(EV)',
+				'ccd'		=> 'CCD',
+				'flash'		=> 'Flash'
+			);
+			
+			// EXIF Class Object
+			include_once(EYOOM_CLASS_PATH . '/exif.class.php');
+			$exif = new exif;
 		}
 		
 		// 익명글쓰기 체크

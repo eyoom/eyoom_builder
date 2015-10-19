@@ -247,17 +247,27 @@ if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주�
 
 /** ############# EyoomBuilder_1.1.11 ############# */
 {
-	// 게시물 신고 테이블에 댓글 pr_id 필드 및 wr_subject 필드 추가
+	// 게시물 신고 테이블에 댓글 pr_id 필드 추가
 	if(!sql_query(" select `pr_id` from {$g5['eyoom_yellowcard']} limit 1 ", false)) {
 		$sql = "alter table `{$g5['eyoom_yellowcard']}` add `pr_id` int(11) not null after `wr_id` ";
 		sql_query($sql, true);
 	}
 	
-	// 이윰보드에 동영상 목록이미지의 사용여부 필드 추가
+	// 이윰보드에 EXIF 사용여부 필드 추가
 	if(!sql_query(" select `bo_use_exif` from {$g5['eyoom_board']} limit 1 ", false)) {
 		$sql = "alter table `{$g5['eyoom_board']}` add `bo_use_exif` tinyint(2) NOT NULL default '0' after `bo_use_yellow_card` ";
 		sql_query($sql, true);
 	}
 }
 /** ############# EyoomBuilder_1.1.11 ############# */
+
+/** ############# EyoomBuilder_1.1.12 ############# */
+{
+	// 이윰보드에 EXIF 상세설정 필드 추가
+	if(!sql_query(" select `bo_exif_detail` from {$g5['eyoom_board']} limit 1 ", false)) {
+		$sql = "alter table `{$g5['eyoom_board']}` add `bo_exif_detail` text NOT NULL after `bo_use_exif` ";
+		sql_query($sql, true);
+	}
+}
+/** ############# EyoomBuilder_1.1.12 ############# */
 ?>
