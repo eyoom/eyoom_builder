@@ -64,6 +64,21 @@
 		// Eyoom Class Object Initialization
 		include_once(EYOOM_CLASS_PATH.'/class.init.php');
 
+		// 공사중 - 카운트다운
+		if(!$is_admin && isset($eyoom['countdown']) && $eyoom['countdown'] == 'y') {
+			$fname = $eb->get_filename_from_url($_SERVER['SCRIPT_NAME']);
+			if($fname != 'login.php' && $fname != 'login_check.php') {
+				$cd_date = $eb->mktime_countdown_date($eyoom['countdown_date']);
+				if(isset($cd_date['mktime']) && $cd_date['mktime'] > time()) {
+					$countdown = EYOOM_CORE_PATH.'/countdown/index.php';
+					if(file_exists($countdown)) {
+						include_once($countdown);
+						return;
+					}
+				}
+			}
+		}
+
 		// G5_ROOT 정의하기
 		$g5_root = $eb->g5_root(dirname(__FILE__));
 		define('G5_ROOT', $g5_root);

@@ -95,6 +95,26 @@ class eyoom extends qfile
 		$tpl_index = 'index_'.$tpl_name;
 		$tpl->print_($tpl_index);
 	}
+	
+	// 공사중 설정 시간 변환하여 리턴
+	public function mktime_countdown_date($cd_datetime) {
+		
+		if(strlen($cd_datetime) == 12) {
+			$cd_date = array();
+			$cd_date['year'] 	= substr($cd_datetime,0,4);
+			$cd_date['month'] 	= substr($cd_datetime,4,2);
+			$cd_date['day'] 	= substr($cd_datetime,6,2);
+			$cd_date['hour'] 	= substr($cd_datetime,8,2);
+			$cd_date['minute']	= substr($cd_datetime,10,2);
+			$cd_date['mktime']	= mktime($cd_date['hour'], $cd_date['minute'], 0, $cd_date['month'], $cd_date['day'], $cd_date['year']);
+			$cd_date['month_text'] = date('F', $cd_date['mktime']);
+			
+			return $cd_date;
+			
+		} else {
+			return false;
+		}
+	}
 
 	// 읽지 않은 쪽지수
 	public function get_memo($mb_id) {

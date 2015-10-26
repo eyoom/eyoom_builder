@@ -24,7 +24,7 @@ if($eyoom_board['bo_cmtpoint_target'] == '2') $checked['bo_cmtpoint_target2'] = 
 
 // EXIF 상세설정값
 if(!$eyoom_board['bo_exif_detail']) {
-	$exif_detail = $eb->get_exif_default();
+	$exif_detail = $exif->get_exif_default();
 } else {
 	$exif_detail = unserialize(stripslashes($eyoom_board['bo_exif_detail']));
 }

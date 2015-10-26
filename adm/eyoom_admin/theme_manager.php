@@ -22,6 +22,7 @@
 					<div class="refresh btn_respond"><a href="javascript:;" class="refresh_respond" onclick="return refresh_db_record('respond');">내글반응정리</a></div>
 					<div class="refresh btn_dbupdate"><a href="javascript:;" class="refresh_dbupdate" onclick="return refresh_db_record('dbupdate');">최신 DB 및 설정적용</a></div>
 					<div class="refresh btn_theme"><a href="javascript:;" class="use_eyoom_theme" onclick="return use_eyoom_theme();">이윰테마사용</a></div>
+					<div class="refresh btn_countdown"><a href="./countdown_form.php" class="countdown" onclick="return false;">공사중 설정</a></div>
 				</div>
 			</td>
 		</tr>
@@ -46,6 +47,7 @@
 			<?php
 			$arr = get_skin_dir('theme',EYOOM_PATH);
 			for ($i=0; $i<count($arr); $i++) {
+				if($arr[$i] == 'countdown') continue;
 				$config_file = $arr[$i] == 'basic' ? eyoom_config:G5_DATA_PATH.'/eyoom.'.$arr[$i].'.config.php';
 				if(file_exists($config_file)) {
 					include($config_file);
@@ -93,7 +95,7 @@ $(function(){
 		var new_win = window.open(href, 'win_theme', 'left=100,top=100,width=620,height=400,scrollbars=1');
 		new_win.focus();
 	}
-	$(".install_theme, .clone_theme, .delete_theme, .alias_theme").click(function(){
+	$(".install_theme, .clone_theme, .delete_theme, .alias_theme, .countdown").click(function(){
 		var url = $(this).attr('href');
 		win_theme(url);
 	});
