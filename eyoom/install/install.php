@@ -83,6 +83,7 @@ $eyoom = array(
 	"use_switcher" => "off",
 	"use_main_side_layout" => "y",
 	"use_sub_side_layout" => "y",
+	"use_shop_mobile" => "n",
 	"pos_side_layout" => "right",
 	"level_icon_gnu" => "basic",
 	"use_level_icon_gnu" => "n",
@@ -95,6 +96,10 @@ $eyoom = array(
 	"photo_height" => "150",
 	"cover_width" => "845",
 	"cover_height" => "250",
+	"countdown" => "n",
+	"countdown_skin" => "basic",
+	"countdown_date" => "",
+	"language" => "kr",
 );
 
 // eyoom 설정파일 생성

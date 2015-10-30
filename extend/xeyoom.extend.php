@@ -27,6 +27,8 @@
 	define('EYOOM_LANGUAGE_URL', EYOOM_URL.'/language');
 	define('EYOOM_SHOP_PATH', EYOOM_CORE_PATH.'/shop');
 	define('EYOOM_SHOP_URL', EYOOM_CORE_URL.'/shop');
+	define('EYOOM_MSHOP_PATH', EYOOM_CORE_PATH.'/shop_mobile');
+	define('EYOOM_MSHOP_URL', EYOOM_CORE_URL.'/shop_mobile');
 
 	// User Program 경로 정의
 	define('EYOOM_USER_PATH', EYOOM_PATH.'/user_program');

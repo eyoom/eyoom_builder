@@ -424,6 +424,14 @@ $frm_submit = '
             <col>
         </colgroup>
         <tbody>
+	    <tr>
+            <th scope="row"><label for="bootstrap">반응형/비반응형 설정</label></th>
+            <td>
+                <label for="bootstrap1"><input type="radio" name="bootstrap" id="bootstrap1" value="1" <?php if($_eyoom['bootstrap'] == '1') echo "checked";?>> 반응형 테마</label>
+				<label for="bootstrap2"><input type="radio" name="bootstrap" id="bootstrap2" value="0" <?php if($_eyoom['bootstrap'] == '0') echo "checked";?>> 비반응형 테마</label>
+				<span class="exp">주의 : 테마의 속성에 맞게 설정해야만 에러를 출력하지 않습니다.</span>
+            </td>
+        </tr>
 		<tr>
             <th scope="row"><label for="use_eyoom_menu">커뮤니티 메뉴</label></th>
             <td>
@@ -432,10 +440,18 @@ $frm_submit = '
             </td>
         </tr>
 		<tr>
-            <th scope="row"><label for="use_eyoom_menu">쇼핑몰 메뉴</label></th>
+            <th scope="row"><label for="use_eyoom_shopmenu">쇼핑몰 메뉴</label></th>
             <td>
                 <label for="use_eyoom_shopmenu1"><input type="radio" name="use_eyoom_shopmenu" id="use_eyoom_shopmenu1" value="y" <?php if($_eyoom['use_eyoom_shopmenu'] == 'y') echo "checked";?>> 이윰메뉴 사용</label>
 				<label for="use_eyoom_shopmenu2"><input type="radio" name="use_eyoom_shopmenu" id="use_eyoom_shopmenu2" value="n" <?php if($_eyoom['use_eyoom_shopmenu'] == 'n') echo "checked";?>> 그누메뉴 사용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="use_shop_mobile">쇼핑몰 모바일스킨 사용설정</label></th>
+            <td>
+                <label for="use_shop_mobile1"><input type="radio" name="use_shop_mobile" id="use_shop_mobile1" value="y" <?php if($_eyoom['use_shop_mobile'] == 'y') echo "checked";?>> 모바일 전용스킨 사용</label>
+				<label for="use_shop_mobile2"><input type="radio" name="use_shop_mobile" id="use_shop_mobile2" value="n" <?php if($_eyoom['use_shop_mobile'] == 'n' || !$_eyoom['use_shop_mobile']) echo "checked";?>> 반응형 스킨 사용</label>
+				<span class="exp">주의 : 반응형 스킨을 사용할 경우, 모바일 결제 기능이 지원되지 않습니다. [모바일 전용 스킨은 아직 준비중입니다.]</span>
             </td>
         </tr>
         <tr>

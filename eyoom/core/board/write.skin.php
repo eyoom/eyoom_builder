@@ -3,6 +3,27 @@
 
 	$uid = get_uniqid();
 
+	// summernote는 모바일에서 사용가능 하기에 editor 재설정
+	if($config['cf_editor'] == 'summernote' && G5_IS_MOBILE) {
+		$is_dhtml_editor = false;
+		$is_dhtml_editor_use = true;
+		
+		// 모바일에서는 G5_IS_MOBILE_DHTML_USE 설정에 따라 DHTML 에디터 적용
+		if ($config['cf_editor'] && $is_dhtml_editor_use && $board['bo_use_dhtml_editor'] && $member['mb_level'] >= $board['bo_html_level']) {
+		    $is_dhtml_editor = true;
+		
+		    if(is_file(G5_EDITOR_PATH.'/'.$config['cf_editor'].'/autosave.editor.js'))
+		        $editor_content_js = '<script src="'.G5_EDITOR_URL.'/'.$config['cf_editor'].'/autosave.editor.js"></script>'.PHP_EOL;
+		}
+		$editor_html = editor_html('wr_content', $content, $is_dhtml_editor);
+		$editor_js = '';
+		$editor_js .= get_editor_js('wr_content', $is_dhtml_editor);
+		$editor_js .= chk_editor_js('wr_content', $is_dhtml_editor);
+	}
+	
+	// add_javascript('js 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
+	add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
+
 	// wr_1에 작성자의 레벨정보 입력
 	if($is_member) {
 		if($w==''||$w=='r') {

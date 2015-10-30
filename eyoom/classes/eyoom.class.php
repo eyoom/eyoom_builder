@@ -723,10 +723,18 @@ class eyoom extends qfile
 		// 썸네일화하기
 		$content = $this->get_thumbnail($content);
 
-		// 동영상 처리하기
+		// 동영상
 		$content = preg_replace("/{동영상\s*\:([^}]*)}/ie", "\$this->video_content('\\1')", $content);
+		
+		// 이모티콘
 		$content = preg_replace("/{이모티콘\s*\:([^}]*)}/ie", "\$this->emoticon_content('\\1')", $content);
+		
+		// 사운드클라우드
 		$content = preg_replace("/{soundcloud\s*\:([^}]*)}/ie", "\$this->soundcloud_content('\\1')", $content);
+		
+		// 지도
+		$content = preg_replace("/{지도\s*\:([^}]*)}/ie", "\$this->map_content('\\1')", $content);
+		
 		return $content;
 	}
 
@@ -1086,6 +1094,43 @@ class eyoom extends qfile
 		return $soundcloud;
 	}
 
+	public function map_content($source) {
+		global $eyoom_board;
+		
+		list($type, $address, $name, $subgps) = explode('^|^', $source);
+		
+		if(!$subgps || $eyoom['use_map_content'] == 'n') return $address;
+		else {
+			$map_content = '';
+			$gps_number = preg_replace('/\(|\)/','',$subgps);
+			list($gps_x,$gps_y) = explode(',',$gps_number);
+			
+			switch($type) {
+				case '1':
+					$map_content .= $this->get_google_map_script(trim($gps_x),trim($gps_y),$address,$name);
+					break;
+				case '2':
+					break;
+				case '3':
+					break;
+				default : 
+					break;
+			}
+		}
+		
+		return $map_content;
+	}
+	
+	private function get_google_map_script($x, $y, $address, $name) {
+		$map_hashkey = 'gm_'.md5(time().$this->random_num(1000));
+		$script  = '<script>';
+		$script .= '$(document).ready(function(){ google.maps.event.addDomListener(window, "load", function(){initialize_google_map("'.$x.'","'.$y.'","'.$address.'","'.$name.'","'.$map_hashkey.'");});});
+		';
+		$script .= '</script>';
+		$map_content = '<div class="map-content-wrap"><div id="'.$map_hashkey.'"></div></div>';
+		return $map_content.$script;
+	}
+
 	public function get_editor_video($content) {
 		if(!$content) return false;
 
@@ -1121,6 +1166,11 @@ class eyoom extends qfile
 
 	public function remove_editor_emoticon($content) {
 		$content = preg_replace("/{이모티콘\s*\:([^}]*)}/ie","",$content);
+		return $content;
+	}
+	
+	public function remove_editor_map($content) {
+		$content = preg_replace("/{지도\s*\:([^}]*)}/ie","",$content);
 		return $content;
 	}
 

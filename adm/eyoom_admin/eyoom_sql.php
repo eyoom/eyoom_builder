@@ -289,5 +289,23 @@ if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주�
 		$qfile->save_file('eyoom',$config_basic,$_eyoom);
 	}
 }
-/** ############# EyoomBuilder_1.1.13 ############# */	
+/** ############# EyoomBuilder_1.1.13 ############# */
+
+/** ############# EyoomBuilder_1.1.14 ############# */
+{
+	// 이윰 기본설정 파일에 필드추가
+	$config_basic = G5_DATA_PATH.'/eyoom.config.php';
+	unset($eyoom, $_eyoom);
+	include($config_basic);
+	if(is_array($eyoom)) {
+		foreach($eyoom as $key => $val) {
+			$_eyoom[$key] = $val;
+			if($key == 'use_sub_side_layout' && !isset($eyoom['use_shop_mobile'])) {
+				$_eyoom['use_shop_mobile'] = 'n';
+			}
+		}
+		$qfile->save_file('eyoom',$config_basic,$_eyoom);
+	}
+}
+/** ############# EyoomBuilder_1.1.14 ############# */	
 ?>

@@ -5,7 +5,7 @@
 	define('_EYOOM_COMMON_',true);
 
 	// Version
-	define('_EYOOM_VESION_','EyoomBuilder_1.1.13');
+	define('_EYOOM_VESION_','EyoomBuilder_1.1.14');
 
 	// GNUBOARD5 Library
 	include_once(G5_LIB_PATH.'/common.lib.php');
@@ -21,6 +21,8 @@
 	$eyoomer = array();
 	if($member['mb_id']) {
 		$eyoomer = $eb->get_user_info($member['mb_id']);
+		if(!$eyoomer['following']) $eyoomer['following'] = array();
+		if(!$eyoomer['follower']) $eyoomer['follower'] = array();
 
 		// 그누레벨 자동조정
 		if(!$is_admin && $member['mb_level'] <= $levelset['max_use_gnu_level']) $eb->set_gnu_level($eyoomer['level']);
@@ -126,17 +128,29 @@
 	}
 
 	// SNS용 이미지/제목/내용 추가 메타태그
-	if($bo_table && $wr_id) {
-		$head_title = strip_tags(conv_subject($write['wr_subject'], 255)) . ' > ' . $board['bo_subject'] . ' | ' . $config['cf_title'];
-		$first_image = get_list_thumbnail($bo_table, $wr_id, 600, 0);
+	if(($bo_table && $wr_id) || $it_id) {
+		if($bo_table && $wr_id) {
+			$head_title = strip_tags(conv_subject($write['wr_subject'], 255)) . ' > ' . $board['bo_subject'] . ' | ' . $config['cf_title'];
+			$first_image = get_list_thumbnail($bo_table, $wr_id, 600, 0);
+			$sns_image = $first_image['src'];
+			$target_url = G5_BBS_URL.'/board.php?bo_table='.$bo_table.'&amp;wr_id='.$wr_id;
+			$contents = cut_str(trim(str_replace(array("\r\n","\r","\n"),'',strip_tags(preg_replace("/\?/","",$write['wr_content'])))),200, '…');
+		}
+		if($it_id) {
+			$sitem = sql_fetch("select * from {$g5['g5_shop_item_table']} where it_id = '".$it_id."'");
+			$head_title = strip_tags(conv_subject($sitem['it_name'], 255)) . ' | ' . $config['cf_title'];
+			$sns_image = G5_DATA_URL . '/item/'.$sitem['it_img1'];
+			$target_url = G5_SHOP_URL.'/item.php?it_id='.$it_id;
+			$contents = cut_str(trim(str_replace(array("\r\n","\r","\n"),'',strip_tags(preg_replace("/\?/","",$sitem['it_explan'])))),200, '…');
+		}
 		$config['cf_add_meta'] .= '
 			<meta property="og:id" content="'.G5_URL.'" />
-			<meta property="og:url" content="'.G5_BBS_URL.'/board.php?bo_table='.$bo_table.'&amp;wr_id='.$wr_id.'" />
+			<meta property="og:url" content="'.$target_url.'" />
 			<meta property="og:type" content="article" />
 			<meta property="og:title" content="'.preg_replace('/"/','',$head_title).'" />
 			<meta property="og:site_name" content="'.$config['cf_title'].'" />
-			<meta property="og:description" content="'.cut_str(trim(str_replace(array("\r\n","\r","\n"),'',strip_tags(preg_replace("/\?/","",$write['wr_content'])))),200, '…').'"/>
-			<meta property="og:image" content="'.$first_image['src'].'" />
+			<meta property="og:description" content="'.$contents.'"/>
+			<meta property="og:image" content="'.$sns_image.'" />
 		';
 	}
 

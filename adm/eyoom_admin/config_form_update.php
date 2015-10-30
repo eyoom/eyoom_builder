@@ -16,7 +16,7 @@ switch($mode) {
 
 		foreach($eyoom_basic as $key => $val) {
 			if($key == 'bootstrap') {
-				$val = !$_POST[$key] ? '1':$_POST[$key];
+				$val = !isset($_POST[$key]) ? '1':$_POST[$key];
 			}
 			if(preg_match('/_skin/i',$key) || $key == 'theme') {
 				$val = !$_POST[$key] ? 'basic' : $_POST[$key];
@@ -51,6 +51,9 @@ switch($mode) {
 			if($key == 'use_sub_side_layout') {
 				$val = !$_POST[$key] ? 'y':$_POST[$key];
 			}
+			if($key == 'use_shop_mobile') {
+				$val = !$_POST[$key] ? 'n':$_POST[$key];
+			}
 			if($key == 'pos_side_layout') {
 				$val = !$_POST[$key] ? 'right':$_POST[$key];
 			}
@@ -75,12 +78,15 @@ switch($mode) {
 			if($key == 'theme') {
 				$val = $eyoom[$key];
 			}
-			$eyoom_config[$key] = $val ? $val : $eyoom[$key];
+			$eyoom_config[$key] = isset($val) ? $val : $eyoom[$key];
 		}
+		
 		if(!$eyoom_config['language']) $eyoom_config['language'] = $_POST['language'];
 		if($eyoom['theme'] != 'basic') {
 			$eyoom_config['theme_key'] = $eyoom['theme_key'];
-			$eyoom_config['bootstrap'] = $eyoom['bootstrap'];
+			if(!isset($eyoom_config['bootstrap'])) {
+				$eyoom_config['bootstrap'] = $eyoom['bootstrap'];
+			}
 		}
 		if(preg_match('/mlang/',$eyoom['theme'])) $eyoom_config['theme_lang_type'] = 'm';
 
