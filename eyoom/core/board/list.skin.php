@@ -14,6 +14,7 @@
 	if ($is_good) $colspan++;
 	if ($is_nogood) $colspan++;
 	if ($eyoom_board['bo_use_profile_photo']) $colspan++;
+	if ($eyoom_board['bo_use_rating']) $colspan++;
 
 	// 갤러리 스킨의 경우, 가로 이미지 갯수 자동처리
 	if ($bo_gallery_cols && 12%$bo_gallery_cols == 0) {
@@ -70,18 +71,21 @@
 			}
 		}
 		
+		// wr_4 여유필드 unserialize
+		$wr_4 = unserialize($list[$key]['wr_4']);
+		if(!$wr_4) $wr_4 = array();
+		
 		/**
 		 * 목록에서 동영상이미지 사용을 체크했을 경우
 		 * 속도에 영향을 미치지 않도록 썸네일 정보가 이미 있다면 실행하지 않도록 처리
 		 */
-		if($eyoom_board['bo_use_video_photo'] == '1' && !$thumb['src']) {
+		if($eyoom_board['bo_use_video_photo'] == '1') {
 			/**
 			 * 동영상으로 부터 이미지 추출하는 부분
 			 * 동영상 경로는 wr_4 필드를 활용하기 
 			 */
-			if($list[$key]['wr_4']) {
-				$video = unserialize($list[$key]['wr_4']);
-				$thumb['src'] = $video['thumb_src'];
+			if($list[$key]['wr_4'] && !$thumb['src']) {
+				$thumb['src'] = $wr_4['thumb_src'];
 				if($thumb['src']) {
 					if($tpl_name == 'bs') {
 						if($thumb['src']) {
@@ -100,15 +104,36 @@
 					}
 				}
 			}
+			// 게시물에 동영상이 있는지 결정
+			$list[$key]['is_video'] = $wr_4['is_video'];
 		}
 		
+		/**
+		 * 별점기능 사용
+		 */
+		if($eyoom_board['bo_use_rating'] == '1' && $eyoom_board['bo_use_rating_list'] == '1') {
+			$rating = $eb->get_star_rating($wr_4);
+			$list[$key]['star'] = $rating['star'];
+		}
+		
+		/**
+		 * 목록에서 내용 사용
+		 */
 		if($board['bo_use_list_content']) {
 			$content_length = G5_IS_MOBILE ? 100:150;
 			$wr_content = $list[$key]['wr_content'];
-			$wr_content = $eb->remove_editor_code($wr_content);
-			$wr_content = $eb->remove_editor_emoticon($wr_content);
-			$wr_content = $eb->remove_editor_video($wr_content);
-			$wr_content = $eb->remove_editor_sound($wr_content);
+			if($eyoom_board['bo_use_addon_coding'] == '1') {
+				$wr_content = $eb->remove_editor_code($wr_content);
+			}
+			if($eyoom_board['bo_use_addon_emoticon'] == '1') {
+				$wr_content = $eb->remove_editor_emoticon($wr_content);
+			}
+			if($eyoom_board['bo_use_addon_video'] == '1') {
+				$wr_content = $eb->remove_editor_video($wr_content);
+			}
+			if($eyoom_board['bo_use_addon_soundcloud'] == '1') {
+				$wr_content = $eb->remove_editor_sound($wr_content);
+			}
 			$list[$key]['content'] = cut_str(trim(strip_tags(preg_replace("/\?/","",$wr_content))),$content_length, '…');
 		}
 		
@@ -120,9 +145,7 @@
 		/**
 		 * 게시물 블라인드 처리 
 		 */
-		$ycard = unserialize($list[$key]['wr_4']);
-		if(!$ycard) $ycard = array();
-		if($ycard['yc_blind'] == 'y') {
+		if(isset($wr_4['yc_blind']) && $wr_4['yc_blind'] == 'y') {
 			$yc_data = sql_fetch("select mb_id from {$g5['eyoom_yellowcard']} where bo_table = '{$bo_table}' and wr_id = '{$list[$key]['wr_id']}' and mb_id = '{$member['mb_id']}' ");
 			if(!$is_admin && $member['mb_level'] < $eyoom_board['bo_blind_view'] && !$yc_data['mb_id']) $list[$key]['href'] = 'javascript:;';
 			$list[$key]['subject'] = '이 게시물은 블라인드 처리된 글입니다.';

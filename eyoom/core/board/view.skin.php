@@ -8,14 +8,15 @@
 	if(!$mb) $mb = get_member($view['mb_id']);
 	$user = $eb->get_user_info($mb['mb_id'])+$mb;
 	$lvuser = $eb->user_level_info($user);
+	
+	// wr_4 unserialize
+	$wr_4 = unserialize($view['wr_4']);
+	if(!$wr_4) $wr_4 = array();
 
 	// 신고처리 정보
 	if($eyoom_board['bo_use_yellow_card'] == '1') {
-		$ycard = unserialize($view['wr_4']);
-		if(!$ycard) $ycard = array();
-		
 		$mb_ycard = $eb->mb_yellow_card($member['mb_id'],$bo_table, $wr_id);
-		if($ycard['yc_blind'] == 'y') {
+		if($wr_4['yc_blind'] == 'y') {
 			if(!$is_admin && $member['mb_level'] < $eyoom_board['bo_blind_view']) {
 				if(!$mb_ycard['mb_id']) {
 					alert('이 게시물은 블라인드 처리된 게시물입니다.');
@@ -28,6 +29,12 @@
 		if($is_admin || $member['mb_level'] >= $eyoom_board['bo_blind_direct'] ) {
 			$blind_direct = true;
 		}
+	}
+	
+	// 별점기능 사용여부
+	if($eyoom_board['bo_use_rating'] == '1') {
+		$mb_rating = $eb->mb_rating($member['mb_id'],$bo_table, $wr_id);
+		$rating = $eb->get_star_rating($wr_4);
 	}
 
 	// 읽는사람 포인트 주기 및 이윰뉴 테이블의 히트수/댓글수 일치 시키기

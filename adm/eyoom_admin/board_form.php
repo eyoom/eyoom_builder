@@ -20,6 +20,15 @@ if($eyoom_board['bo_use_list_image'] == '1') $checked['bo_use_list_image'] = tru
 if($eyoom_board['bo_use_video_photo'] == '1') $checked['bo_use_video_photo'] = true; else $checked['bo_use_video_photo'] = false;
 if($eyoom_board['bo_use_yellow_card'] == '1') $checked['bo_use_yellow_card'] = true; else $checked['bo_use_yellow_card'] = false;
 if($eyoom_board['bo_use_exif'] == '1') $checked['bo_use_exif'] = true; else $checked['bo_use_exif'] = false;
+if($eyoom_board['bo_use_rating'] == '1') $checked['bo_use_rating'] = true; else $checked['bo_use_rating'] = false;
+if($eyoom_board['bo_use_rating_list'] == '1') $checked['bo_use_rating_list'] = true; else $checked['bo_use_rating_list'] = false;
+if($eyoom_board['bo_use_summernote_mo'] == '1') $checked['bo_use_summernote_mo'] = true; else $checked['bo_use_summernote_mo'] = false;
+if($eyoom_board['bo_use_addon_emoticon'] == '1') $checked['bo_use_addon_emoticon'] = true; else $checked['bo_use_addon_emoticon'] = false;
+if($eyoom_board['bo_use_addon_video'] == '1') $checked['bo_use_addon_video'] = true; else $checked['bo_use_addon_video'] = false;
+if($eyoom_board['bo_use_addon_coding'] == '1') $checked['bo_use_addon_coding'] = true; else $checked['bo_use_addon_coding'] = false;
+if($eyoom_board['bo_use_addon_soundcloud'] == '1') $checked['bo_use_addon_soundcloud'] = true; else $checked['bo_use_addon_soundcloud'] = false;
+if($eyoom_board['bo_use_addon_map'] == '1') $checked['bo_use_addon_map'] = true; else $checked['bo_use_addon_map'] = false;
+if($eyoom_board['bo_use_addon_cmtimg'] == '1') $checked['bo_use_addon_cmtimg'] = true; else $checked['bo_use_addon_cmtimg'] = false;
 if($eyoom_board['bo_cmtpoint_target'] == '2') $checked['bo_cmtpoint_target2'] = true; else $checked['bo_cmtpoint_target1'] = true;
 
 // EXIF 상세설정값
@@ -180,6 +189,18 @@ $frm_submit = '
             </td>
         </tr>
         <tr>
+            <th scope="row"><label for="bo_use_summernote_mo">모바일에서 Summernote 사용</label></th>
+            <td>
+				<label for="bo_use_summernote_mo"><input type="checkbox" name="bo_use_summernote_mo" value="1" id="bo_use_summernote_mo" <?php echo $checked['bo_use_summernote_mo']?'checked':''; ?>> 사용</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_summernote_mo" value="1" id="chk_grp_summernote_mo">
+                <label for="chk_grp_summernote_mo">그룹적용</label>
+                <input type="checkbox" name="chk_all_summernote_mo" value="1" id="chk_all_summernote_mo">
+                <label for="chk_all_summernote_mo">전체적용</label>
+            </td>
+        </tr>
+        <tr>
             <th scope="row"><label for="download_fee_ratio">파일다운로드 수수료율</label></th>
             <td>
 				<input type="text" name="download_fee_ratio" value="<?php echo $eyoom_board['download_fee_ratio'] ?>" id="download_fee_ratio" class="frm_input" size="5"> % <span class="exp">공유자료실 스킨 (share)의 다운로드 수수료율 지정</span>
@@ -195,6 +216,8 @@ $frm_submit = '
         </table>
     </div>
 </section>
+
+<?php echo $frm_submit; ?>
 
 <section id="anc_bo_basic">
     <h2 class="h2_frm color-green">게시물 신고/블라인드 기능</h2>
@@ -280,6 +303,140 @@ $frm_submit = '
         </table>
     </div>
 </section>
+
+<section id="anc_bo_basic">
+    <h2 class="h2_frm color-green">게시물 별점 기능</h2>
+
+    <div class="tbl_frm01 tbl_wrap">
+        <table>
+        <caption>게시물 별점 기능</caption>
+        <colgroup>
+            <col class="grid_4">
+            <col>
+            <col class="grid_3">
+        </colgroup>
+        <tbody>
+        <tr>
+            <th scope="row"><label for="bo_use_rating">게시물 별점 기능 사용</label></th>
+            <td>
+				<label for="bo_use_rating"><input type="checkbox" name="bo_use_rating" value="1" id="bo_use_rating" <?php echo $checked['bo_use_rating']?'checked':''; ?>> 사용</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_rating" value="1" id="chk_grp_rating">
+                <label for="chk_grp_rating">그룹적용</label>
+                <input type="checkbox" name="chk_all_rating" value="1" id="chk_all_rating">
+                <label for="chk_all_rating">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="bo_use_rating_list">목록에서 별점 표시 사용</label></th>
+            <td>
+				<label for="bo_use_rating_list"><input type="checkbox" name="bo_use_rating_list" value="1" id="bo_use_rating_list" <?php echo $checked['bo_use_rating_list']?'checked':''; ?>> 사용</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_rating_list" value="1" id="chk_grp_rating_list">
+                <label for="chk_grp_rating_list">그룹적용</label>
+                <input type="checkbox" name="chk_all_rating_list" value="1" id="chk_all_rating_list">
+                <label for="chk_all_rating_list">전체적용</label>
+            </td>
+        </tr>
+        </tbody>
+        </table>
+    </div>
+</section>
+
+<?php echo $frm_submit; ?>
+
+<section id="anc_bo_basic">
+    <h2 class="h2_frm color-green">애드온 기능</h2>
+
+    <div class="tbl_frm01 tbl_wrap">
+        <table>
+        <caption>글쓰기 애드온 기능</caption>
+        <colgroup>
+            <col class="grid_4">
+            <col>
+            <col class="grid_3">
+        </colgroup>
+        <tbody>
+        <tr>
+            <th scope="row"><label for="bo_use_addon_emoticon">이모티콘 추가 기능</label></th>
+            <td>
+				<label for="bo_use_addon_emoticon"><input type="checkbox" name="bo_use_addon_emoticon" value="1" id="bo_use_addon_emoticon" <?php echo $checked['bo_use_addon_emoticon']?'checked':''; ?>> 사용</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_addon_emoticon" value="1" id="chk_grp_addon_emoticon">
+                <label for="chk_grp_addon_emoticon">그룹적용</label>
+                <input type="checkbox" name="chk_all_addon_emoticon" value="1" id="chk_all_addon_emoticon">
+                <label for="chk_all_addon_emoticon">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="bo_use_addon_video">동영상 추가 기능</label></th>
+            <td>
+				<label for="bo_use_addon_video"><input type="checkbox" name="bo_use_addon_video" value="1" id="bo_use_addon_video" <?php echo $checked['bo_use_addon_video']?'checked':''; ?>> 사용</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_addon_video" value="1" id="chk_grp_addon_video">
+                <label for="chk_grp_addon_video">그룹적용</label>
+                <input type="checkbox" name="chk_all_addon_video" value="1" id="chk_all_addon_video">
+                <label for="chk_all_addon_video">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="bo_use_addon_coding">코드 표시 기능</label></th>
+            <td>
+				<label for="bo_use_addon_coding"><input type="checkbox" name="bo_use_addon_coding" value="1" id="bo_use_addon_coding" <?php echo $checked['bo_use_addon_coding']?'checked':''; ?>> 사용</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_addon_coding" value="1" id="chk_grp_addon_coding">
+                <label for="chk_grp_addon_coding">그룹적용</label>
+                <input type="checkbox" name="chk_all_addon_coding" value="1" id="chk_all_addon_coding">
+                <label for="chk_all_addon_coding">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="bo_use_addon_soundcloud">사운드클라우드 추가 기능</label></th>
+            <td>
+				<label for="bo_use_addon_soundcloud"><input type="checkbox" name="bo_use_addon_soundcloud" value="1" id="bo_use_addon_soundcloud" <?php echo $checked['bo_use_addon_soundcloud']?'checked':''; ?>> 사용</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_addon_soundcloud" value="1" id="chk_grp_addon_soundcloud">
+                <label for="chk_grp_addon_soundcloud">그룹적용</label>
+                <input type="checkbox" name="chk_all_addon_soundcloud" value="1" id="chk_all_addon_soundcloud">
+                <label for="chk_all_addon_soundcloud">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="bo_use_addon_map">지도 추가 기능</label></th>
+            <td>
+				<label for="bo_use_addon_map"><input type="checkbox" name="bo_use_addon_map" value="1" id="bo_use_addon_map" <?php echo $checked['bo_use_addon_map']?'checked':''; ?>> 사용</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_addon_map" value="1" id="chk_grp_addon_map">
+                <label for="chk_grp_addon_map">그룹적용</label>
+                <input type="checkbox" name="chk_all_addon_map" value="1" id="chk_all_addon_map">
+                <label for="chk_all_addon_map">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="bo_use_addon_cmtimg">댓글에서 이미지 추가 기능</label></th>
+            <td>
+				<label for="bo_use_addon_cmtimg"><input type="checkbox" name="bo_use_addon_cmtimg" value="1" id="bo_use_addon_cmtimg" <?php echo $checked['bo_use_addon_cmtimg']?'checked':''; ?>> 사용</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_addon_cmtimg" value="1" id="chk_grp_addon_cmtimg">
+                <label for="chk_grp_addon_cmtimg">그룹적용</label>
+                <input type="checkbox" name="chk_all_addon_cmtimg" value="1" id="chk_all_addon_cmtimg">
+                <label for="chk_all_addon_cmtimg">전체적용</label>
+            </td>
+        </tr>
+        </tbody>
+        </table>
+    </div>
+</section>
+
+<?php echo $frm_submit; ?>
 
 <section id="anc_bo_basic">
     <h2 class="h2_frm color-green">포토이미지 EXIF 정보</h2>

@@ -4,7 +4,7 @@
 	$uid = get_uniqid();
 
 	// summernote는 모바일에서 사용가능 하기에 editor 재설정
-	if($config['cf_editor'] == 'summernote' && G5_IS_MOBILE) {
+	if(G5_IS_MOBILE && $config['cf_editor'] == 'summernote' && $eyoom_board['bo_use_summernote_mo'] == '1') {
 		$is_dhtml_editor = false;
 		$is_dhtml_editor_use = true;
 		

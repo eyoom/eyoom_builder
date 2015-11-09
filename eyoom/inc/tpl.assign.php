@@ -66,6 +66,8 @@
 		"wmode"			=> $_wmode,
 		"ycard"			=> $ycard,
 		"mb_ycard"		=> $mb_ycard,
+		"rating"		=> $rating,
+		"mb_rating"		=> $mb_rating,
 	));
 
 ?>

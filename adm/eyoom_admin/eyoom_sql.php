@@ -4,7 +4,7 @@ if (!defined('_GNUBOARD_')) exit;
 if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주십시오.', G5_URL);
 
 /** ############# EyoomBuilder_1.0.3 ############# */
-{ 
+{
 	// 장바구니 상품 주문폼 등록시간 기록 필드 추가
 	if(!sql_query(" select bo_use_anonymous from {$g5['eyoom_board']} limit 1 ", false)) {
 		sql_query(" alter table `{$g5['eyoom_board']}` add `bo_use_anonymous` char(1) not null default '2' after `bo_use_hotgul` ", true);
@@ -13,11 +13,11 @@ if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주�
 /** ############# EyoomBuilder_1.0.3 ############# */
 
 /** ############# EyoomBuilder_1.0.5 ############# */
-{ 
+{
 	// 장바구니 상품 주문폼 등록시간 기록 필드 추가
 	if(!sql_query(" select bo_firstcmt_point from {$g5['eyoom_board']} limit 1 ", false)) {
 		$sql = "
-			alter table `{$g5['eyoom_board']}` 
+			alter table `{$g5['eyoom_board']}`
 				add `bo_use_point_explain` char(1) NOT NULL default '1' after `bo_use_anonymous`,
 				add `bo_firstcmt_point` int(7) NOT NULL default '0' after `bo_use_point_explain`,
 				add `bo_firstcmt_point_type` char(1) NOT NULL default '1' after `bo_firstcmt_point`,
@@ -35,7 +35,7 @@ if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주�
 /** ############# EyoomBuilder_1.0.5 ############# */
 
 /** ############# EyoomBuilder_1.0.6 ############# */
-{ 
+{
 	// 이윰 New에 카테고리 분류명 기록 필드 추가
 	if(!sql_query(" select ca_name from {$g5['eyoom_new']} limit 1 ", false)) {
 		$sql = "alter table `{$g5['eyoom_new']}` add `ca_name` varchar(255) NOT NULL after `wr_parent`";
@@ -51,7 +51,7 @@ if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주�
 /** ############# EyoomBuilder_1.0.6 ############# */
 
 /** ############# EyoomBuilder_1.1.0 ############# */
-{ 
+{
 	// 이윰메뉴의 me_type 속성 변경
 	$sql = "ALTER TABLE `{$g5['eyoom_menu']}` CHANGE `me_type` `me_type` VARCHAR(30) NOT NULL;";
 	sql_query($sql, true);
@@ -73,7 +73,7 @@ if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주�
 	// 이윰NEW 테이블에 여유필드 추가
 	if(!sql_query(" select wr_1 from {$g5['eyoom_new']} limit 1 ", false)) {
 		$sql = "
-			alter table  `{$g5['eyoom_new']}` 
+			alter table  `{$g5['eyoom_new']}`
 			add `wr_1` varchar( 255 ) not null,
 			add `wr_2` varchar( 255 ) not null,
 			add `wr_3` varchar( 255 ) not null,
@@ -91,7 +91,7 @@ if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주�
 /** ############# EyoomBuilder_1.1.0 ############# */
 
 /** ############# EyoomBuilder_1.1.1 ############# */
-{ 
+{
 	// 이윰 짧은주소 테이블 생성
 	$sql = "
 		create table if not exists `{$g5['eyoom_link']}` (
@@ -143,7 +143,7 @@ if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주�
 /** ############# EyoomBuilder_1.1.3 ############# */
 
 /** ############# EyoomBuilder_1.1.7 ############# */
-{ 
+{
 	// shop_theme 기본 설정 추가
 	unset($eyoom, $_eyoom);
 	$config_file = array();
@@ -159,7 +159,7 @@ if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주�
 			unset($eyoom);
 			include_once(G5_DATA_PATH.'/'.$file);
 
-			// 있다면 해당 테마를 
+			// 있다면 해당 테마를
 			$shop_theme = $eyoom['theme'];
 		}
 	}
@@ -170,7 +170,7 @@ if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주�
 		foreach($config_file as $file) {
 			unset($_eyoom,$eyoom);
 			$cfg_file = G5_DATA_PATH.'/'.$file;
-	
+
 			include($cfg_file);
 			if(is_array($eyoom)) {
 				foreach($eyoom as $key => $val) {
@@ -181,7 +181,7 @@ if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주�
 					if($key == 'use_eyoom_menu' && !isset($eyoom['use_eyoom_shopmenu'])) {
 						$_eyoom['use_eyoom_shopmenu'] = 'n';
 					}
-				}				
+				}
 				$qfile->save_file('eyoom',$cfg_file,$_eyoom);
 			}
 		}
@@ -190,7 +190,7 @@ if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주�
 	// 이윰보드에 댓글적립포인트 적용대상 필드 추가 : 게시판 레이아웃을 커뮤니티/쇼핑몰 선택할 수 있도록 필드 추가
 	if(!sql_query(" select `bo_cmtpoint_target` from {$g5['eyoom_board']} limit 1 ", false)) {
 		$sql = "
-			alter table `{$g5['eyoom_board']}` 
+			alter table `{$g5['eyoom_board']}`
 				add `bo_cmtpoint_target` char(1) not null default '1' after `bo_use_point_explain`,
 				add `use_shop_skin` enum('y', 'n') not null default 'n' after `use_gnu_skin`
 		";
@@ -221,13 +221,13 @@ if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주�
 		";
 		sql_query($sql, true);
 	}
-	
+
 	// 이윰메뉴 구성시, 접근 허용 회원레벨 결정 필드 추가
 	if(!sql_query(" select `me_permit_level` from {$g5['eyoom_menu']} limit 1 ", false)) {
 		$sql = "alter table `{$g5['eyoom_menu']}` add `me_permit_level` tinyint(4) not null default '1' after `me_order` ";
 		sql_query($sql, true);
 	}
-	
+
 	// 게시물 신고 테이블 생성
 	$yellow_card_table = G5_TABLE_PREFIX . 'eyoom_yellowcard';
 	$yellow_card_sql = "
@@ -252,7 +252,7 @@ if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주�
 		$sql = "alter table `{$g5['eyoom_yellowcard']}` add `pr_id` int(11) not null after `wr_id` ";
 		sql_query($sql, true);
 	}
-	
+
 	// 이윰보드에 EXIF 사용여부 필드 추가
 	if(!sql_query(" select `bo_use_exif` from {$g5['eyoom_board']} limit 1 ", false)) {
 		$sql = "alter table `{$g5['eyoom_board']}` add `bo_use_exif` tinyint(2) NOT NULL default '0' after `bo_use_yellow_card` ";
@@ -307,5 +307,47 @@ if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주�
 		$qfile->save_file('eyoom',$config_basic,$_eyoom);
 	}
 }
-/** ############# EyoomBuilder_1.1.14 ############# */	
+/** ############# EyoomBuilder_1.1.14 ############# */
+
+/** ############# EyoomBuilder_1.1.15 ############# */
+{
+	// 이윰보드에 게시판 별점기능 사용여부 필드 추가
+	if(!sql_query(" select `bo_use_rating` from {$g5['eyoom_board']} limit 1 ", false)) {
+		$sql = "
+			alter table `{$g5['eyoom_board']}` 
+				add `bo_use_rating` char(1) not null default '2' after `bo_use_exif`,
+				add `bo_use_rating_list` char(1) not null default '1' after `bo_use_rating`,
+				add `bo_use_summernote_mo` char(1) not null default '1' after `bo_use_rating_list`,
+				add `bo_use_addon_emoticon` char(1) not null default '1' after `bo_use_summernote_mo`,
+				add `bo_use_addon_video` char(1) not null default '1' after `bo_use_addon_emoticon`,
+				add `bo_use_addon_coding` char(1) not null default '0' after `bo_use_addon_video`,
+				add `bo_use_addon_soundcloud` char(1) not null default '0' after `bo_use_addon_coding`,
+				add `bo_use_addon_map` char(1) not null default '0' after `bo_use_addon_soundcloud`,
+				add `bo_use_addon_cmtimg` char(1) not null default '1' after `bo_use_addon_map`
+		";
+		sql_query($sql, true);
+		
+		// 필드 속성 변경
+		$sql = "alter table `{$g5['eyoom_board']}` change `bo_use_yellow_card`  `bo_use_yellow_card` char( 1 ) not null default '0' ";
+		sql_query($sql, true);
+		$sql = "alter table `{$g5['eyoom_board']}` change `bo_use_exif`  `bo_use_exif` char( 1 ) not null default '0' ";
+		sql_query($sql, true);
+	}
+
+	// 게시물 별점 테이블 생성
+	$eyoom_rating_table = G5_TABLE_PREFIX . 'eyoom_rating';
+	$rating_sql = "
+		CREATE TABLE IF NOT EXISTS `" . $eyoom_rating_table . "` (
+		  `rt_id` int(11) unsigned NOT NULL auto_increment,
+		  `bo_table` varchar(20) NOT NULL default '',
+		  `wr_id` int(11) NOT NULL default '0',
+		  `mb_id` varchar(20) NOT NULL default '',
+		  `rating` smallint(2) NOT NULL default '0',
+		  `rt_datetime` datetime NOT NULL default '0000-00-00 00:00:00',
+		  PRIMARY KEY  (`rt_id`)
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+	";
+	sql_query($rating_sql, true);
+}
+/** ############# EyoomBuilder_1.1.15 ############# */
 ?>

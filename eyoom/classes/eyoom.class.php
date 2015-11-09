@@ -152,6 +152,15 @@ class eyoom extends qfile
 				'bo_use_list_image'			=> 1,
 				'bo_use_yellow_card'		=> 0,
 				'bo_use_exif'				=> 0,
+				'bo_use_rating'				=> 0,
+				'bo_use_rating_list'		=> 1,
+				'bo_use_summernote_mo'		=> 1,
+				'bo_use_addon_emoticon'		=> 1,
+				'bo_use_addon_video'		=> 1,
+				'bo_use_addon_coding'		=> 0,
+				'bo_use_addon_soundcloud'	=> 0,
+				'bo_use_addon_map'			=> 0,
+				'bo_use_addon_cmtimg'		=> 1,
 				'bo_blind_limit'			=> 5,
 				'bo_blind_view'				=> 10,
 				'bo_blind_direct'			=> 10,
@@ -1342,7 +1351,7 @@ class eyoom extends qfile
 		}
 	}
 	
-	// 
+	// 신고 내역
 	public function mb_yellow_card($mb_id, $bo_table, $wr_id) {
 		global $g5;
 		if(!$mb_id || !$bo_table || !$wr_id) return false;
@@ -1351,6 +1360,31 @@ class eyoom extends qfile
 			$info = sql_fetch($sql,false);
 			return $info;
 		}
+	}
+	
+	// 별점 내역
+	public function mb_rating() {
+		global $g5;
+		if(!$mb_id || !$bo_table || !$wr_id) return false;
+		else {
+			$sql = "select * from {$g5['eyoom_rating']} where bo_table='{$bo_table}' and wr_id='{$wr_id}' and mb_id='{$mb_id}' limit 1";
+			$info = sql_fetch($sql,false);
+			return $info;
+		}
+	}
+	
+	// 별점 정보 가져오기
+	public function get_star_rating($info) {
+		if(isset($info['rating_score']) && $info['rating_members'] > 0) {
+			$rating['point'] = ceil(($info['rating_score']/$info['rating_members'])*10)/10;
+			$rating['star'] = round($rating['point']);
+			$rating['members'] = $info['rating_members'];
+		} else {
+			$rating['point'] = 0;
+			$rating['star'] = 0;
+			$rating['members'] = 0;
+		}
+		return $rating;
 	}
 
 	public function get_skin_dir($skin, $skin_path=G5_SKIN_PATH) {

@@ -35,29 +35,38 @@
 		}
 	}
 	if($wr_image) $wr_image = serialize($wr_image);
-
-	$wr_content = $eb->remove_editor_code($wr_content);
-	$wr_content = $eb->remove_editor_emoticon($wr_content);
-
-	// 내용에서 동영상 정보 가져오기
-	$video_info = $eb->get_editor_video($wr_content);
-	$wr_video = serialize($video_info[1]);
-	if($wr_video) {
-		// 여유필드 wr_4 활용
-		$wr_4 = unserialize($wr_4);
-		$wr_4['thumb_src'] = $eb->make_thumb_from_video($video_info[1][0], $bo_table, $wr_id, $board['bo_gallery_width'], $board['bo_gallery_height'] );
-		$wr_4 = serialize($wr_4);
-		
-		// 리턴 이미지가 있다면 $write_table update 
-		$up_set['wr_4'] = $wr_4;
+	
+	if($eyoom_board['bo_use_addon_coding'] == '1') {
+		$wr_content = $eb->remove_editor_code($wr_content);
 	}
 	
-	// 내용에서 사운드클라우드 정보 가져오기
-	$wr_sound = $eb->get_editor_sound($wr_content);
-	$wr_sound = serialize($wr_sound[1]);
+	if($eyoom_board['bo_use_addon_emoticon'] == '1') {
+		$wr_content = $eb->remove_editor_emoticon($wr_content);	
+	}
 
-	$wr_content = $eb->remove_editor_video($wr_content);
-	$wr_content = $eb->remove_editor_sound($wr_content);
+	if($eyoom_board['bo_use_addon_video'] == '1') {
+		// 내용에서 동영상 정보 가져오기
+		$video_info = $eb->get_editor_video($wr_content);
+		$wr_video = serialize($video_info[1]);
+		if($wr_video) {
+			// 여유필드 wr_4 활용
+			$wr_4 = unserialize($wr_4);
+			$wr_4['thumb_src'] = $eb->make_thumb_from_video($video_info[1][0], $bo_table, $wr_id, $board['bo_gallery_width'], $board['bo_gallery_height'] );
+			$wr_4['is_video'] = true; // 비디오 내용이 있음
+			$wr_4 = serialize($wr_4);
+			
+			// 리턴 이미지가 있다면 $write_table update 
+			$up_set['wr_4'] = $wr_4;
+		}
+		$wr_content = $eb->remove_editor_video($wr_content);
+	}
+	
+	if($eyoom_board['bo_use_addon_soundcloud'] == '1') {
+		// 내용에서 사운드클라우드 정보 가져오기
+		$wr_sound = $eb->get_editor_sound($wr_content);
+		$wr_sound = serialize($wr_sound[1]);
+		$wr_content = $eb->remove_editor_sound($wr_content);
+	}
 
 	// 내용글에서 텍스트 추출
 	$content = conv_content(stripslashes($wr_content), 1);

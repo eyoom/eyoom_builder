@@ -172,8 +172,17 @@ CREATE TABLE IF NOT EXISTS `g5_eyoom_board` (
   `bo_use_point_explain` char(1) NOT NULL default '1',
   `bo_use_video_photo` char(1) NOT NULL default '2',
   `bo_use_list_image` char(1) NOT NULL default '1',
-  `bo_use_yellow_card` tinyint(2) NOT NULL default '0',
-  `bo_use_exif` tinyint(2) NOT NULL default '0',
+  `bo_use_yellow_card` char(1) NOT NULL default '0',
+  `bo_use_exif` char(1) NOT NULL default '0',
+  `bo_use_rating` char(1) NOT NULL default '2',
+  `bo_use_rating_list` char(1) NOT NULL default '1',
+  `bo_use_summernote_mo` char(1) NOT NULL default '1',
+  `bo_use_addon_emoticon` char(1) NOT NULL default '1',
+  `bo_use_addon_video` char(1) NOT NULL default '1',
+  `bo_use_addon_coding` char(1) NOT NULL default '0',
+  `bo_use_addon_soundcloud` char(1) NOT NULL default '0',
+  `bo_use_addon_map` char(1) NOT NULL default '0',
+  `bo_use_addon_cmtimg` char(1) NOT NULL default '1',
   `bo_exif_detail` text NOT NULL,
   `bo_blind_limit` tinyint(2) NOT NULL default '5',
   `bo_blind_view` tinyint(2) NOT NULL default '10',
@@ -287,4 +296,22 @@ CREATE TABLE IF NOT EXISTS `g5_eyoom_yellowcard` (
   `yc_reason` char(1) NOT NULL,
   `yc_datetime` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`yc_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `g5_eyoom_rating`
+--
+
+DROP TABLE IF EXISTS `g5_eyoom_rating`;
+CREATE TABLE IF NOT EXISTS `g5_eyoom_rating` (
+  `rt_id` int(11) unsigned NOT NULL auto_increment,
+  `bo_table` varchar(20) NOT NULL default '',
+  `wr_id` int(11) NOT NULL default '0',
+  `pr_id` int(11) NOT NULL,
+  `mb_id` varchar(20) NOT NULL default '',
+  `rating` smallint(2) NOT NULL default '0',
+  `rt_datetime` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (`rt_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

@@ -317,12 +317,15 @@ class latest extends eyoom
 			}
 			
 			// 블라인드 처리
-			$ycard = unserialize($list[$i]['wr_4']);
-			if(!$ycard) $ycard = array();
-			if($ycard['yc_blind'] == 'y') {
+			$wr_4 = unserialize($list[$i]['wr_4']);
+			if(!$$wr_4) $wr_4 = array();
+			if($wr_4['yc_blind'] == 'y') {
 				$list[$i]['wr_subject'] = '이 게시물은 블라인드 처리된 글입니다.';
 				$list[$i]['wr_content'] = '이 게시물은 블라인드 처리된 글입니다.';
 			}
+			
+			// 게시물에 동영상이 있는지 결정
+			$list[$i]['is_video'] = $wr_4['is_video'];
 		}
 		return $list;
 	}

@@ -52,7 +52,8 @@
 	$g5['eyoom_menu']		= G5_TABLE_PREFIX.'eyoom_menu';
 	$g5['eyoom_link']		= G5_TABLE_PREFIX.'eyoom_link';
 	$g5['eyoom_attendance'] = G5_TABLE_PREFIX.'eyoom_attendance'; 
-	$g5['eyoom_yellowcard']	= G5_TABLE_PREFIX.'eyoom_yellowcard'; 
+	$g5['eyoom_yellowcard']	= G5_TABLE_PREFIX.'eyoom_yellowcard';
+	$g5['eyoom_rating']		= G5_TABLE_PREFIX.'eyoom_rating';
 
 	// Eyoom 환경설정파일
 	$eyoom = array();
@@ -198,6 +199,7 @@
 						include(G5_DATA_PATH."/eyoom.".$shop_theme.".config.php");
 					}
 				}
+
 				if($eyoom['use_gnu_shop'] == 'n') {
 					// 템플릿명 결정
 					$tpl_name = G5_IS_MOBILE ? 'mo':'pc';
