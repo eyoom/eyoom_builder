@@ -704,6 +704,24 @@ class eyoom extends qfile
 		}
 	}
 
+	// 암호화 함수
+	public function encrypt_md5($buf, $key="password") {
+		$key1 = pack("H*",md5($key));
+		while($buf) {
+			$m = substr($buf, 0, 16);
+			$buf = substr($buf, 16);
+			
+			$c = "";
+			for($i=0;$i<16;$i++) $c .= $m{$i}^$key1{$i};
+			$ret_buf .= $c;
+			$key1 = pack("H*",md5($key.$key1.$m));
+		}
+		
+		$len = strlen($ret_buf);
+		for($i=0; $i<$len; $i++) $hex_data .= sprintf("%02x", ord(substr($ret_buf, $i, 1)));
+		return($hex_data);
+	}
+
 	// 복호화 함수
 	public function decrypt_md5($hex_buf, $key="password") {
         $len = strlen($hex_buf);
@@ -938,6 +956,9 @@ class eyoom extends qfile
 			case 'slideshare.net':
 				$source = '<iframe src="https://www.slideshare.net/slideshow/embed_code/'.$video['key'].'" width="'.$video['width'].'" height="'.$video['height'].'" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen></iframe>';
 				break;
+			case 'sendvid.com':
+				$source = '<iframe width="'.$video['width'].'" height="'.$video['height'].'" src="//sendvid.com/embed/'.$video['key'].'" frameborder="0" allowfullscreen></iframe>';
+				break;
 		}
 		if($source) {
 			$source = "<div class='responsive-video'>".$source."</div>";
@@ -969,6 +990,9 @@ class eyoom extends qfile
 				if (preg_match('!(((ht|f)tps?:\/\/)|(www.))[a-zA-Z0-9_\-.:#/~}?]+.jpg!', $content, $match)) {
 					$video['img_url'] = $match[0];
 				}
+				break;
+			case 'sendvid.com':
+				$video['img_url'] = "http://sendvid.com/{$video['key']}.jpg";
 				break;
 			default : $video['img_url'] = ''; break;
 		}
@@ -1111,33 +1135,23 @@ class eyoom extends qfile
 		if(!$subgps || $eyoom['use_map_content'] == 'n') return $address;
 		else {
 			$map_content = '';
+			$map_hashkey = md5(time().$this->random_num(1000));
+			
 			$gps_number = preg_replace('/\(|\)/','',$subgps);
 			list($gps_x,$gps_y) = explode(',',$gps_number);
 			
 			switch($type) {
-				case '1':
-					$map_content .= $this->get_google_map_script(trim($gps_x),trim($gps_y),$address,$name);
-					break;
-				case '2':
-					break;
-				case '3':
-					break;
-				default : 
-					break;
+				case '1': $map_type = 'google'; break;
+				case '2': $map_type = 'naver'; break;
+				case '3': $map_type = 'daum'; break;
+				default : $map_type = 'google'; break;
 			}
+			
+			$map_info = $this->encrypt_md5($source);
+			$map_content = '<div class="map-content-wrap" data-map-type="'.$map_type.'" data-map-x="'.trim($gps_x).'" data-map-y="'.trim($gps_y).'" data-map-address="'.$address.'" data-map-name="'.$name.'"><div id="'.$map_hashkey.'"></div></div>';
 		}
 		
 		return $map_content;
-	}
-	
-	private function get_google_map_script($x, $y, $address, $name) {
-		$map_hashkey = 'gm_'.md5(time().$this->random_num(1000));
-		$script  = '<script>';
-		$script .= '$(document).ready(function(){ google.maps.event.addDomListener(window, "load", function(){initialize_google_map("'.$x.'","'.$y.'","'.$address.'","'.$name.'","'.$map_hashkey.'");});});
-		';
-		$script .= '</script>';
-		$map_content = '<div class="map-content-wrap"><div id="'.$map_hashkey.'"></div></div>';
-		return $map_content.$script;
 	}
 
 	public function get_editor_video($content) {

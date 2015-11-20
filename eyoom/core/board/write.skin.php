@@ -36,6 +36,9 @@
 			}
 		}
 	}
+	
+	// wr_4 변수값 암호화
+	$wr_4 = $eb->encrypt_md5($wr_4);
 
 	for ($i=1; $is_link && $i<=G5_LINK_COUNT; $i++) {
 		$wr_link[$i]['link_val'] = $write['wr_link'.$i]; 

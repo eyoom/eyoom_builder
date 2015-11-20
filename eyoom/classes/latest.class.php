@@ -223,6 +223,9 @@ class latest extends eyoom
 
 			// 카테고리 분류명 표시
 			if($optset['ca_view']) $this->ca_view = $optset['ca_view'];
+			
+			// 별점기능 표시
+			if($optset['use_star']) $this->use_star = $optset['use_star'];
 
 			return $opt;
 
@@ -318,7 +321,7 @@ class latest extends eyoom
 			
 			// 블라인드 처리
 			$wr_4 = unserialize($list[$i]['wr_4']);
-			if(!$$wr_4) $wr_4 = array();
+			if(!$wr_4) $wr_4 = array();
 			if($wr_4['yc_blind'] == 'y') {
 				$list[$i]['wr_subject'] = '이 게시물은 블라인드 처리된 글입니다.';
 				$list[$i]['wr_content'] = '이 게시물은 블라인드 처리된 글입니다.';
@@ -326,6 +329,12 @@ class latest extends eyoom
 			
 			// 게시물에 동영상이 있는지 결정
 			$list[$i]['is_video'] = $wr_4['is_video'];
+			
+			// 별점기능
+			if($this->use_star == 'y') {
+				$rating = $eb->get_star_rating($wr_4);
+				$list[$i]['star'] = $rating['star'];
+			}
 		}
 		return $list;
 	}
@@ -415,6 +424,7 @@ class latest extends eyoom
 			'cols' => $this->cols,
 			'title' => $this->header_title,
 			'respond' => $this->respond,
+			'use_star' => $this->use_star,
 		));
 		if($mode=='single') {
 			$tpl->assign(array(
