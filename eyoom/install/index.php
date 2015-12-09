@@ -17,13 +17,17 @@ if(is_writable($theme_path) && count($result_array) > 0) {
 	foreach($result_array as $key => $dir) {
 		if($dir == 'basic') $theme_dir['basic'] = true;
 		if($dir == 'pc_basic') $theme_dir['pc_basic'] = true;
+		if($dir == 'basic2') $theme_dir['basic2'] = true;
+		if($dir == 'pc_basic2') $theme_dir['pc_basic2'] = true;
 	}
 	$theme_count = count($theme_dir);
-	if($theme_count == 2) {
+	if($theme_count >= 2) {
 		$ins_type = 'c'; //choice
 	} else if($theme_count == 1) {
-		if(isset($theme_dir['basic']) && $theme_dir['basic']) $ins_type = 'b'; // basic
-		if(isset($theme_dir['pc_basic']) && $theme_dir['pc_basic']) $ins_type = 'p'; // pc_basic
+		if(isset($theme_dir['basic']) && $theme_dir['basic']) $ins_type = 'b1'; // basic
+		if(isset($theme_dir['pc_basic']) && $theme_dir['pc_basic']) $ins_type = 'p1'; // pc_basic
+		if(isset($theme_dir['basic2']) && $theme_dir['basic2']) $ins_type = 'b2'; // basic2
+		if(isset($theme_dir['pc_basic2']) && $theme_dir['pc_basic2']) $ins_type = 'p2'; // pc_basic2
 	} else {
 ?>
 <h1>이윰빌더를 설치하기 위해서는 테마가 필요합니다.</h1>
@@ -58,8 +62,10 @@ if(is_writable($theme_path) && count($result_array) > 0) {
 		<p>
 		<strong>중요 [기본테마 선택하기]</strong><br>
 		<select name="ins_theme">
-			<option value='b'>베이직 테마 [반응형웹 테마]</option>
-			<option value='p'>PC 베이직 테마 [PC/Mobile지원 테마]</option>
+			<?php if($theme_dir['basic']) {?><option value='b1'>basic [반응형웹 테마]</option><?php }?>
+			<?php if($theme_dir['pc_basic']) {?><option value='p1'>pc_basic [PC/Mobile지원 테마]</option><?php }?>
+			<?php if($theme_dir['basic2']) {?><option value='b2'>basic2 [반응형웹 Season2 테마]</option><?php }?>
+			<?php if($theme_dir['pc_basic2']) {?><option value='p2'>pc_basic2 [PC/Mobile지원 Season2 테마]</option><?php }?>
 		</select>
 		<br><br>
 		</p>

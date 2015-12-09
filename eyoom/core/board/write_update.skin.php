@@ -50,7 +50,7 @@
 		// 내용에서 동영상 정보 가져오기
 		$video_info = $eb->get_editor_video($wr_content);
 		$wr_video = serialize($video_info[1]);
-		if($wr_video) {
+		if($video_info[1]) {
 			$wr_4['is_video'] = true; // 비디오 내용이 있음
 			$wr_4['thumb_src'] = $eb->make_thumb_from_video($video_info[1][0], $bo_table, $wr_id, $board['bo_gallery_width'], $board['bo_gallery_height'] );
 		} else {

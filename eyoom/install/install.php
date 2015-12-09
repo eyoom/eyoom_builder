@@ -36,10 +36,13 @@ if (file_exists($dbconfig_file)) {
 <?php
 $qfile = new qfile;
 $ins_theme = $_POST['ins_theme'];
-if($ins_theme == 'p') {
-	$theme_name = 'pc_basic';
-} else {
-	$theme_name = 'basic';
+
+switch($ins_theme) {
+	default  :
+	case 'b1': $theme_name = 'basic'; break;
+	case 'b2': $theme_name = 'basic2'; break;
+	case 'p1': $theme_name = 'pc_basic'; break;
+	case 'p2': $theme_name = 'pc_basic2'; break;
 }
 
 // eyoom 기본설정
@@ -106,9 +109,15 @@ $eyoom = array(
 $qfile->save_file('eyoom',$eyoom_config,$eyoom);
 
 // eyoom.pc_basic.config.php 설정파일 생성
-if($ins_theme == 'p') {
+if ($ins_theme == 'p1') {
 	$eyoom['bootstrap'] = 0;
 	$qfile->save_file('eyoom',$eyoom_pc_basic,$eyoom);
+} elseif ($ins_theme == 'b2') {
+	$eyoom['bootstrap'] = 1;
+	$qfile->save_file('eyoom',$eyoom_basic2,$eyoom);
+} elseif ($ins_theme == 'p2') {
+	$eyoom['bootstrap'] = 0;
+	$qfile->save_file('eyoom',$eyoom_pc_basic2,$eyoom);
 }
 
 // 이윰 레벨포인트 기본설정

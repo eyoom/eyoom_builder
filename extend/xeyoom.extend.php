@@ -198,6 +198,9 @@
 						$theme = $shop_theme;
 						include(G5_DATA_PATH."/eyoom.".$shop_theme.".config.php");
 					}
+				} else if($preview) {
+					// 미리보기일 경우, 샵테마를 미리보기 지정 테마로 강제 지정
+					$shop_theme = $theme;
 				}
 
 				if($eyoom['use_gnu_shop'] == 'n') {

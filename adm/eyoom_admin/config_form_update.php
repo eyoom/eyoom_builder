@@ -22,7 +22,7 @@ switch($mode) {
 				$val = !$_POST[$key] ? 'basic' : $_POST[$key];
 			}
 			if(preg_match('/use_gnu_/i',$key)) {
-				$val = !$_POST[$key] ? 'y' : $_POST[$key];
+				$val = !$_POST[$key] ? 'n' : $_POST[$key];
 			}
 			if($key == 'level_icon_gnu') {
 				$val = !$_POST[$key] ? '':$_POST[$key];

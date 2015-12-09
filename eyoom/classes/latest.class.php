@@ -374,7 +374,7 @@ class latest extends eyoom
 								} else {
 									$g5_root = G5_ROOT;
 									if($g5_root != '/') {
-										$img = str_replace($g5_root,'',$img);
+										$img = str_replace(substr($g5_root,1),'',$img);
 									}
 								}
 								break;
@@ -646,6 +646,7 @@ class latest extends eyoom
 			$list[$i]['href'] = G5_SHOP_URL."/item.php?it_id={$row['it_id']}";
 			$list[$i]['datetime'] = $row['it_time'];
 			$list[$i]['img'] = get_it_image($row['it_id'], $width, 0, true);
+			$list[$i]['star_score'] = get_star_image($row['it_id']);
 		}
 		return $list;
 	}

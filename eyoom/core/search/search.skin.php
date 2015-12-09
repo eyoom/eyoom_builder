@@ -30,6 +30,12 @@
 			$data['wr_datetime'] = $list[$idx][$i]['wr_datetime'];
 			$data['comment_def'] = $comment_def;
 			$data['comment_href'] = $comment_href;
+			
+			$level = $list[$idx][$i]['wr_1'] ? $eb->level_info($list[$idx][$i]['wr_1']):'';
+			if(is_array($level) && $level['anonymous']) {
+				$data['mb_id'] = 'anonymous';
+				$data['name'] = '익명';
+			}
 			$loop2[$i] = $data;
 		}
 	}

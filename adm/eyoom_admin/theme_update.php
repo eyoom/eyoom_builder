@@ -20,8 +20,10 @@ if(preg_match('/pc_/',$_POST['shop_theme'])) {
 }
 
 // 쇼핑몰 스킨이 있는 테마인지 구별
-$shop_dir = G5_PATH.'/eyoom/theme/'.$_POST['shop_theme'].'/skin_'.$device.'/shop/';
-if(!is_dir($shop_dir) && $_POST['shop_theme']) alert("선택한 테마는 쇼핑몰 테마가 아닙니다.");
+if($_POST['theme_target'] == 'shop') {
+	$shop_dir = G5_PATH.'/eyoom/theme/'.$_POST['shop_theme'].'/skin_'.$device.'/shop/';
+	if(!is_dir($shop_dir) && $_POST['shop_theme']) alert("선택한 테마는 쇼핑몰 테마가 아닙니다.");
+}
 
 // 설정 저장
 $eyoom_config['shop_theme'] = $_POST['shop_theme'];

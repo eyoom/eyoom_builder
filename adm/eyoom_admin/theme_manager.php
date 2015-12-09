@@ -23,6 +23,7 @@
 					<div class="refresh btn_dbupdate"><a href="javascript:;" class="refresh_dbupdate" onclick="return refresh_db_record('dbupdate');">최신 DB 및 설정적용</a></div>
 					<div class="refresh btn_theme"><a href="javascript:;" class="use_eyoom_theme" onclick="return use_eyoom_theme();">이윰테마사용</a></div>
 					<div class="refresh btn_countdown"><a href="./countdown_form.php" class="countdown" onclick="return false;">공사중 설정</a></div>
+					<div class="refresh btn_pointzip"><a href="./pointzip_form.php" class="pointzip" onclick="return false;">그누포인트 압축하기</a></div>
 				</div>
 			</td>
 		</tr>
@@ -95,7 +96,7 @@ $(function(){
 		var new_win = window.open(href, 'win_theme', 'left=100,top=100,width=620,height=400,scrollbars=1');
 		new_win.focus();
 	}
-	$(".install_theme, .clone_theme, .delete_theme, .alias_theme, .countdown").click(function(){
+	$(".install_theme, .clone_theme, .delete_theme, .alias_theme, .countdown, .pointzip").click(function(){
 		var url = $(this).attr('href');
 		win_theme(url);
 	});
