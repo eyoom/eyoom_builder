@@ -8,14 +8,15 @@
 	}
 
 	$_device = G5_IS_MOBILE ? 'mobile': 'pc';
-
+	
 	$sql = "
 		select * from {$g5['new_win_table']}
-		where 
+		where
 			'".G5_TIME_YMDHIS."' between nw_begin_time and nw_end_time
-			and nw_device IN ( 'both', '".$_device."' ) and nw_division IN ( 'both', '".$pop_division."' )
+			and nw_device IN ( 'both', '".$_device."' )
 		order by nw_id asc 
 	";
+        
 	$result = sql_query($sql, false);
 
 	for ($i=0; $row_nw=sql_fetch_array($result); $i++) {

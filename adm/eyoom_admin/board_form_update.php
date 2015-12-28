@@ -16,6 +16,8 @@ $set = "
 	bo_use_hotgul			= '{$_POST['bo_use_hotgul']}',
 	bo_use_anonymous		= '{$_POST['bo_use_anonymous']}',
 	bo_use_infinite_scroll	= '{$_POST['bo_use_infinite_scroll']}',
+	bo_use_cmt_infinite		= '{$_POST['bo_use_cmt_infinite']}',
+	bo_use_cmt_best			= '{$_POST['bo_use_cmt_best']}',
 	bo_use_list_image		= '{$_POST['bo_use_list_image']}',
 	bo_use_video_photo		= '{$_POST['bo_use_video_photo']}',
 	bo_use_yellow_card		= '{$_POST['bo_use_yellow_card']}',
@@ -29,6 +31,8 @@ $set = "
 	bo_use_addon_soundcloud	= '{$_POST['bo_use_addon_soundcloud']}',
 	bo_use_addon_map		= '{$_POST['bo_use_addon_map']}',
 	bo_use_addon_cmtimg		= '{$_POST['bo_use_addon_cmtimg']}',
+	bo_cmt_best_min			= '{$_POST['bo_cmt_best_min']}',
+	bo_cmt_best_limit		= '{$_POST['bo_cmt_best_limit']}',
 	bo_exif_detail			= '" . serialize($_POST['bo_exif_detail']) . "',
 	bo_blind_limit			= '{$_POST['bo_blind_limit']}',
 	bo_blind_view			= '{$_POST['bo_blind_view']}',
@@ -62,6 +66,8 @@ if (is_checked('chk_grp_date_type'))		$grp_fields .= " , bo_sel_date_type = '{$_
 if (is_checked('chk_grp_hotgul'))			$grp_fields .= " , bo_use_hotgul = '{$_POST['bo_use_hotgul']}' ";
 if (is_checked('chk_grp_anonymous'))		$grp_fields .= " , bo_use_anonymous = '{$_POST['bo_use_anonymous']}' ";
 if (is_checked('chk_grp_infinite_scroll'))	$grp_fields .= " , bo_use_infinite_scroll = '{$_POST['bo_use_infinite_scroll']}' ";
+if (is_checked('chk_grp_cmt_infinite'))		$grp_fields .= " , bo_use_cmt_infinite = '{$_POST['bo_use_cmt_infinite']}' ";
+if (is_checked('chk_grp_cmt_best'))			$grp_fields .= " , bo_use_cmt_best = '{$_POST['bo_use_cmt_best']}' ";
 if (is_checked('chk_grp_point_explain'))	$grp_fields .= " , bo_use_point_explain = '{$_POST['bo_use_point_explain']}' ";
 if (is_checked('chk_grp_list_image'))		$grp_fields .= " , bo_use_list_image = '{$_POST['bo_use_list_image']}' ";
 if (is_checked('chk_grp_video_photo'))		$grp_fields .= " , bo_use_video_photo = '{$_POST['bo_use_video_photo']}' ";
@@ -76,6 +82,8 @@ if (is_checked('chk_grp_addon_coding'))		$grp_fields .= " , bo_use_addon_coding 
 if (is_checked('chk_grp_addon_soundcloud'))	$grp_fields .= " , bo_use_addon_soundcloud = '{$_POST['bo_use_addon_soundcloud']}' ";
 if (is_checked('chk_grp_addon_map'))		$grp_fields .= " , bo_use_addon_map = '{$_POST['bo_use_addon_map']}' ";
 if (is_checked('chk_grp_addon_cmtimg'))		$grp_fields .= " , bo_use_addon_cmtimg = '{$_POST['bo_use_addon_cmtimg']}' ";
+if (is_checked('chk_grp_cmtbest_min'))		$grp_fields .= " , bo_cmt_best_min = '{$_POST['bo_cmt_best_min']}' ";
+if (is_checked('chk_grp_cmtbest_limit'))	$grp_fields .= " , bo_cmt_best_limit = '{$_POST['bo_cmt_best_limit']}' ";
 if (is_checked('chk_grp_exif_detail'))		$grp_fields .= " , bo_exif_detail = '" . serialize($_POST['bo_exif_detail']) . "' ";
 if (is_checked('chk_grp_blind_limit'))		$grp_fields .= " , bo_blind_limit = '{$_POST['bo_blind_limit']}' ";
 if (is_checked('chk_grp_blind_view'))		$grp_fields .= " , bo_blind_view = '{$_POST['bo_blind_view']}' ";
@@ -110,6 +118,8 @@ if (is_checked('chk_all_date_type'))		$all_fields .= " , bo_sel_date_type = '{$_
 if (is_checked('chk_all_hotgul'))			$all_fields .= " , bo_use_hotgul = '{$_POST['bo_use_hotgul']}' ";
 if (is_checked('chk_all_anonymous'))		$all_fields .= " , bo_use_anonymous = '{$_POST['bo_use_anonymous']}' ";
 if (is_checked('chk_all_infinite_scroll'))	$all_fields .= " , bo_use_infinite_scroll = '{$_POST['bo_use_infinite_scroll']}' ";
+if (is_checked('chk_all_cmt_infinite'))		$all_fields .= " , bo_use_cmt_infinite = '{$_POST['bo_use_cmt_infinite']}' ";
+if (is_checked('chk_all_cmt_best'))			$all_fields .= " , bo_use_cmt_best = '{$_POST['bo_use_cmt_best']}' ";
 if (is_checked('chk_all_point_explain'))	$all_fields .= " , bo_use_point_explain = '{$_POST['bo_use_point_explain']}' ";
 if (is_checked('chk_all_list_image'))		$all_fields .= " , bo_use_list_image = '{$_POST['bo_use_list_image']}' ";
 if (is_checked('chk_all_video_photo'))		$all_fields .= " , bo_use_video_photo = '{$_POST['bo_use_video_photo']}' ";
@@ -124,6 +134,8 @@ if (is_checked('chk_all_addon_coding'))		$all_fields .= " , bo_use_addon_coding 
 if (is_checked('chk_all_addon_soundcloud'))	$all_fields .= " , bo_use_addon_soundcloud = '{$_POST['bo_use_addon_soundcloud']}' ";
 if (is_checked('chk_all_addon_map'))		$all_fields .= " , bo_use_addon_map = '{$_POST['bo_use_addon_map']}' ";
 if (is_checked('chk_all_addon_cmtimg'))		$all_fields .= " , bo_use_addon_cmtimg = '{$_POST['bo_use_addon_cmtimg']}' ";
+if (is_checked('chk_all_cmtbest_min'))		$all_fields .= " , bo_cmt_best_min = '{$_POST['bo_cmt_best_min']}' ";
+if (is_checked('chk_all_cmtbest_limit'))	$all_fields .= " , bo_cmt_best_limit = '{$_POST['bo_cmt_best_limit']}' ";
 if (is_checked('chk_all_exif_detail'))		$all_fields .= " , bo_exif_detail = '" . serialize($_POST['bo_exif_detail']) . "' ";
 if (is_checked('chk_all_blind_limit'))		$all_fields .= " , bo_blind_limit = '{$_POST['bo_blind_limit']}' ";
 if (is_checked('chk_all_blind_view'))		$all_fields .= " , bo_blind_view = '{$_POST['bo_blind_view']}' ";

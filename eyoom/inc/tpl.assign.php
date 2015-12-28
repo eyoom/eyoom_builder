@@ -48,6 +48,7 @@
 		"subinfo"		=> $subinfo,
 		"mobile_tail"	=> $mobile_tail,
 		"page"			=> $page,
+		"cpage"			=> $cpage,
 		"lvuser"		=> $lvuser,
 		"lv"			=> $lv,
 		"levelset"		=> $levelset,

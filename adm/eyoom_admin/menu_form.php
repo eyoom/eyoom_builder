@@ -115,7 +115,7 @@ $frm_submit = '
 				</td>
 			</tr>
 			<tr>
-				<th scope="row"><label for="me_permit_level">메뉴보이기 레벨설정</label></th>
+				<th scope="row" nowrap="nowrap"><label for="me_permit_level">메뉴보이기 레벨설정</label></th>
 				<td>
 					<select name="me_permit_level" id="me_permit_level">
 						<option value="">선택</option>
@@ -218,7 +218,7 @@ $frm_submit = '
 				</td>
 			</tr>
 			<tr>
-				<th scope="row"><label for="subme_permit_level">메뉴보이기 레벨설정</label></th>
+				<th scope="row" nowrap="nowrap"><label for="subme_permit_level">메뉴보이기 레벨설정</label></th>
 				<td>
 					<select name="subme_permit_level" id="subme_permit_level">
 						<option value="">선택</option>

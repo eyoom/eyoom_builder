@@ -350,4 +350,20 @@ if($is_admin != 'super') alert('최고관리자로 로그인 후 실행해 주�
 	sql_query($rating_sql, true);
 }
 /** ############# EyoomBuilder_1.1.15 ############# */
+
+/** ############# EyoomBuilder_1.2.1 ############# */
+{
+	// 이윰보드에 게시판 별점기능 사용여부 필드 추가
+	if(!sql_query(" select `bo_use_cmt_infinite` from {$g5['eyoom_board']} limit 1 ", false)) {
+		$sql = "
+			alter table `{$g5['eyoom_board']}` 
+				add `bo_use_cmt_infinite` char(1) not null default '0' after `bo_use_infinite_scroll`,
+				add `bo_use_cmt_best` char(1) not null default '0' after `bo_use_cmt_infinite`,
+				add `bo_cmt_best_min` tinyint(2) not null default '10' after `bo_use_addon_cmtimg`,
+				add `bo_cmt_best_limit` tinyint(2) not null default '5' after `bo_cmt_best_min`
+		";
+		sql_query($sql, true);
+	}
+}
+/** ############# EyoomBuilder_1.2.1 ############# */
 ?>

@@ -22,7 +22,9 @@
 	}
 	
 	// add_javascript('js 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
-	add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
+	if($eyoom_board['bo_use_addon_map'] == '1') {
+		add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
+	}
 
 	// wr_1에 작성자의 레벨정보 입력
 	if($is_member) {

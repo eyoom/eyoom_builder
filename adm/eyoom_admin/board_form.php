@@ -15,6 +15,8 @@ if($eyoom_board['bo_use_level_icon'] == '1') $checked['bo_use_level_icon'] = tru
 if($eyoom_board['bo_use_hotgul'] == '1') $checked['bo_use_hotgul'] = true; else $checked['bo_use_hotgul'] = false;
 if($eyoom_board['bo_use_anonymous'] == '1') $checked['bo_use_anonymous'] = true; else $checked['bo_use_anonymous'] = false;
 if($eyoom_board['bo_use_infinite_scroll'] == '1') $checked['bo_use_infinite_scroll'] = true; else $checked['bo_use_infinite_scroll'] = false;
+if($eyoom_board['bo_use_cmt_infinite'] == '1') $checked['bo_use_cmt_infinite'] = true; else $checked['bo_use_cmt_infinite'] = false;
+if($eyoom_board['bo_use_cmt_best'] == '1') $checked['bo_use_cmt_best'] = true; else $checked['bo_use_cmt_best'] = false;
 if($eyoom_board['bo_use_point_explain'] == '1') $checked['bo_use_point_explain'] = true; else $checked['bo_use_point_explain'] = false;
 if($eyoom_board['bo_use_list_image'] == '1') $checked['bo_use_list_image'] = true; else $checked['bo_use_list_image'] = false;
 if($eyoom_board['bo_use_video_photo'] == '1') $checked['bo_use_video_photo'] = true; else $checked['bo_use_video_photo'] = false;
@@ -162,6 +164,18 @@ $frm_submit = '
                 <label for="chk_grp_infinite_scroll">그룹적용</label>
                 <input type="checkbox" name="chk_all_infinite_scroll" value="1" id="chk_all_infinite_scroll">
                 <label for="chk_all_infinite_scroll">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="bo_use_cmt_infinite">댓글에서 무한스크롤</label></th>
+            <td>
+				<label for="bo_use_cmt_infinite"><input type="checkbox" name="bo_use_cmt_infinite" value="1" id="bo_use_cmt_infinite" <?php echo $checked['bo_use_cmt_infinite']?'checked':''; ?>> 사용</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_cmt_infinite" value="1" id="chk_grp_cmt_infinite">
+                <label for="chk_grp_cmt_infinite">그룹적용</label>
+                <input type="checkbox" name="chk_all_cmt_infinite" value="1" id="chk_all_cmt_infinite">
+                <label for="chk_all_cmt_infinite">전체적용</label>
             </td>
         </tr>
         <tr>
@@ -429,6 +443,59 @@ $frm_submit = '
                 <label for="chk_grp_addon_cmtimg">그룹적용</label>
                 <input type="checkbox" name="chk_all_addon_cmtimg" value="1" id="chk_all_addon_cmtimg">
                 <label for="chk_all_addon_cmtimg">전체적용</label>
+            </td>
+        </tr>
+        </tbody>
+        </table>
+    </div>
+</section>
+
+<section id="anc_bo_basic">
+    <h2 class="h2_frm color-green">댓글 베스트 기능</h2>
+
+    <div class="tbl_frm01 tbl_wrap">
+        <table>
+        <caption>댓글 베스트 기능</caption>
+        <colgroup>
+            <col class="grid_4">
+            <col>
+            <col class="grid_3">
+        </colgroup>
+        <tbody>
+        <tr>
+            <th scope="row"><label for="bo_use_cmt_best">댓글 베스트 기능 사용</label></th>
+            <td>
+				<label for="bo_use_cmt_best"><input type="checkbox" name="bo_use_cmt_best" value="1" id="bo_use_cmt_best" <?php echo $checked['bo_use_cmt_best']?'checked':''; ?>> 사용</label> <span class="exp">대댓글은 베스트 댓글의 대상이 아닙니다.</span>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_cmt_best" value="1" id="chk_grp_cmt_best">
+                <label for="chk_grp_cmt_best">그룹적용</label>
+                <input type="checkbox" name="chk_all_cmt_best" value="1" id="chk_all_cmt_best">
+                <label for="chk_all_cmt_best">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="bo_cmt_best_min">베스트글 최소 추천수</label></th>
+            <td>
+				<input type="text" name="bo_cmt_best_min" value="<?php echo $eyoom_board['bo_cmt_best_min'] ?>" id="bo_cmt_best_min" class="frm_input" size="5"> 명 이상일 때, 베스트 댓글이 될 수 있습니다.
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_cmtbest_min" value="1" id="chk_grp_cmtbest_min">
+                <label for="chk_grp_cmtbest_min">그룹적용</label>
+                <input type="checkbox" name="chk_all_cmtbest_min" value="1" id="chk_all_cmtbest_min">
+                <label for="chk_all_cmtbest_min">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="bo_cmt_best_limit">노출 베스트 댓글수</label></th>
+            <td>
+				<input type="text" name="bo_cmt_best_limit" value="<?php echo $eyoom_board['bo_cmt_best_limit'] ?>" id="bo_cmt_best_limit" class="frm_input" size="5"> 순위까지 베스트 댓글로 표시합니다.
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_cmtbest_limit" value="1" id="chk_grp_cmtbest_limit">
+                <label for="chk_grp_cmtbest_limit">그룹적용</label>
+                <input type="checkbox" name="chk_all_cmtbest_limit" value="1" id="chk_all_cmtbest_limit">
+                <label for="chk_all_cmtbest_limit">전체적용</label>
             </td>
         </tr>
         </tbody>

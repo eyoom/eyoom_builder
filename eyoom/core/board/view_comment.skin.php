@@ -7,6 +7,11 @@
 			$blind_direct = true;
 		}
 	}
+	
+	// add_javascript('js 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
+	if($eyoom_board['bo_use_addon_map'] == '1') {
+		add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
+	}
 
 	unset($comment);
 	$cmt_amt = count($list);
@@ -117,7 +122,49 @@
 				$blind_direct = true;
 			}
 		}
+		
+		// 베스트 댓글용 raw data
+		if($eyoom_board['bo_use_cmt_best'] == '1' && $comment[$i]['good']) {
+			if($comment[$i]['good'] >= $eyoom_board['bo_cmt_best_min']) {
+				$good_comment[$i] = $comment[$i]['good'];
+				$best_comment[$i] = $comment[$i];
+			}
+		}
 	}
+	
+	// paging 처리 및 댓글 무한스크롤 기능 구현
+	if ($eyoom_board['bo_use_cmt_infinite'] == '1' && is_array($comment) ) {
+		$cpage = (int)$_GET['cpage'];
+		if(!$cpage) $cpage = 1;
+		if(!$page_rows) $page_rows = $board['bo_page_rows'] ? $board['bo_page_rows'] : 15;
+		$from_record = ($cpage - 1) * $page_rows; // 시작 열을 구함
+		$comment = array_slice($comment,$from_record,$page_rows);
+	}
+	
+	// Best 댓글 
+	if(isset($good_comment) && is_array($good_comment)) {
+		if(!isset($cpage) || (isset($cpage) && $cpage == 1) ) {
+			arsort($good_comment);
+
+			$i=0;
+			foreach($good_comment as $key => $good) {
+				// 베스트 댓글 추출 갯수 제한
+				if( $eyoom_board['bo_cmt_best_limit'] <= $i) break;
+				else {
+					$best_comment[$key]['is_cmt_best'] = true;
+					$best_cmt[$i] = $best_comment[$key];
+				}
+				$i++;
+			}
+
+			if(isset($best_cmt) && is_array($best_cmt)) {
+				krsort($best_cmt);
+				foreach($best_cmt as $key => $bestcmt) {
+					array_unshift($comment, $bestcmt);
+				}
+			}
+		}
+	} 
 
 	// 댓글에 이미지 첨부파일 용량 제한
 	$upload_max_filesize = ini_get('upload_max_filesize') . ' 바이트';
