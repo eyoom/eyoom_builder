@@ -24,6 +24,7 @@ if($eyoom_board['bo_use_yellow_card'] == '1') $checked['bo_use_yellow_card'] = t
 if($eyoom_board['bo_use_exif'] == '1') $checked['bo_use_exif'] = true; else $checked['bo_use_exif'] = false;
 if($eyoom_board['bo_use_rating'] == '1') $checked['bo_use_rating'] = true; else $checked['bo_use_rating'] = false;
 if($eyoom_board['bo_use_rating_list'] == '1') $checked['bo_use_rating_list'] = true; else $checked['bo_use_rating_list'] = false;
+if($eyoom_board['bo_use_tag'] == '1') $checked['bo_use_tag'] = true; else $checked['bo_use_tag'] = false;
 if($eyoom_board['bo_use_summernote_mo'] == '1') $checked['bo_use_summernote_mo'] = true; else $checked['bo_use_summernote_mo'] = false;
 if($eyoom_board['bo_use_addon_emoticon'] == '1') $checked['bo_use_addon_emoticon'] = true; else $checked['bo_use_addon_emoticon'] = false;
 if($eyoom_board['bo_use_addon_video'] == '1') $checked['bo_use_addon_video'] = true; else $checked['bo_use_addon_video'] = false;
@@ -352,6 +353,64 @@ $frm_submit = '
                 <label for="chk_grp_rating_list">그룹적용</label>
                 <input type="checkbox" name="chk_all_rating_list" value="1" id="chk_all_rating_list">
                 <label for="chk_all_rating_list">전체적용</label>
+            </td>
+        </tr>
+        </tbody>
+        </table>
+    </div>
+</section>
+
+<section id="anc_bo_basic">
+    <h2 class="h2_frm color-green">게시물 태그 기능</h2>
+
+    <div class="tbl_frm01 tbl_wrap">
+        <table>
+        <caption>게시물 태그 기능</caption>
+        <colgroup>
+            <col class="grid_4">
+            <col>
+            <col class="grid_3">
+        </colgroup>
+        <tbody>
+        <tr>
+            <th scope="row"><label for="bo_use_tag">게시물 태그 기능 사용</label></th>
+            <td>
+				<label for="bo_use_tag"><input type="checkbox" name="bo_use_tag" value="1" id="bo_use_tag" <?php echo $checked['bo_use_tag']?'checked':''; ?>> 사용</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_use_tag" value="1" id="chk_grp_use_tag">
+                <label for="chk_grp_use_tag">그룹적용</label>
+                <input type="checkbox" name="chk_all_use_tag" value="1" id="chk_all_use_tag">
+                <label for="chk_all_use_tag">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="bo_tag_level">글쓰기시 태그 작성 권한</label></th>
+            <td>
+				<?php
+					if(!isset($eyoom_board['bo_tag_level']) || $eyoom_board['bo_tag_level'] < $board['bo_write_level']) $eyoom_board['bo_tag_level'] = $board['bo_write_level'];
+					echo get_member_level_select('bo_tag_level', 1, 10, $eyoom_board['bo_tag_level']);
+				?>
+				<span class="exp">게시판 글쓰기 권한과 같거나 높아야 합니다.</span>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_tag_level" value="1" id="chk_grp_tag_level">
+                <label for="chk_grp_tag_level">그룹적용</label>
+                <input type="checkbox" name="chk_all_tag_level" value="1" id="chk_all_tag_level">
+                <label for="chk_all_tag_level">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="bo_tag_limit">글쓰기시 입력가능한 태그수</label></th>
+            <td>
+				<input type="text" name="bo_tag_limit" id="bo_tag_limit" class="frm_input" value="<?php echo $eyoom_board['bo_tag_limit'];?>" size="5">
+				<span class="exp">지정한 숫자를 초과하여 태그를 입력할 수 없습니다. [관리자는 제한없음]</span>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_tag_limit" value="1" id="chk_grp_tag_limit">
+                <label for="chk_grp_tag_limit">그룹적용</label>
+                <input type="checkbox" name="chk_all_tag_limit" value="1" id="chk_all_tag_limit">
+                <label for="chk_all_tag_limit">전체적용</label>
             </td>
         </tr>
         </tbody>

@@ -71,71 +71,135 @@
 	}
 
 	// 내용글에서 텍스트 추출
-	$content = conv_content(stripslashes($wr_content), 1);
-	$content = trim(addslashes(cut_str(strip_tags($content), 300, '…')));
+	$content = addslashes($eb->eyoom_text_abstract($wr_content, 300));
+
+	// 태그 정리
+	if ($eyoom['use_tag'] == 'y' && $eyoom_board['bo_use_tag'] == '1') {
+		$del_tag 	= get_text($_POST['del_tag']);
+		$wr_tag 	= get_text($_POST['wr_tag']);
+		$del_tags 	= explode(',', $del_tag);
+		$wr_tags 	= explode(',', $wr_tag);
+		unset($wr_tag);
+		if(is_array($wr_tags)) {
+			if(!$del_tags) $del_tags = array();
+			$i=0;
+			foreach($wr_tags as $_tag) {
+				if(!in_array($_tag, $del_tags)) {
+					$tag_array[$i] = $_tag;
+					$i++;
+				}
+			}
+			
+			if(isset($tag_array)) {
+				$wr_tag = implode(',', $tag_array);
+		
+				$tag_score = $w == 'u' ? 5: 20;
+				foreach($tag_array as $key => $_tag) {
+					$info = sql_fetch("select tg_id, tg_regcnt, tg_score from {$g5['eyoom_tag']} where tg_theme = '{$theme}' and tg_word = '{$_tag}' ", false);
+					$regcnt = $info['tg_regcnt'] + 1;
+					if($info['tg_id']) {
+						if($w == 'u') $regcnt--;
+						$score = $info['tg_score'] + $tag_score + 1;
+						$tag_sql = "update {$g5['eyoom_tag']} set tg_score = '{$score}', tg_regcnt = '{$regcnt}' where tg_id = '{$info['tg_id']}'";
+					} else {
+						$score = $tag_score + 10;
+						$tag_sql = "insert into {$g5['eyoom_tag']} set tg_theme = '{$theme}', tg_word = '{$_tag}', tg_regcnt = '1', tg_score = '{$score}', tg_regdt='".G5_TIME_YMDHIS."'";
+					}
+					sql_query($tag_sql, false);
+				}
+			}
+		}
+	}
 
 	$where = "bo_table = '{$bo_table}' and wr_id = '{$wr_id}'";
-	$insert = "
-		insert into {$g5['eyoom_new']} set 
-			bo_table	= '{$bo_table}',
-			pr_id		= '{$respond['pr_id']}',
-			wr_id		= '{$wr_id}',
-			wr_parent	= '{$wr_id}',
-			ca_name		= '{$ca_name}',
-			wr_subject	= '{$wr_subject}',
-			wr_content	= '{$content}',
-			wr_option	= '{$html},{$secret},{$mail}',
-			bn_datetime = '".G5_TIME_YMDHIS."',
-			mb_id		= '{$member['mb_id']}',
-			mb_name		= '{$member['mb_name']}',
-			mb_nick		= '{$member['mb_nick']}',
-			mb_level	= '{$wr_1}',
-			wr_image	= '{$wr_image}',
-			wr_video	= '{$wr_video}',
-			wr_sound	= '{$wr_sound}',
-			wr_comment	= '0',
-			wr_hit		= '0',
-			wr_1		= '{$wr_1}',
-			wr_2		= '{$wr_2}',
-			wr_3		= '{$wr_3}',
-			wr_4		= '{$wr_4}',
-			wr_5		= '{$wr_5}',
-			wr_6		= '{$wr_6}',
-			wr_7		= '{$wr_7}',
-			wr_8		= '{$wr_8}',
-			wr_9		= '{$wr_9}',
-			wr_10		= '{$wr_10}'
-	";
+	
+	// 공통 $set
+	$common_set['bo_table'] 	= $bo_table;
+	$common_set['wr_id'] 		= $wr_id;
+	$common_set['wr_subject'] 	= $wr_subject;
+	$common_set['wr_content'] 	= $content;
+	$common_set['wr_option'] 	= "{$html},{$secret},{$mail}";
+	$common_set['wr_image'] 	= $wr_image;
+	$common_set['wr_1'] 		= $wr_1;
+	$common_set['wr_2'] 		= $wr_2;
+	$common_set['wr_3'] 		= $wr_3;
+	$common_set['wr_4'] 		= $wr_4;
+	$common_set['wr_5'] 		= $wr_5;
+	$common_set['wr_6'] 		= $wr_6;
+	$common_set['wr_7'] 		= $wr_7;
+	$common_set['wr_8'] 		= $wr_8;
+	$common_set['wr_9'] 		= $wr_9;
+	$common_set['wr_10'] 		= $wr_10;
+	
+	$cmset = $eb->make_sql_set($common_set);
+	unset($common_set);
 
-	$update = "
-		update {$g5['eyoom_new']} set 
-			bo_table	= '{$bo_table}',
-			pr_id		= '{$respond['pr_id']}',
-			wr_id		= '{$wr_id}',
-			wr_parent	= '{$wr_id}',
-			ca_name		= '{$ca_name}',
-			wr_subject	= '{$wr_subject}',
-			wr_content	= '{$content}',
-			wr_option	= '{$html},{$secret},{$mail}',
-			wr_image	= '{$wr_image}',
-			wr_video	= '{$wr_video}',
-			wr_sound	= '{$wr_sound}',
-			wr_1		= '{$wr_1}',
-			wr_2		= '{$wr_2}',
-			wr_3		= '{$wr_3}',
-			wr_4		= '{$wr_4}',
-			wr_5		= '{$wr_5}',
-			wr_6		= '{$wr_6}',
-			wr_7		= '{$wr_7}',
-			wr_8		= '{$wr_8}',
-			wr_9		= '{$wr_9}',
-			wr_10		= '{$wr_10}'
-		where $where
-	";
+	// 이윰 New insert set
+	$insert_set['pr_id'] 		= $respond['pr_id'];
+	$insert_set['wr_parent'] 	= $wr_id;
+	$insert_set['ca_name'] 		= $ca_name;
+	$insert_set['mb_id']		= $member['mb_id'];
+	$insert_set['mb_name']		= $member['mb_name'];
+	$insert_set['mb_nick']		= $member['mb_nick'];
+	$insert_set['mb_level']		= $member['mb_level'];
+	$insert_set['wr_video']		= $wr_video;
+	$insert_set['wr_sound']		= $wr_sound;
+	$insert_set['wr_comment']	= 0;
+	$insert_set['wr_hit']		= 0;
+	$insert_set['bn_datetime']	= G5_TIME_YMDHIS;
+	
+	$inset = $eb->make_sql_set($insert_set);
+	
+	$insert_new = "insert into {$g5['eyoom_new']} set {$cmset},{$inset}";
+	unset($insert_set, $inset);
+	
+	// 이윰 New update set
+	$update_set['pr_id']		= $respond['pr_id'];
+	$update_set['wr_parent'] 	= $wr_id;
+	$update_set['ca_name'] 		= $ca_name;
+	$update_set['wr_video']		= $wr_video;
+	$update_set['wr_sound']		= $wr_sound;
+	
+	$upset = $eb->make_sql_set($update_set);;
+	
+	$update_new = "update {$g5['eyoom_new']} set {$cmset},{$upset} where {$where}";
+	sql_query($update_new, false);
+	unset($update_set, $upset);
+	
+	// 태그 set
+	if ($eyoom['use_tag'] == 'y' && $eyoom_board['bo_use_tag'] == '1' && isset($wr_tag)) {
+		
+		// 태그 insert set
+		$ins_tag_set['tw_theme']	= $theme;
+		$ins_tag_set['wr_tag']		= $wr_tag;
+		$ins_tag_set['mb_id']		= $member['mb_id'];
+		$ins_tag_set['mb_name']		= $member['mb_name'];
+		$ins_tag_set['mb_nick']		= $member['mb_nick'];
+		$ins_tag_set['mb_level']	= $member['mb_level'];
+		$ins_tag_set['wr_hit']		= 0;
+		$ins_tag_set['tw_datetime']	= G5_TIME_YMDHIS;
+		
+		$tagset = $eb->make_sql_set($ins_tag_set);
+		
+		$insert_tag = "insert into {$g5['eyoom_tag_write']} set {$cmset},{$tagset}";
+		unset($ins_tag_set, $tagset);
+		
+		// 태그 update set
+		$up_tag_set['tw_theme']	= $theme;
+		$up_tag_set['wr_tag']	= $wr_tag;
+		
+		$uptagset = $eb->make_sql_set($up_tag_set);
+		
+		$update_tag = "update {$g5['eyoom_tag_write']} set {$cmset},{$uptagset} where {$where} and tw_theme='{$theme}' ";
+		sql_query($update_tag, false);
+		unset($up_tag_set, $uptagset);
+	}
 
 	// Eyoom 새글
 	if ($w == '' || $w == 'r') {
-		$query = $insert;
+		$new_query = $insert_new;
+		if(isset($wr_tag)) $tag_query = $insert_tag;
+		
 		// 나의활동 
 		switch($w) {
 			default  : $act_type = 'new'; $eb->level_point($levelset['write']); break;
@@ -150,11 +214,41 @@
 		$eb->insert_activity($member['mb_id'],$act_type,$act_contents);
 
 	} else if($w == 'u') {
-		$new = sql_fetch("select bn_id from {$g5['eyoom_new']} where $where");
-		$query = $new['bn_id'] ? $update:$insert;
+		// 새글 정보가 이미 있다면 업데이트
+		$new_post = sql_fetch("select * from {$g5['eyoom_new']} where $where");
+		$new_query = $new_post['bn_id'] ? $update_new : $insert_new;
+		
+		// 태그 정보가 이미 있다면 업데이트
+		if(isset($wr_tag)) {
+			$tag_post = sql_fetch("select tw_id from {$g5['eyoom_tag_write']} where {$where} and tw_theme='{$theme}'");
+
+			// 태그 작성 테이블에 글이 있다면 업데이트
+			if($tag_post['tw_id']) {
+				$tag_query = $update_tag;
+			} else if($new_post['bn_id']) {
+				// 이미 새글에 등록된 글이라면 새글 정보로 등록
+				$ins_tag_set['tw_theme']	= $theme;
+				$ins_tag_set['wr_tag']		= $wr_tag;
+				$ins_tag_set['mb_id']		= $new_post['mb_id'];
+				$ins_tag_set['mb_name']		= $new_post['mb_name'];
+				$ins_tag_set['mb_nick']		= $new_post['mb_nick'];
+				$ins_tag_set['mb_level']	= $new_post['mb_level'];
+				$ins_tag_set['wr_hit']		= $new_post['wr_hit'];
+				$ins_tag_set['tw_datetime']	= $new_post['bn_datetime'];
+				
+				$tagset = $eb->make_sql_set($ins_tag_set);
+				$insert_tag = "insert into {$g5['eyoom_tag_write']} set {$cmset},{$tagset}";
+				
+				$tag_query = $insert_tag;
+			} else {
+				// 정말 새로 작성한 글이라면 새로 등록
+				$tag_query = $insert_tag;
+			}
+		}
 	}
-	if($query) sql_query($query, false);
-	unset($query, $insert, $update);
+	if(isset($new_query)) sql_query($new_query, false);
+	if(isset($tag_query)) sql_query($tag_query, false);
+	unset($cmset, $new_query, $tag_query, $insert_new, $update_new, $insert_tag, $update_tag);
 
 	// 지뢰폭탄 포인트 심기
 	if ($w == '' || $w == 'r') {

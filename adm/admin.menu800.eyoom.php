@@ -6,7 +6,8 @@ $menu['menu800'] = array (
     array('800300', '커뮤니티메뉴설정', G5_ADMIN_URL.'/eyoom_admin/menu_list.php', 'eyb_menu'),
     array('800400', '쇼핑몰메뉴설정', G5_ADMIN_URL.'/eyoom_admin/shopmenu_list.php', 'eyb_shopmenu'),
     array('800500', '배너/광고관리', G5_ADMIN_URL.'/eyoom_admin/banner_list.php', 'eyb_banner'),
-    array('800600', '이윰멤버관리', G5_ADMIN_URL.'/eyoom_admin/member_list.php', 'eyb_member'),
-	array('800700', '이윰레벨설정', G5_ADMIN_URL.'/eyoom_admin/member_level.php', 'eyb_level')
+    array('800600', '태그관리', G5_ADMIN_URL.'/eyoom_admin/tag_list.php', 'eyb_tag'),
+    array('800700', '이윰멤버관리', G5_ADMIN_URL.'/eyoom_admin/member_list.php', 'eyb_member'),
+	array('800800', '이윰레벨설정', G5_ADMIN_URL.'/eyoom_admin/member_level.php', 'eyb_level')
 );
 ?>

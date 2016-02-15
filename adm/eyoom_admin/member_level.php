@@ -1,5 +1,5 @@
 <?php
-$sub_menu = '800700';
+$sub_menu = '800800';
 include_once('./_common.php');
 include_once(G5_EDITOR_LIB);
 include_once(EYOOM_PATH.'/common.php');

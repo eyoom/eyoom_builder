@@ -5,7 +5,7 @@
 	define('_EYOOM_COMMON_',true);
 
 	// Version
-	define('_EYOOM_VESION_','EyoomBuilder_1.2.0');
+	define('_EYOOM_VESION_','EyoomBuilder_1.2.1');
 
 	// GNUBOARD5 Library
 	include_once(G5_LIB_PATH.'/common.lib.php');
@@ -166,6 +166,7 @@
 	$respond_skin_path	= EYOOM_CORE_PATH.'/respond';
 	$mypage_skin_path	= EYOOM_CORE_PATH.'/mypage';
 	$page_skin_path		= EYOOM_CORE_PATH.'/page';
+	$tag_skin_path		= EYOOM_CORE_PATH.'/tag';
 
 	// GNUBOARD Skin 사용여부 체크
 	if($eyoom_board['use_gnu_skin'] == 'y') { // 이윰보드 설정에서 그누보드 사용여부 체크

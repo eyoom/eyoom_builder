@@ -153,6 +153,21 @@
 
 	// wr_1에 작성자의 레벨정보 입력
 	if($is_member) $wr_1 = $member['mb_level']."|".$eyoomer['level'];
+	
+	// 태그 정보
+	if ($eyoom['use_tag'] == 'y' && $eyoom_board['bo_use_tag'] == '1') {
+		$tag_info = $eb->get_tag_info($bo_table, $wr_id);
+		if($tag_info['wr_tag']) {
+			$wr_tags = explode(',', $tag_info['wr_tag']);
+			$i=0;
+			foreach($wr_tags as $key => $_tag) {
+				$view_tags[$i]['tag'] = $_tag;
+				$view_tags[$i]['href'] = G5_URL . '/tag/?tag=' . str_replace('&', '^', $_tag);
+				$i++;
+			}
+		}
+		if(isset($view_tags)) $tpl->assign('view_tags', $view_tags);
+	}
 
 	include_once(G5_BBS_PATH.'/view_comment.php');
 

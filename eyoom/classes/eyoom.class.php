@@ -764,6 +764,14 @@ class eyoom extends qfile
 		
 		return $content;
 	}
+	
+	// 게시글 내용에서 텍스트만 추출
+	public function eyoom_text_abstract($content, $length=300) {
+		$content = preg_replace("#\\r#","",cut_str(str_replace('&nbsp;','',strip_tags(stripslashes($content))),$length,''));
+		$content = preg_replace("#\\n#","",$content);
+		$content = preg_replace("#\\t#","",$content);
+		return $content;
+	}
 
 	public function syntaxhighlighter($content) {
 		$content = preg_replace("/{CODE\s*\:([^}]*)}/i","<pre class=\"brush: \\1;\">",$content);
@@ -1529,6 +1537,79 @@ class eyoom extends qfile
 		}else{
 			return 'pc';
 		}
+	}
+	
+	// 버전을 입력받아 버전스코어 점수를 리턴함
+	public function version_score($version) {
+		$ebv = explode('.', $version);
+		$ebv = array_reverse($ebv);
+		foreach($ebv as $k => $val) {
+			$vscore[$k] = $val * pow(1000, $k);
+		}
+		return array_sum($vscore);
+	}
+	
+	// sql set배열을 sql문으로 완성하기
+	public function make_sql_set($source = array()) {
+		$i=0;
+		foreach ($source as $key => $val) {
+			$set[$i] = "{$key} = '{$val}'";
+			$i++;
+		}
+		if(is_array($set)) {
+			return implode(',', $set);
+		}
+	}
+	
+	// 태그 정보 가져오기
+	public function get_tag_info($bo_table, $wr_id) {
+		global $g5, $theme;
+		$sql = " select * from {$g5['eyoom_tag_write']} where tw_theme='{$theme}' and bo_table='{$bo_table}' and wr_id='{$wr_id}' ";
+		return sql_fetch($sql, false);
+	}
+	
+	// 연관태그 정보
+	public function get_rel_tag($tag) {
+		global $g5, $theme;
+		
+		$org_tag = str_replace('^','&',$tag);
+		$tags = explode('*', $org_tag);
+		if(is_array($tags)) {
+			$tag_query = " and tw_theme = '{$theme}' ";
+			$i=0;
+			foreach($tags as $_tag) {
+				$sch_tag[$i] = " ( INSTR(wr_tag, '".$_tag."') > 0 ) ";
+				@sql_query("update {$g5['eyoom_tag']} set tg_scnt = tg_scnt+1, tg_score = tg_score+1 where tg_theme='{$theme}' and tg_word = '{$_tag}'");
+				$i++;
+			}
+			$tag_query .= ' and ' . implode(' and ', $sch_tag);
+		}
+		$sql = "select wr_tag from {$g5['eyoom_tag_write']} as a where (1) {$tag_query}";
+		$res = sql_query($sql);
+		for($i=0;$row=sql_fetch_array($res);$i++) {
+			$in_tag = explode(',', $row['wr_tag']);
+			foreach($in_tag as $_tag) {
+				$in_tags[trim($_tag)] = true;
+			}
+		}
+		
+		if(isset($in_tags)) {
+			
+			ksort($in_tags);
+			$i=0;
+			foreach($in_tags as $_tag => $val) {
+				if(in_array($_tag, $tags)) continue;
+				else if ($_tag) {
+					$rel_tags[$i]['tag'] = $_tag;
+					$rel_tags[$i]['href'] = G5_URL . "/tag/?tag=" . $tag . "*" . str_replace('&','^',$_tag);
+					$i++;
+				}
+			}
+		}
+		$output['tag_query'] 	= $tag_query;
+		$output['rel_tags'] 	= $rel_tags;
+		
+		return $output;
 	}
 
 }

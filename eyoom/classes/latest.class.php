@@ -339,7 +339,7 @@ class latest extends eyoom
 		return $list;
 	}
 
-	protected function latest_image($source,$direct='n') {
+	public function latest_image($source,$direct='n') {
 		global $g5, $eb;
 		switch($direct) {
 			case 'y':

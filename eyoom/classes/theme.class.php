@@ -10,7 +10,7 @@ class theme extends qfile
 
 	// Constructor Function
 	public function __construct() {
-		global $g5, $bo_table, $co_id, $gr_id, $board, $pid, $ca_id, $faq, $fm_id, $sca;
+		global $g5, $bo_table, $co_id, $gr_id, $board, $pid, $ca_id, $faq, $fm_id, $sca, $tag;
 
 		$this->tmp_path		= G5_DATA_PATH . '/tmp';
 		$this->theme_path	= EYOOM_THEME_PATH;
@@ -38,6 +38,9 @@ class theme extends qfile
 		} else if($fm_id) {
 			$this->page_type = 'faq';
 			$this->me_pid = $fm_id;
+		} else if($tag) {
+			$this->page_type = 'tag';
+			$this->me_pid = $tag;
 		}
 	}
 
@@ -471,7 +474,7 @@ class theme extends qfile
 					$info['me_link'] = $url['path'].'board.php?bo_table='.$link['bo_table'].'&amp;wr_id='.$link['wr_id'];
 					unset($link);
 				} else {
-					if(in_array($key,array('bo_table','gr_id','co_id','ca_id','pid','theme','faq','fm_id','sca','sfl'))) {
+					if(in_array($key,array('bo_table','gr_id','co_id','ca_id','pid','theme','faq','fm_id','sca','sfl','tag'))) {
 						switch($key) {
 							case "bo_table"	: $info['me_type'] = 'board'; break;
 							case "gr_id"	: $info['me_type'] = 'group'; break;
@@ -484,6 +487,7 @@ class theme extends qfile
 							case "qalist"	: $info['me_type'] = 'qalist'; break;
 							case "sca"		: $info['me_type'] = 'category'; break;
 							case "sfl"		: $info['me_type'] = 'search'; break;
+							case "tag"		: $info['me_type'] = 'tag'; break;
 						}
 						$info['me_pid']  = $val;
 						$info['me_link'] = $url['path']."?".$url['query'];
@@ -700,7 +704,20 @@ class theme extends qfile
 			case 'itemqalist': $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[416] : '상품문의'; $cate_name = $eyoom['theme_lang_type']=='m' ? $lang_theme[644] : '쇼핑몰'; break;
 			case 'itemuselist': $title = $eyoom['theme_lang_type']=='m' ? $lang_theme[415] : '사용후기'; $cate_name = $eyoom['theme_lang_type']=='m' ? $lang_theme[644] : '쇼핑몰'; break;
 		}
-		if(!$cate_name) {
+		
+		if(defined('_TAG_')) {
+			// 태그 페이지
+			if($_GET['tag']) {
+				$tag = str_replace('^','&',get_text($_GET['tag']));
+				$page_info['title'] = str_replace('*',' <span style="font-weight:normal;color:#aaa;">&gt;</span> ',$tag);
+				$page_info['path'] = "<li><a href='".G5_URL."'>Home</a></li><li>태그</li><li>".str_replace('*','</li><li>',$tag)."</li>";
+				$page_info['subtitle'] = '태그';
+			} else {
+				$page_info['title'] = '태그 크라우드';
+				$page_info['path'] = "<li><a href='".G5_URL."'>Home</a></li><li>태그</li><li>".$page_info['title']."</li>";
+				$page_info['subtitle'] = '태그';
+			}
+		} else if(!$cate_name) {
 			$page_info['title'] = $title;
 			$page_info['path'] = "<li><a href='".G5_URL."'>Home</a></li><li class='active'>".$title."</li>";
 		} else {

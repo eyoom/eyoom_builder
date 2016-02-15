@@ -54,6 +54,16 @@
 		$wr_file[$i]['source'] = $file[$i]['source'];
 		$wr_file[$i]['bf_content'] = $file[$i]['bf_content'];
 	}
+	
+	// 태그 정보
+	if ($eyoom['use_tag'] == 'y' && $eyoom_board['bo_use_tag'] == '1' && $member['mb_level'] >= $eyoom_board['bo_tag_level']) {
+		$tag_info = $eb->get_tag_info($bo_table, $wr_id);
+		if($tag_info['wr_tag']) {
+			$write['wr_tag'] = $tag_info['wr_tag'];
+			$wr_tags = explode(',', $tag_info['wr_tag']);
+		}
+		if(isset($wr_tags)) $tpl->assign('wr_tags', $wr_tags);
+	}
 
 	// 사용자 프로그램
 	@include_once(EYOOM_USER_PATH.'/board/write.skin.php');

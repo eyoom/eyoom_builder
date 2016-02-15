@@ -1,5 +1,5 @@
 <?php
-$sub_menu = "800600";
+$sub_menu = "800700";
 include_once('./_common.php');
 include_once(EYOOM_PATH.'/common.php');
 

@@ -52,6 +52,7 @@
 				$config_file = $arr[$i] == 'basic' ? eyoom_config:G5_DATA_PATH.'/eyoom.'.$arr[$i].'.config.php';
 				if(file_exists($config_file)) {
 					include($config_file);
+					$exist_theme[$i] = $arr[$i];
 			?>
 			<div class="themes">
 				<div class="theme_name"><?php echo $arr[$i];?> <span style='font-weight:normal;'><?php if($tminfo[$arr[$i]]['tm_alias']) echo "(".$tminfo[$arr[$i]]['tm_alias'].")";?></span></div>
@@ -62,6 +63,7 @@
 				<div><a href="./menu_list.php?thema=<?php echo $arr[$i];?>" <?php if($_theme == $arr[$i] && $sub_key=='300') echo "class='active'";?>>커뮤니티메뉴</a></div>
 				<?php if(defined('G5_USE_SHOP')) {?><div><a href="./shopmenu_list.php?thema=<?php echo $arr[$i];?>" <?php if($_theme == $arr[$i] && $sub_key=='400') echo "class='active'";?>>쇼핑몰메뉴</a></div><?php }?>
 				<div><a href="./banner_list.php?thema=<?php echo $arr[$i];?>" <?php if($_theme == $arr[$i] && $sub_key=='500') echo "class='active'";?>>배너/광고</a></div>
+				<div><a href="./tag_list.php?thema=<?php echo $arr[$i];?>" <?php if($_theme == $arr[$i] && $sub_key=='600') echo "class='active'";?>>태그</a></div>
 				<div class="btn_clone"><a href="./theme_clone.php?thema=<?php echo $arr[$i];?>" class="clone_theme" onclick="return false;">복사</a></div>
 				<div class="btn_delete"><a href="./theme_delete.php?thema=<?php echo $arr[$i];?>" class="delete_theme" onclick="return false;">삭제</a></div>
 				<div class="btn_chname"><a href="./theme_alias.php?thema=<?php echo $arr[$i];?>" class="alias_theme" onclick="return false;">별칭설정</a></div>

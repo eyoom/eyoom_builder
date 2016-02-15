@@ -54,6 +54,8 @@
 	$g5['eyoom_attendance'] = G5_TABLE_PREFIX.'eyoom_attendance'; 
 	$g5['eyoom_yellowcard']	= G5_TABLE_PREFIX.'eyoom_yellowcard';
 	$g5['eyoom_rating']		= G5_TABLE_PREFIX.'eyoom_rating';
+	$g5['eyoom_tag']		= G5_TABLE_PREFIX.'eyoom_tag';
+	$g5['eyoom_tag_write']	= G5_TABLE_PREFIX.'eyoom_tag_write';
 
 	// Eyoom 환경설정파일
 	$eyoom = array();

@@ -178,6 +178,7 @@ CREATE TABLE IF NOT EXISTS `g5_eyoom_board` (
   `bo_use_exif` char(1) NOT NULL default '0',
   `bo_use_rating` char(1) NOT NULL default '2',
   `bo_use_rating_list` char(1) NOT NULL default '1',
+  `bo_use_tag` char(1) NOT NULL default '0',
   `bo_use_summernote_mo` char(1) NOT NULL default '1',
   `bo_use_addon_emoticon` char(1) NOT NULL default '1',
   `bo_use_addon_video` char(1) NOT NULL default '1',
@@ -187,6 +188,8 @@ CREATE TABLE IF NOT EXISTS `g5_eyoom_board` (
   `bo_use_addon_cmtimg` char(1) NOT NULL default '1',
   `bo_cmt_best_min` tinyint(2) NOT NULL default '10',
   `bo_cmt_best_limit` tinyint(2) NOT NULL default '5',
+  `bo_tag_level` tinyint(4) NOT NULL default '2',
+  `bo_tag_limit` tinyint(4) NOT NULL default '10',
   `bo_exif_detail` text NOT NULL,
   `bo_blind_limit` tinyint(2) NOT NULL default '5',
   `bo_blind_view` tinyint(2) NOT NULL default '10',
@@ -318,4 +321,63 @@ CREATE TABLE IF NOT EXISTS `g5_eyoom_rating` (
   `rating` smallint(2) NOT NULL default '0',
   `rt_datetime` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`rt_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `g5_eyoom_tag`
+--
+
+DROP TABLE IF EXISTS `g5_eyoom_tag`;
+CREATE TABLE IF NOT EXISTS `g5_eyoom_tag` (
+  `tg_id` int(11) unsigned NOT NULL auto_increment,
+  `tg_word` varchar(20) NOT NULL default '',
+  `tg_theme` varchar(40) NOT null default 'basic',
+  `tg_regcnt` int(11) unsigned NOT NULL default '0',
+  `tg_dpmenu` enum('y','n') NOT NULL default 'n',
+  `tg_scnt` int(11) NOT NULL default '0',
+  `tg_score` int(11) NOT NULL default '0',
+  `tg_recommdt` datetime NOT NULL default '0000-00-00 00:00:00',
+  `tg_regdt` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (`tg_id`),
+  KEY `tg_word` (`tg_word`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `g5_eyoom_tag_write`
+--
+
+DROP TABLE IF EXISTS `g5_eyoom_tag_write`;
+CREATE TABLE IF NOT EXISTS `g5_eyoom_tag_write` (
+  `tw_id` int(11) NOT NULL auto_increment,
+  `tw_theme` varchar(40) NOT NULL,
+  `bo_table` varchar(20) NOT NULL default '',
+  `wr_id` int(11) NOT NULL default '0',
+  `wr_subject` varchar(255) NOT NULL,
+  `wr_option` set('html1','html2','secret','mail') NOT NULL,
+  `wr_content` text NOT NULL,
+  `wr_tag` text NOT NULL,
+  `wr_image` text NOT NULL,
+  `wr_hit` int(11) NOT NULL default '0',
+  `mb_id` varchar(20) NOT NULL default '',
+  `mb_name` varchar(50) NOT NULL,
+  `mb_nick` varchar(50) NOT NULL,
+  `mb_level` varchar(255) NOT NULL,
+  `tw_datetime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `wr_1` varchar(255) NOT NULL,
+  `wr_2` varchar(255) NOT NULL,
+  `wr_3` varchar(255) NOT NULL,
+  `wr_4` varchar(255) NOT NULL,
+  `wr_5` varchar(255) NOT NULL,
+  `wr_6` varchar(255) NOT NULL,
+  `wr_7` varchar(255) NOT NULL,
+  `wr_8` varchar(255) NOT NULL,
+  `wr_9` varchar(255) NOT NULL,
+  `wr_10` varchar(255) NOT NULL,
+  PRIMARY KEY  (`tw_id`),
+  KEY `mb_id` (`mb_id`),
+  KEY `wr_hit` (`wr_hit`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

@@ -87,7 +87,7 @@ $frm_submit = '
 				<td>
 					<div class="themes">
 						<input type="text" name="me_icon" id="me_icon" value="<?php echo $meinfo['me_icon'];?>" class="frm_input" size="24">
-						<a href="http://eyoom.net/page/?pid=eyoomcss-3" target="_blank" style="display:inline-block;width:97px;text-align:center;color:#fff;background:#555;border:1px solid #333;">Font Awesome</a> <span class="exp">예) fa-user</span>
+						<a href="http://eyoom.net/page/?pid=pc-eyoomcss-3" target="_blank" style="display:inline-block;width:97px;text-align:center;color:#fff;background:#555;border:1px solid #333;">Font Awesome</a> <span class="exp">예) fa-user</span>
 					</div>
 				</td>
 			</tr>
@@ -195,7 +195,7 @@ $frm_submit = '
 				<td>
 					<div class="themes">
 						<input type="text" name="subme_icon" id="subme_icon" value="" class="frm_input" size="24">
-						<a href="http://eyoom.net/page/?pid=eyoomcss-3" target="_blank" style="display:inline-block;width:97px;text-align:center;color:#fff;background:#555;border:1px solid #333;">Font Awesome</a> <span class="exp">예) fa-user</span>
+						<a href="http://eyoom.net/page/?pid=pc-eyoomcss-3" target="_blank" style="display:inline-block;width:97px;text-align:center;color:#fff;background:#555;border:1px solid #333;">Font Awesome</a> <span class="exp">예) fa-user</span>
 					</div>
 				</td>
 			</tr>

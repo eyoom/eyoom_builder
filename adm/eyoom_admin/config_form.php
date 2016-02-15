@@ -405,6 +405,25 @@ $frm_submit = '
                 ?>
             </td>
 		</tr>
+		<tr>
+            <th scope="row"><label for="respond_skin">태그 스킨</label></th>
+            <td colspan="3">
+                <?php
+                $arr = $eb->get_skin_dir('tag',EYOOM_THEME_PATH.'/'.$_theme.'/skin_'.$_tpl_name);
+				if($arr) {
+					echo '<select name="tag_skin" id="tag_skin" required class="required">';
+					for ($i=0; $i<count($arr); $i++) {
+						if ($i == 0) echo "<option value=\"\">선택</option>";
+						echo "<option value=\"".$arr[$i]."\"".get_selected($_eyoom['tag_skin'], $arr[$i]).">".$arr[$i]."</option>\n";
+					}
+					echo '</select>';
+				} else {
+					echo "현재 테마에는 태그 스킨이 존재하지 않습니다.";
+				}
+				unset($arr);
+                ?>
+            </td>
+		</tr>
         </tbody>
         </table>
     </div>
@@ -555,6 +574,53 @@ $frm_submit = '
 </section>
 
 <?php echo $frm_submit; ?>
+
+<section id="anc_scf_info">
+    <h2 class="h2_frm">[<b style='color:#f30;'><?php echo $_theme;?></b> 테마] 태그기능 설정</h2>
+
+    <div class="tbl_frm01 tbl_wrap">
+        <table>
+        <caption>태그기능</caption>
+        <colgroup>
+            <col class="grid_4">
+            <col>
+        </colgroup>
+        <tbody>
+		<tr>
+            <th scope="row"><label for="use_tag">태그기능 사용</label></th>
+            <td>
+                <label for="use_tag_yes"><input type="radio" name="use_tag" id="use_tag_yes" value="y" <?php if($_eyoom['use_tag'] == 'y') echo "checked";?>> 사용</label>
+				<label for="use_tag_no"><input type="radio" name="use_tag" id="use_tag_no" value="n" <?php if($_eyoom['use_tag'] == 'n') echo "checked";?>> 사용하지 않음</label>
+            </td>
+		</tr>
+		<tr>
+            <th scope="row"><label for="tag_dpmenu_count">태그메뉴 출력 태그수</label></th>
+            <td>
+                <input type="text" name="tag_dpmenu_count" value="<?php echo $_eyoom['tag_dpmenu_count'];?>" id="tag_dpmenu_count" class="frm_input" style="width:80px;"> 건
+            </td>
+		</tr>
+		<tr>
+            <th scope="row"><label for="tag_dpmenu_sort">태그메뉴 출력방식</label></th>
+            <td>
+                <label for="tag_dpmenu_sort_regdt"><input type="radio" name="tag_dpmenu_sort" id="tag_dpmenu_sort_regdt" value="regdt" <?php if($_eyoom['tag_dpmenu_sort'] == 'regdt') echo "checked";?>> 최근 등록순</label>
+				<label for="tag_dpmenu_sort_score"><input type="radio" name="tag_dpmenu_sort" id="tag_dpmenu_sort_score" value="score" <?php if($_eyoom['tag_dpmenu_sort'] == 'score') echo "checked";?>> 노출점수순</label>
+				<label for="tag_dpmenu_sort_regcnt"><input type="radio" name="tag_dpmenu_sort" id="tag_dpmenu_sort_regcnt" value="regcnt" <?php if($_eyoom['tag_dpmenu_sort'] == 'regcnt') echo "checked";?>> 등록건수순</label>
+				<label for="tag_dpmenu_sort_scnt"><input type="radio" name="tag_dpmenu_sort" id="tag_dpmenu_sort_scnt" value="scnt" <?php if($_eyoom['tag_dpmenu_sort'] == 'scnt') echo "checked";?>> 클릭검색순</label>
+				<label for="tag_dpmenu_sort_random"><input type="radio" name="tag_dpmenu_sort" id="tag_dpmenu_sort_random" value="random" <?php if($_eyoom['tag_dpmenu_sort'] == 'random') echo "checked";?>> 랜덤출력</label>
+            </td>
+		</tr>
+		<tr>
+            <th scope="row"><label for="tag_recommend_count">추천태그 출력 태그수</label></th>
+            <td>
+                <input type="text" name="tag_recommend_count" value="<?php echo $_eyoom['tag_recommend_count'];?>" id="tag_recommend_count" class="frm_input" style="width:80px;"> 건
+            </td>
+		</tr>
+		</table>
+	</div>
+</section>
+
+<?php echo $frm_submit; ?>
+
 <?php } ?>
 
 <?php
