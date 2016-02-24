@@ -37,6 +37,7 @@ if ($w == '')
 		tg_theme = '" . $tg_theme . "', 
 		tg_scnt = '" . (int)$_POST['tg_scnt'] . "', 
 		tg_regcnt = '" . (int)$_POST['tg_regcnt'] . "', 
+		tg_score = '" . (int)$_POST['tg_score'] . "', 
 		tg_dpmenu = '" . $tg_dpmenu . "', 
 	";
 	
@@ -44,7 +45,7 @@ if ($w == '')
 	
 	$sql = "update {$g5['eyoom_tag']} set {$set} where tg_id='{$tg_id}' ";
 	sql_query($sql, false);
-	$go_url = './tag_form.php?tg_id=' . $tg_id;
+	$go_url = './tag_form.php?thema=' . $tg_theme . 'tg_id=' . $tg_id;
 }
 
 goto_url($go_url . $qstr);

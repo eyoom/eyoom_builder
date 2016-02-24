@@ -80,7 +80,7 @@
 		$del_tags 	= explode(',', $del_tag);
 		$wr_tags 	= explode(',', $wr_tag);
 		unset($wr_tag);
-		if(is_array($wr_tags)) {
+		if(is_array($wr_tags) && $_POST['wr_tag']) {
 			if(!$del_tags) $del_tags = array();
 			$i=0;
 			foreach($wr_tags as $_tag) {
@@ -244,6 +244,9 @@
 				// 정말 새로 작성한 글이라면 새로 등록
 				$tag_query = $insert_tag;
 			}
+		} else {
+			// 태그 정보가 없다면 태그 포스트는 삭제
+			$tag_query = "delete from {$g5['eyoom_tag_write']} where {$where} and tw_theme='{$theme}' ";
 		}
 	}
 	if(isset($new_query)) sql_query($new_query, false);

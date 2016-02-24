@@ -113,6 +113,12 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
 			</select>
 		</td>
 	</tr>
+	<tr>
+        <th scope="row"><label for="bn_link">권한설정<?php echo $sound_only ?></label></th>
+		<td colspan="3">
+			<?php echo get_member_level_select('bn_view_level', 1, 10, $banner['bn_view_level']) ?> 레벨(그누레벨) 이상 회원에게 배너/광고를 노출합니다.
+		</td>
+	</tr>
     <tr>
         <th scope="row"><label for="bn_img">배너이미지</label></th>
         <td colspan="3">

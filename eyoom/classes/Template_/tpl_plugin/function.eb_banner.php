@@ -3,12 +3,14 @@
 /* Return Banner Data Function */
 
 function eb_banner($loccd) {
-	global $g5, $theme, $eb;
+	global $g5, $theme, $eb, $member;
 
 	$link_path = G5_DATA_URL.'/banner/';
+	
+	if(!$member['mb_level']) $member['mb_level'] = 1;
 
 	// 배너위치로 등록된 배너 불러오기
-	$sql = "select * from {$g5['eyoom_banner']} where bn_theme='{$theme}' and bn_location = '" . $loccd . "' and bn_state = '1' order by bn_regdt desc";
+	$sql = "select * from {$g5['eyoom_banner']} where bn_view_level <= '{$member['mb_level']}' and bn_theme='{$theme}' and bn_location = '" . $loccd . "' and bn_state = '1' order by bn_regdt desc";
 	$result = sql_query($sql, false);
 	
 	$this_date = date('Ymd');

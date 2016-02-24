@@ -44,9 +44,9 @@ $frm_submit = '
 		<tr>
 			<td scope="row" valign="top">
 				<div style="margin:5px 0;">
-					<a href="#" class="easyui-linkbutton" onclick="collapseAll()">닫기</a>
-					<a href="#" class="easyui-linkbutton" onclick="expandAll()">열기</a>
-					<div style="float:right;">
+					<a href="#" class="easyui-linkbutton" onclick="collapseAll()">전체닫기</a>
+					<a href="#" class="easyui-linkbutton" onclick="expandAll()">전체열기</a>
+					<div style="margin-top:5px;">
 				    <select id="target_theme" name="target_theme">
 					    <option value="">:: 선택 ::</option>
 					    <?php 
@@ -115,7 +115,7 @@ $frm_submit = '
 		}
 		if(confirm("선택한 ["+target+"]테마의 기존 설정 메뉴는 모두 사라집니다.\n\n계속 진행할까요?")) {
 			var url = "./menu_clone.php";
-			$.post(url, {'theme':theme,'target':target}, function(data) {
+			$.post(url, {'theme':theme,'target':target,'me_shop':2}, function(data) {
 				if(data.menu_clone == 'ok') {
 					alert('정상적으로 메뉴를 복사하였습니다.');
 					document.location.href = "./menu_list.php?thema="+target;

@@ -39,6 +39,7 @@ include_once('../admin.head.php');
 
 <form name="ftag" id="ftag" action="./tag_form_update.php" onsubmit="return ftag_submit(this);" method="post">
 <input type="hidden" name="tg_id" value="<?php echo $tg_id ?>">
+<input type="hidden" name="tg_theme" id="tg_theme" value="<?php if($_theme) echo $_theme; else echo $theme;?>">
 <input type="hidden" name="page" value="<?php echo $page ?>">
 <input type="hidden" name="w" value="u">
 

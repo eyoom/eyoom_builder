@@ -46,6 +46,20 @@ $frm_submit = '
 				<div style="margin:5px 0;">
 					<a href="#" class="easyui-linkbutton" onclick="collapseAll()">전체닫기</a>
 					<a href="#" class="easyui-linkbutton" onclick="expandAll()">전체열기</a>
+					<div style="margin-top:5px;">
+				    <select id="target_theme" name="target_theme">
+					    <option value="">:: 선택 ::</option>
+					    <?php 
+						    if(is_array($exist_theme)) {
+							    foreach($exist_theme as $k => $tm) {
+								    if($tm == $_theme) continue;
+								    echo '<option value="'.$tm.'">'.$tm.'</option>';
+							    }
+						    }
+					    ?>
+				    </select>테마로
+				    <a href="javascritp:;" class="easyui-linkbutton" onclick="return clone_menu()">메뉴복사</a>
+					</div>
 				</div>
 				<div style="margin:10px 0;"></div>
 				<div class="easyui-panel" style="padding:5px">
@@ -91,6 +105,23 @@ $frm_submit = '
 	}
 	function expandAll(){
 		$('#menu').tree('expandAll');
+	}
+	function clone_menu() {
+		var theme = '<?php echo $_theme;?>';
+		var target = $("#target_theme option:selected").val();
+		if(!target) {
+			alert('메뉴를 복사할 테마를 선택해 주세요.');
+			return false;
+		}
+		if(confirm("선택한 ["+target+"]테마의 기존 설정된 쇼핑몰 메뉴는 모두 사라집니다.\n\n계속 진행할까요?")) {
+			var url = "./menu_clone.php";
+			$.post(url, {'theme':theme,'target':target,'me_shop':1}, function(data) {
+				if(data.menu_clone == 'ok') {
+					alert('정상적으로 쇼핑몰 메뉴를 복사하였습니다.');
+					document.location.href = "./shopmenu_list.php?thema="+target;
+				}
+			},"json");
+		} else return false;
 	}
 </script>
 <?php

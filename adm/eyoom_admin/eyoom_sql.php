@@ -476,4 +476,17 @@ if ($eb_version >= $eb->version_score('1.2.1')) {
 	}
 }
 
+/**
+ * EyoomBuilder_1.2.2
+ */
+if ($eb_version >= $eb->version_score('1.2.2')) {
+	// 이윰 배너 테이블에 회원레벨 필드 추가
+	if(!sql_query(" select bn_view_level from {$g5['eyoom_banner']} limit 1 ", false)) {
+		$sql = "
+			alter table `{$g5['eyoom_banner']}` add `bn_view_level` tinyint(4) not null default '1' after `bn_clicked`
+		";
+		sql_query($sql, true);
+	}
+}
+
 ?>

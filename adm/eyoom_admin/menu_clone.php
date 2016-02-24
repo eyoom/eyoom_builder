@@ -7,13 +7,15 @@ auth_check($auth[$sub_menu], 'r');
 
 $theme = get_text($_POST['theme']);
 $target = get_text($_POST['target']);
+$me_shop = get_text($_POST['me_shop']);
 if(!$theme) exit;
 if(!$target) exit;
+if(!$me_shop) exit;
 
-$sql = "delete from {$g5['eyoom_menu']} where me_theme = '{$target}'";
+$sql = "delete from {$g5['eyoom_menu']} where me_theme = '{$target}' and me_shop = '{$me_shop}'";
 sql_query($sql, false);
 
-$sql = "select * from {$g5['eyoom_menu']} where (1) and me_theme = '{$theme}' order by me_code asc";
+$sql = "select * from {$g5['eyoom_menu']} where (1) and me_theme = '{$theme}' and me_shop = '{$me_shop}' order by me_code asc";
 $res = sql_query($sql, false);
 for($i=0; $row=sql_fetch_array($res); $i++) {
 	unset($set, $insert);

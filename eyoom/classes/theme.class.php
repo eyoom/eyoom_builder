@@ -69,34 +69,21 @@ class theme extends qfile
 				$arr['theme'] = '';
 			}
 		}
-
-		if($is_member) {
-			// 사용자 테마설정파일 저장 경로 가져오기
-			$theme_dir = $this->theme_userdir();
-
-			$file = $theme_dir . '/' . $member['mb_id'] . '.php';
-			if(file_exists($file)) {
-				include_once($file);
-				$_user_config = $arr + $user_config;
-			} else {
-				$_user_config = $arr;
-			}
+		
+		// 유니크 아이디 쿠키 생성
+		if(get_cookie('unique_theme_id')) {
+			$unique_theme_id = get_cookie('unique_theme_id');
 		} else {
-			// 유니크 아이디 쿠키 생성
-			if(get_cookie('unique_theme_id')) {
-				$unique_theme_id = get_cookie('unique_theme_id');
-			} else {
-				$unique_theme_id = date('YmdHis', time()) . str_pad((int)(microtime()*100), 2, "0", STR_PAD_LEFT);
-				set_cookie('unique_theme_id',$unique_theme_id,3600);
-			}
+			$unique_theme_id = date('YmdHis', time()) . str_pad((int)(microtime()*100), 2, "0", STR_PAD_LEFT);
+			set_cookie('unique_theme_id',$unique_theme_id,3600);
+		}
 
-			$file = $this->tmp_path . '/' . $_SERVER['REMOTE_ADDR'] . '.' . $unique_theme_id . '.php';
-			if(file_exists($file)) {
-				include_once($file);
-				$_user_config = $arr + $user_config;
-			} else {
-				$_user_config = $arr;
-			}
+		$file = $this->tmp_path . '/' . $_SERVER['REMOTE_ADDR'] . '.' . $unique_theme_id . '.php';
+		if(file_exists($file)) {
+			include_once($file);
+			$_user_config = $arr + $user_config;
+		} else {
+			$_user_config = $arr;
 		}
 
 		//파일 생성 및 갱신
@@ -116,13 +103,8 @@ class theme extends qfile
 	public function get_user_theme() {
 		global $member, $is_member;
 
-		if($is_member) {
-			$theme_dir = $this->theme_userdir();
-			$file = $theme_dir . '/' . $member['mb_id'] . '.php';
-		} else {
-			$unique_theme_id = get_cookie('unique_theme_id');
-			$file = $this->tmp_path . '/' . $_SERVER['REMOTE_ADDR'] . '.' . $unique_theme_id . '.php';
-		}
+		$unique_theme_id = get_cookie('unique_theme_id');
+		$file = $this->tmp_path . '/' . $_SERVER['REMOTE_ADDR'] . '.' . $unique_theme_id . '.php';
 
 		if(@file_exists($file)) {
 			include_once($file);

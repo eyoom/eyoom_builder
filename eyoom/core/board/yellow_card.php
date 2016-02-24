@@ -58,6 +58,7 @@
 						$wr_4 = serialize($ycard);
 						sql_query("update {$write_table} set wr_4 = '{$wr_4}' where {$wrid} ");
 						sql_query("update {$g5['eyoom_new']} set wr_4 = '{$wr_4}' where  bo_table = '{$bo_table}' and {$wrid} ");
+						sql_query("update {$g5['eyoom_tag_write']} set wr_4 = '{$wr_4}' where  bo_table = '{$bo_table}' and {$wrid} and tw_theme='{$theme}' ");
 						
 						$msg = "정상적으로 신고처리 하였습니다.";
 					} else {
@@ -81,6 +82,7 @@
 						$wr_4 = serialize($ycard);
 						sql_query("update {$write_table} set wr_4 = '{$wr_4}' where {$wrid} ");
 						sql_query("update {$g5['eyoom_new']} set wr_4 = '{$wr_4}' where  bo_table = '{$bo_table}' and {$wrid} ");
+						sql_query("update {$g5['eyoom_tag_write']} set wr_4 = '{$wr_4}' where  bo_table = '{$bo_table}' and {$wrid} and tw_theme='{$theme}' ");
 						
 						$msg = "정상적으로 신고취소처리 하였습니다.";
 					}

@@ -31,19 +31,13 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 	$list[$i]['tag'] = $row['tg_word'];
 	
 	if($row['tg_recommdt'] != '0000-00-00 00:00:00') {
-		$heading = 'h1';
-	} else if ($row['tg_score'] > 100) {
-		$heading = 'h2';
-	} else if ($row['tg_score'] > 50) {
-		$heading = 'h3';
-	} else if ($row['tg_score'] > 30) {
-		$heading = 'h4';
-	} else if ($row['tg_score'] > 10) {
-		$heading = 'h5';
+		$list[$i]['weight'] = '10';
 	} else {
-		$heading = 'h5';
+		$weight = ceil($row['tg_score']/10);
+		if($weight > 10) $weight = 10;
+		
+		$list[$i]['weight'] = $weight;
 	}
-	$list[$i]['heading'] = $heading;
 }
 
 /**

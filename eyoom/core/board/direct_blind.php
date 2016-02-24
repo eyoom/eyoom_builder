@@ -57,7 +57,8 @@
 					$ycard['yc_blind'] = 'y';
 					$wr_4 = serialize($ycard);
 					sql_query("update {$write_table} set wr_4 = '{$wr_4}' where {$wrid} ");
-					sql_query("update {$g5['eyoom_new']} set wr_4 = '{$wr_4}' where  bo_table = '{$bo_table}' and {$wrid} ");
+					sql_query("update {$g5['eyoom_new']} set wr_4 = '{$wr_4}' where bo_table = '{$bo_table}' and {$wrid} ");
+					sql_query("update {$g5['eyoom_tag_write']} set wr_4 = '{$wr_4}' where tw_theme ='{$theme}' and bo_table = '{$bo_table}' and {$wrid} ");
 					
 					$msg = "정상적으로 블라인드 처리하였습니다.";
 					break;
@@ -69,6 +70,7 @@
 					$wr_4 = serialize($ycard);
 					sql_query("update {$write_table} set wr_4 = '{$wr_4}' where {$wrid} ");
 					sql_query("update {$g5['eyoom_new']} set wr_4 = '{$wr_4}' where  bo_table = '{$bo_table}' and {$wrid} ");
+					sql_query("update {$g5['eyoom_tag_write']} set wr_4 = '{$wr_4}' where tw_theme ='{$theme}' and bo_table = '{$bo_table}' and {$wrid} ");
 					
 					$msg = "정상적으로 블라인드 취소 처리하였습니다.";
 					break;

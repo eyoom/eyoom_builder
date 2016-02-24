@@ -128,6 +128,7 @@ CREATE TABLE IF NOT EXISTS `g5_eyoom_banner` (
   `bn_end` varchar(10) NOT NULL,
   `bn_exposed` mediumint(10) NOT NULL default '0',
   `bn_clicked` mediumint(10) NOT NULL default '0',
+  `bn_view_level` tinyint(4) NOT NULL default '1',
   `bn_regdt` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`bn_no`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

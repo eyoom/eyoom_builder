@@ -38,6 +38,7 @@
 			$wr_4 = serialize($wr_4);
 			sql_query("update {$write_table} set wr_4 = '{$wr_4}' where {$wrid} ");
 			sql_query("update {$g5['eyoom_new']} set wr_4 = '{$wr_4}' where  bo_table = '{$bo_table}' and {$wrid} ");
+			sql_query("update {$g5['eyoom_tag_write']} set wr_4 = '{$wr_4}' where tw_theme = '{$theme}' and bo_table = '{$bo_table}' and {$wrid} ");
 			
 			$msg = "정상적으로 별점평가를 반영하였습니다.";
 		}

@@ -14,6 +14,7 @@ $sql_common = "  bn_type = '{$_POST['bn_type']}',
                  bn_start = '{$_POST['bn_start']}',
                  bn_end = '{$_POST['bn_end']}',
                  bn_code = '".addslashes($_POST['bn_code'])."',
+                 bn_view_level = '{$_POST['bn_view_level']}',
 ";
 
 // 아이콘 업로드
