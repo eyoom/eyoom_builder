@@ -135,12 +135,14 @@
 	unset($common_set);
 
 	// 이윰 New insert set
+	$mb_nick = $member['mb_id'] ? $member['mb_nick']: $wr_name;
+	
 	$insert_set['pr_id'] 		= $respond['pr_id'];
 	$insert_set['wr_parent'] 	= $wr_id;
 	$insert_set['ca_name'] 		= $ca_name;
 	$insert_set['mb_id']		= $member['mb_id'];
-	$insert_set['mb_name']		= $member['mb_name'];
-	$insert_set['mb_nick']		= $member['mb_nick'];
+	$insert_set['mb_name']		= $wr_name;
+	$insert_set['mb_nick']		= $mb_nick;
 	$insert_set['mb_level']		= $member['mb_level'];
 	$insert_set['wr_video']		= $wr_video;
 	$insert_set['wr_sound']		= $wr_sound;
@@ -170,11 +172,13 @@
 	if ($eyoom['use_tag'] == 'y' && $eyoom_board['bo_use_tag'] == '1' && isset($wr_tag)) {
 		
 		// 태그 insert set
+		$wr_nick = $member['mb_id'] ? $member['mb_nick'] : $wr_name;
+		
 		$ins_tag_set['tw_theme']	= $theme;
 		$ins_tag_set['wr_tag']		= $wr_tag;
 		$ins_tag_set['mb_id']		= $member['mb_id'];
-		$ins_tag_set['mb_name']		= $member['mb_name'];
-		$ins_tag_set['mb_nick']		= $member['mb_nick'];
+		$ins_tag_set['mb_name']		= $wr_name;
+		$ins_tag_set['mb_nick']		= $wr_nick;
 		$ins_tag_set['mb_level']	= $member['mb_level'];
 		$ins_tag_set['wr_hit']		= 0;
 		$ins_tag_set['tw_datetime']	= G5_TIME_YMDHIS;

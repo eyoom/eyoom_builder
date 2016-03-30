@@ -489,4 +489,17 @@ if ($eb_version >= $eb->version_score('1.2.2')) {
 	}
 }
 
+/**
+ * EyoomBuilder_1.2.3
+ */
+if ($eb_version >= $eb->version_score('1.2.3')) {
+	// 이윰 메뉴 테이블에 분류명칭 필드 추가
+	if(!sql_query(" select me_sca from {$g5['eyoom_menu']} limit 1 ", false)) {
+		$sql = "
+			alter table `{$g5['eyoom_menu']}` add `me_sca` varchar(50) not null default '' after `me_pid`
+		";
+		sql_query($sql, true);
+	}
+}
+
 ?>

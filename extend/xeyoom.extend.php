@@ -12,6 +12,9 @@
 	define('EYOOM_THEME_URL', EYOOM_URL.'/theme');
 	define('EYOOM_AJAX_URL', EYOOM_SITE.'/eyoom/eyoom.ajax.php');
 	
+	// Gnuboard Site URL
+	define('GNU_URL', 'http://sir.kr');
+	
 	// Eyoom Core & Class 외 경로 정의
 	define('EYOOM_CORE_PATH', EYOOM_PATH.'/core');
 	define('EYOOM_CORE_URL', EYOOM_URL.'/core');

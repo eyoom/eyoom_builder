@@ -5,7 +5,7 @@
 	define('_EYOOM_COMMON_',true);
 
 	// Version
-	define('_EYOOM_VESION_','EyoomBuilder_1.2.2');
+	define('_EYOOM_VESION_','EyoomBuilder_1.2.3');
 
 	// GNUBOARD5 Library
 	include_once(G5_LIB_PATH.'/common.lib.php');
@@ -23,6 +23,10 @@
 		$eyoomer = $eb->get_user_info($member['mb_id']);
 		if(!$eyoomer['following']) $eyoomer['following'] = array();
 		if(!$eyoomer['follower']) $eyoomer['follower'] = array();
+		
+		// 관심게시판
+		$favorite = unserialize($eyoomer['favorite']);
+		if($favorite) $my_favorite = implode(',', $favorite);
 
 		// 그누레벨 자동조정
 		if(!$is_admin && $member['mb_level'] <= $levelset['max_use_gnu_level']) $eb->set_gnu_level($eyoomer['level']);
@@ -36,14 +40,14 @@
 
 	// Eyoom Board 설정
 	if($bo_table) {
-		
+
 		// $eyoom_board 설정값 가져오기
 		$eyoom_board = $eb->eyoom_board_info($bo_table, $theme);
 		if(!$eyoom_board) {
 			// DB에 입력된 정보가 없을 때, 기본값 가져오기
 			$eyoom_board = $eb->eyoom_board_default($bo_table);
 		}
-		
+
 		// EXIF정보보기 사용시
 		if($eyoom_board['bo_use_exif'] || $is_admin == 'super') {
 			$exif_item = array(
@@ -63,12 +67,12 @@
 				'ccd'		=> 'CCD',
 				'flash'		=> 'Flash'
 			);
-			
+
 			// EXIF Class Object
 			include_once(EYOOM_CLASS_PATH . '/exif.class.php');
 			$exif = new exif;
 		}
-		
+
 		// 익명글쓰기 체크
 		$is_anonymous = $eyoom_board['bo_use_anonymous'] == 1 ? true:false;
 

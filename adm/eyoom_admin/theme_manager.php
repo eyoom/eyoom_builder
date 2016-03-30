@@ -8,9 +8,68 @@
 		$tminfo[$row['tm_name']] = $row;
 	}
 	if(defined('_EYOOM_VESION_')) {
+		$builder_score = $eb->version_score(str_replace("EyoomBuilder_", "", _EYOOM_VESION_));
+
+		if (!ini_get("allow_url_fopen")) ini_set("allow_url_fopen", 1);
+		if (ini_get("allow_url_fopen") == 1) {
+			// 이윰넷에서 버전 가져오기
+			$url = EYOOM_SITE . '/bbs/rss.php?bo_table=eyoom';
+			$xml = simplexml_load_file($url);
+			$builder = $xml->channel->item;
+			$builder = $builder[0];
+
+			preg_match("/\d+\.\d+\.\d+/", $builder->title, $match);
+			$eyoom_score = $eb->version_score($match[0]);
+
+			if($builder_score < $eyoom_score) {
+				$new_version = "<a href='{$builder->link}' target='_blank' class='eb_new'>{$builder->title} 바로가기</a>";
+			}
+
+			if (defined('G5_YOUNGCART_VER')) {
+				$url = GNU_URL . '/rss/yc5_pds';
+				$xml = simplexml_load_file($url);
+				$sir = $xml->channel->item;
+				$sir = $sir[0];
+
+				preg_match("/\d+\.\d+\.\d+/", $sir->title, $match);
+				$sir_score = $eb->version_score($match[0]);
+				$gnu_score = $eb->version_score(G5_YOUNGCART_VER);
+				if($gnu_score < $sir_score) {
+					$gnu_version = "<a href='{$sir->link}' target='_blank' class='gnu_new'>{$sir->title} 바로가기</a>";
+				}
+			} else {
+				$url = GNU_URL . '/rss/g5_pds';
+				$xml = simplexml_load_file($url);
+				$sir = $xml->channel->item;
+				$sir = $sir[0];
+
+				preg_match("/\d+\.\d+\.\d+/", $sir->title, $match);
+				$sir_score = $eb->version_score($match[0]);
+				$gnu_score = $eb->version_score(G5_GNUBOARD_VER);
+				if($gnu_score < $sir_score) {
+					$gnu_version = "<a href='{$sir->link}' target='_blank' class='gnu_new'>{$sir->title} 바로가기</a>";
+				}
+			}
+		}
 ?>
+<style>
+	.eb_new, .gnu_new {
+		display: inline-block;
+		margin:2px 10px;
+		padding:5px 10px;
+		color:#fff;
+		font-weight: normal;
+		font-size: 12px;
+	}
+	.eb_new {
+		background: #d96c41;
+	}
+	.gnu_new {
+		background: #b041d9;
+	}
+</style>
 <section>
-	<h2><?php echo _EYOOM_VESION_;?></h2>
+	<h2><strong style="color:#f30;">설치 버전</strong> : <?php echo _EYOOM_VESION_;?> <?php echo $new_version;?> <?php echo $gnu_version;?></h2>
     <div class="tbl_frm01 tbl_wrap">
         <table style="background:#fafafa;border:1px solid #eaeaea;">
         <caption>테마설정</caption>

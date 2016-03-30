@@ -70,10 +70,10 @@ switch($mode) {
 			$eyoom_config[$key] = isset($val) ? $val : $eyoom[$key];
 		}
 		
-		if(!$eyoom_config['language'] && isset($_POST['language'])) {
+		if(isset($_POST['language'])) {
 			$eyoom_config['language'] = $_POST['language'];
 		} else {
-			unset($eyoom_config['language']);
+			$eyoom_config['language'] = 'kr';
 		}
 		if($eyoom['theme'] != 'basic') {
 			$eyoom_config['theme_key'] = $eyoom['theme_key'];

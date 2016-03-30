@@ -16,13 +16,8 @@ class theme extends qfile
 		$this->theme_path	= EYOOM_THEME_PATH;
 		
 		if($bo_table) {
-			if(!$sca) {
-				$this->page_type = 'board';
-				$this->me_pid = $bo_table;
-			} else {
-				$this->page_type = 'category';
-				$this->me_pid = $sca;
-			}
+			$this->page_type = 'board';
+			$this->me_pid = $bo_table;
 		} else if($gr_id) {
 			$this->page_type = 'group';
 			$this->me_pid = $gr_id;
@@ -215,10 +210,11 @@ class theme extends qfile
 
 	// 이윰메뉴 재정의
 	private function eyoom_menu_assign($menu_package) {
-		global $member;
+		global $member, $sca;
 
 		// 새글정보 가져오기
 		$new = $this->eyoom_menu_new();
+		$ca_new = $this->eyoom_menu_ca_new();
 
 		// 5단계까지 가능하지만 3단계까지 표현
 		foreach($menu_package as $key => $menuset) {
@@ -228,7 +224,16 @@ class theme extends qfile
 					if($member['mb_level'] < $menuset['me_permit_level']) continue;
 					$mk1 = $menuset['me_order'].$key;
 					$menu[$mk1][$k] = $menu_sub;
-					if($menuset['me_type'] == $this->page_type && $menuset['me_pid'] == $this->me_pid && !defined('_INDEX_')) $menu[$mk1]['active'] = true;
+					if($menuset['me_sca']) {
+						if($menuset['me_type'] == $this->page_type && $menuset['me_pid'] == $this->me_pid && $menuset['me_sca'] == urldecode($sca)) {
+							if(!defined('_INDEX_')) $menu[$mk1]['active'] = true;
+						}
+					} else {
+						if($menuset['me_type'] == $this->page_type && $menuset['me_pid'] == $this->me_pid) {
+							if(!defined('_INDEX_')) $menu[$mk1]['active'] = true;
+						}
+					}
+
 					@ksort($menu);
 				} else {
 					$cate1 = &$menu[$mk1]['submenu'];
@@ -238,9 +243,16 @@ class theme extends qfile
 							if($member['mb_level'] < $menu_sub['me_permit_level']) continue;
 							$mk2 = $menu_sub['me_order'].$k;
 							$cate1[$mk2][$m] = $sub;
-							if($menu_sub['me_type'] == $this->page_type && $menu_sub['me_pid'] == $this->me_pid) {
-								if(!defined('_INDEX_')) $menu[$mk1]['active'] = true;
-								$cate1[$mk2]['active'] = true;
+							if($menu_sub['me_sca']) {
+								if($menu_sub['me_type'] == $this->page_type && $menu_sub['me_pid'] == $this->me_pid && $menu_sub['me_sca'] == urldecode($sca)) {
+									if(!defined('_INDEX_')) $menu[$mk1]['active'] = true;
+									$cate1[$mk2]['active'] = true;
+								}
+							} else {
+								if($menu_sub['me_type'] == $this->page_type && $menu_sub['me_pid'] == $this->me_pid) {
+									if(!defined('_INDEX_')) $menu[$mk1]['active'] = true;
+									$cate1[$mk2]['active'] = true;
+								}
 							}
 							@ksort($cate1);
 						} else {
@@ -252,37 +264,66 @@ class theme extends qfile
 									if($member['mb_level'] < $sub['me_permit_level']) continue;
 									$mk3 = $sub['me_order'].$m;
 									$cate2[$mk3][$n] = $val;
-									if($sub['me_type'] == $this->page_type && $sub['me_pid'] == $this->me_pid) {
-										if(!defined('_INDEX_')) $menu[$mk1]['active'] = true;
-										$cate1[$mk2]['active'] = true;
-										$cate2[$mk3]['active'] = true;
+									if($sub['me_sca']) {
+										if($sub['me_type'] == $this->page_type && $sub['me_pid'] == $this->me_pid && $sub['me_sca'] == urldecode($sca)) {
+											if(!defined('_INDEX_')) $menu[$mk1]['active'] = true;
+											$cate1[$mk2]['active'] = true;
+											$cate2[$mk3]['active'] = true;
+										}
+									} else {
+										if($sub['me_type'] == $this->page_type && $sub['me_pid'] == $this->me_pid) {
+											if(!defined('_INDEX_')) $menu[$mk1]['active'] = true;
+											$cate1[$mk2]['active'] = true;
+											$cate2[$mk3]['active'] = true;
+										}
 									}
 									@ksort($cate2);
 								}
 							}
 							if($sub['me_type'] == 'board' && $sub['me_pid']) {
 								$tmp_bo_table = $sub['me_pid'];
-								if($new[$tmp_bo_table]>0) {
-									$cate2[$mk3]['new'] = true;
-									$cate1[$mk2]['new'] = true;
-									$menu[$mk1]['new'] = true;
+								if($sub['me_sca']) {
+									if($ca_new[$sub['me_sca']]>0) {
+										$cate2[$mk3]['new'] = true;
+										$cate1[$mk2]['new'] = true;
+										$menu[$mk1]['new'] = true;
+									}
+								} else {
+									if($new[$tmp_bo_table]>0) {
+										$cate2[$mk3]['new'] = true;
+										$cate1[$mk2]['new'] = true;
+										$menu[$mk1]['new'] = true;
+									}
 								}
 							}
 						}
 					}
 					if($menu_sub['me_type'] == 'board' && $menu_sub['me_pid']) {
 						$tmp_bo_table = $menu_sub['me_pid'];
-						if($new[$tmp_bo_table]>0) {
-							$cate1[$mk2]['new'] = true;
-							$menu[$mk1]['new'] = true;
+						if($menu_sub['me_sca']) {
+							if($ca_new[$menu_sub['me_sca']]>0) {
+								$cate1[$mk2]['new'] = true;
+								$menu[$mk1]['new'] = true;
+							}
+						} else {
+							if($new[$tmp_bo_table]>0) {
+								$cate1[$mk2]['new'] = true;
+								$menu[$mk1]['new'] = true;
+							}
 						}
 					}
 				}
 			}
 			if($menuset['me_type'] == 'board' && $menuset['me_pid']) {
 				$tmp_bo_table = $menuset['me_pid'];
-				if($new[$tmp_bo_table]>0) {
-					$menu[$mk1]['new'] = true;
+				if($menuset['me_sca']) {
+					if($ca_new[$menuset['me_sca']]>0) {
+						$menu[$mk1]['new'] = true;
+					}
+				} else {
+					if($new[$tmp_bo_table]>0) {
+						$menu[$mk1]['new'] = true;
+					}
 				}
 			}
 		}
@@ -299,6 +340,25 @@ class theme extends qfile
 			$new[$row['bo_table']] = $row['cnt'];
 		}
 		return $new;
+	}
+	
+	// 게시판 분류사용시, 새글정보
+	private function eyoom_menu_ca_new($bo_new=24) {
+		global $g5;
+		if(!$bo_new) $bo_new = $this->bo_new;
+		$sql = "select ca_name, count(*) as cnt from {$g5['eyoom_new']} where bn_datetime between date_format(".date("YmdHis",G5_SERVER_TIME - ($bo_new * 3600)).", '%Y-%m-%d %H:%i:%s') AND date_format(".date("YmdHis",G5_SERVER_TIME).", '%Y-%m-%d %H:%i:%s') and wr_id = wr_parent group by ca_name";
+		$res = sql_query($sql, false);
+		for($i=0;$row=sql_fetch_array($res);$i++) {
+			$ca_new[$row['ca_name']] = $row['cnt'];
+		}
+		return $ca_new;
+	}
+	
+	// 링크로 부터 sca 추출하기
+	private function get_sca_from_link($link) {
+		$str = parse_url(urldecode($link));
+		parse_str($str['query'], $query);
+		return $query['sca'];
 	}
 
 	// 이윰메뉴 5단계까지 구현
@@ -467,12 +527,13 @@ class theme extends qfile
 							case "faq"		: $info['me_type'] = 'faq'; break;
 							case "fm_id"	: $info['me_type'] = 'faq'; break;
 							case "qalist"	: $info['me_type'] = 'qalist'; break;
-							case "sca"		: $info['me_type'] = 'category'; break;
+							case "sca"		: $info['me_type'] = 'board'; break;
 							case "sfl"		: $info['me_type'] = 'search'; break;
 							case "tag"		: $info['me_type'] = 'tag'; break;
 						}
 						$info['me_pid']  = $val;
 						$info['me_link'] = $url['path']."?".$url['query'];
+						$info['me_sca'] = $query['sca'];
 					}
 					if($key == 'bo_table') break;
 				}
@@ -500,6 +561,7 @@ class theme extends qfile
 			$info['me_pid'] = 'extra';
 			$info['me_type'] = 'userpage';
 			$info['me_link'] = $link;
+			$info['me_sca'] = '';
 		}
 		if(is_array($info)) return $info;
 	}
@@ -528,11 +590,17 @@ class theme extends qfile
 
 	// 이윰메뉴 서브페이지 정보 가져오기
 	private function eyoom_subpage_info($theme) {
-		global $g5, $tpl, $it_id, $is_admin, $ca_id, $eyoom, $lang_theme;
+		global $g5, $tpl, $it_id, $is_admin, $ca_id, $eyoom, $lang_theme, $sca;
 		$url = $this->compare_host_from_link($_SERVER['REQUEST_URI']);
 		$info = $this->get_meinfo_link($url);
-		//$where = " me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}' and me_use='y' ";
-		$where = " me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}' ";
+		
+		$_sca = $this->get_sca_from_link($info['me_link'], true);
+		if($_sca) {
+			$where = " me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}' and me_use='y' and me_sca='{$_sca}' ";
+		}else {
+			$where = " me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}' and me_use='y' ";
+		}
+		
 		if($it_id) $where .= " and me_link='{$info['me_link']}' ";
 
 		$sql = "select * from {$g5['eyoom_menu']} where $where order by me_code desc";

@@ -13,6 +13,10 @@
 	unset($list);
 	for ($i=0; $i<count($newlist); $i++)
 	{
+		// 익명글 제외
+		$level = $newlist[$i]['wr_1'] ? $eb->level_info($newlist[$i]['wr_1']):'';
+		if(is_array($level) && $level['anonymous']) continue;
+		
 		$num = $total_count - ($page - 1) * $config['cf_page_rows'] - $i;
 		$gr_subject = cut_str($newlist[$i]['gr_subject'], 20);
 		$bo_subject = cut_str($newlist[$i]['bo_subject'], 20);

@@ -751,16 +751,16 @@ class eyoom extends qfile
 		$content = $this->get_thumbnail($content);
 
 		// 동영상
-		$content = preg_replace("/{동영상\s*\:([^}]*)}/ie", "\$this->video_content('\\1')", $content);
+		$content = preg_replace_callback("/{동영상\s*\:([^}]*)}/i", array($this,'video_content'), $content);
 		
 		// 이모티콘
-		$content = preg_replace("/{이모티콘\s*\:([^}]*)}/ie", "\$this->emoticon_content('\\1')", $content);
+		$content = preg_replace_callback("/{이모티콘\s*\:([^}]*)}/i", array($this, 'emoticon_content'), $content);
 		
 		// 사운드클라우드
-		$content = preg_replace("/{soundcloud\s*\:([^}]*)}/ie", "\$this->soundcloud_content('\\1')", $content);
+		$content = preg_replace_callback("/{soundcloud\s*\:([^}]*)}/i", array($this, 'soundcloud_content'), $content);
 		
 		// 지도
-		$content = preg_replace("/{지도\s*\:([^}]*)}/ie", "\$this->map_content('\\1')", $content);
+		$content = preg_replace_callback("/{지도\s*\:([^}]*)}/i", array($this, 'map_content'), $content);
 		
 		return $content;
 	}
@@ -787,7 +787,7 @@ class eyoom extends qfile
 	}
 
 	public function video_content($video_url) {
-		$video_url = trim(strip_tags($video_url));
+		$video_url = trim(strip_tags($video_url[1]));
 		$video_url = preg_replace("/&#?[a-z0-9]+;/i","",htmlentities($video_url));
 		$video_url = preg_replace("/nbsp;/i","",$video_url );
 		$video = $this->video_from_soruce($video_url);
@@ -1102,7 +1102,7 @@ class eyoom extends qfile
 
 	public function emoticon_content($emoticon) {
 		global $theme;
-		$dir = preg_replace("/([0-9]|_|-)/i","",$emoticon);
+		$dir = preg_replace("/([0-9]|_|-)/i","",$emoticon[1]);
 		$path = EYOOM_THEME_URL.'/'.$theme.'/emoticon/'.$dir.'/';
 		$output = "<img src='".$path.$emoticon.".gif' align='absmiddle' width='50'>";
 		return $output;
@@ -1123,10 +1123,10 @@ class eyoom extends qfile
 	}
 
 	public function soundcloud_content($source) {
-		$src = trim(strip_tags($source));
+		$src = trim(strip_tags($source[1]));
 		$src = str_replace('\"', '', $src);
 
-		if(!$source) return;
+		if(!$src) return;
 		$soundcloud = '';
 		if(preg_match('/soundcloud.com/i', $src)) {
 			$soundcloud = '<iframe width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url='.$src.'"></iframe>'."\n";
@@ -1138,7 +1138,7 @@ class eyoom extends qfile
 	public function map_content($source) {
 		global $eyoom_board;
 		
-		list($type, $address, $name, $subgps) = explode('^|^', $source);
+		list($type, $address, $name, $subgps) = explode('^|^', $source[1]);
 		
 		if(!$subgps || $eyoom['use_map_content'] == 'n') return $address;
 		else {
@@ -1165,7 +1165,7 @@ class eyoom extends qfile
 	public function get_editor_video($content) {
 		if(!$content) return false;
 
-		$pattern = '/{동영상\s*\:([^}]*)}/ie';
+		$pattern = '/{동영상\s*\:([^}]*)}/i';
 		preg_match_all($pattern, $content, $matchs);
 		return $matchs;
 	}
@@ -1173,7 +1173,7 @@ class eyoom extends qfile
 	public function get_editor_sound($content) {
 		if(!$content) return false;
 
-		$pattern = '/{soundcloud\s*\:([^}]*)}/ie';
+		$pattern = '/{soundcloud\s*\:([^}]*)}/i';
 		preg_match_all($pattern, $content, $matchs);
 		return $matchs;
 	}
@@ -1186,22 +1186,22 @@ class eyoom extends qfile
 	}
 
 	public function remove_editor_video($content) {
-		$content = preg_replace("/{동영상\s*\:([^}]*)}/ie","",$content);
+		$content = preg_replace("/{동영상\s*\:([^}]*)}/i","",$content);
 		return $content;
 	}
 
 	public function remove_editor_sound($content) {
-		$content = preg_replace("/{soundcloud\s*\:([^}]*)}/ie","",$content);
+		$content = preg_replace("/{soundcloud\s*\:([^}]*)}/i","",$content);
 		return $content;
 	}
 
 	public function remove_editor_emoticon($content) {
-		$content = preg_replace("/{이모티콘\s*\:([^}]*)}/ie","",$content);
+		$content = preg_replace("/{이모티콘\s*\:([^}]*)}/i","",$content);
 		return $content;
 	}
 	
 	public function remove_editor_map($content) {
-		$content = preg_replace("/{지도\s*\:([^}]*)}/ie","",$content);
+		$content = preg_replace("/{지도\s*\:([^}]*)}/i","",$content);
 		return $content;
 	}
 

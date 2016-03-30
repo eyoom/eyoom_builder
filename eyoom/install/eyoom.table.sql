@@ -245,6 +245,7 @@ CREATE TABLE IF NOT EXISTS `g5_eyoom_menu` (
   `me_path` varchar(255) NOT NULL,
   `me_type` varchar(30) NOT NULL,
   `me_pid` varchar(40) NOT NULL,
+  `me_sca` varchar(50) NOT NULL,
   `me_link` varchar(255) NOT NULL default '',
   `me_target` varchar(255) NOT NULL default '',
   `me_order` int(11) NOT NULL default '0',
