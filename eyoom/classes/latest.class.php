@@ -291,15 +291,17 @@ class latest extends eyoom
 			$list[$i]['wr_hit'] = $row['wr_hit'];
 			if($direct == 'y') {
 				$list[$i]['datetime'] = $row['wr_datetime'];
+				$wr_1 = $row['wr_1'];
 			} else {
 				$list[$i]['datetime'] = $row['bn_datetime'];
+				$wr_1 = $row['wr_1'] ? $row['wr_1']: $row['mb_level'];
 			}
 
 			// new 표시
 			if ($list[$i]['datetime'] >= date("Y-m-d H:i:s", G5_SERVER_TIME - ($this->bo_new * 3600))) $list[$i]['new'] = true;
 
 			// 레벨정보
-			$level = $row['wr_1'] ? $eb->level_info($row['wr_1']):'';
+			$level = $wr_1 ? $eb->level_info($wr_1):'';
 			if(is_array($level)) {
 				if(!$level['anonymous']) {
 					$list[$i]['mb_photo'] = $eb->mb_photo($list[$i]['mb_id']);

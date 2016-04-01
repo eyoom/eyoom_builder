@@ -1104,7 +1104,7 @@ class eyoom extends qfile
 		global $theme;
 		$dir = preg_replace("/([0-9]|_|-)/i","",$emoticon[1]);
 		$path = EYOOM_THEME_URL.'/'.$theme.'/emoticon/'.$dir.'/';
-		$output = "<img src='".$path.$emoticon.".gif' align='absmiddle' width='50'>";
+		$output = "<img src='".$path.$emoticon[1].".gif' align='absmiddle' width='50'>";
 		return $output;
 	}
 

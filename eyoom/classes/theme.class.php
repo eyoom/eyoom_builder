@@ -594,7 +594,7 @@ class theme extends qfile
 		$url = $this->compare_host_from_link($_SERVER['REQUEST_URI']);
 		$info = $this->get_meinfo_link($url);
 		
-		$_sca = $this->get_sca_from_link($info['me_link'], true);
+		$_sca = $this->get_sca_from_link($info['me_link']);
 		if($_sca) {
 			$where = " me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}' and me_use='y' and me_sca='{$_sca}' ";
 		}else {
