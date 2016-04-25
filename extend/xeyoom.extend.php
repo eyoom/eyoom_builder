@@ -26,6 +26,7 @@
 	define('EYOOM_INC_URL', EYOOM_URL.'/inc');
 	define('EYOOM_MISC_PATH', EYOOM_PATH.'/misc');
 	define('EYOOM_MISC_URL', EYOOM_URL.'/misc');
+	define('EYOOM_EXTEND_PATH', EYOOM_PATH.'/extend');
 	define('EYOOM_LANGUAGE_PATH', EYOOM_PATH.'/language');
 	define('EYOOM_LANGUAGE_URL', EYOOM_URL.'/language');
 	define('EYOOM_SHOP_PATH', EYOOM_CORE_PATH.'/shop');

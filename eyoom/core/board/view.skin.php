@@ -16,7 +16,8 @@
 	// 신고처리 정보
 	if($eyoom_board['bo_use_yellow_card'] == '1') {
 		$mb_ycard = $eb->mb_yellow_card($member['mb_id'],$bo_table, $wr_id);
-		if($wr_4['yc_blind'] == 'y') {
+		$ycard = $wr_4;
+		if($ycard['yc_blind'] == 'y') {
 			if(!$is_admin && $member['mb_level'] < $eyoom_board['bo_blind_view']) {
 				if(!$mb_ycard['mb_id']) {
 					alert('이 게시물은 블라인드 처리된 게시물입니다.');

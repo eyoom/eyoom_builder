@@ -596,9 +596,9 @@ class theme extends qfile
 		
 		$_sca = $this->get_sca_from_link($info['me_link']);
 		if($_sca) {
-			$where = " me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}' and me_use='y' and me_sca='{$_sca}' ";
+			$where = " me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}' and me_sca='{$_sca}' ";
 		}else {
-			$where = " me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}' and me_use='y' ";
+			$where = " me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}' ";
 		}
 		
 		if($it_id) $where .= " and me_link='{$info['me_link']}' ";

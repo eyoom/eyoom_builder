@@ -2,7 +2,7 @@
 	if (!defined('_GNUBOARD_')) exit;
 
 	// 게시판 관리자 이상 복사, 이동 가능
-	if ($is_admin != 'board' && $is_admin != 'group' && $is_admin != 'super')
+	if ($is_admin != 'board' && $is_admin != 'group' && $is_admin != 'super' && !defined('G5_AUTOMOVE'))
 		alert_close('게시판 관리자 이상 접근이 가능합니다.');
 
 	if ($sw != 'move' && $sw != 'copy')
@@ -253,27 +253,30 @@
 	$msg = '해당 게시물을 선택한 게시판으로 '.$act.' 하였습니다.';
 	$opener_href = './board.php?bo_table='.$bo_table.'&amp;page='.$page.'&amp;'.$qstr;
 
-	// 무한스크롤 모달창 닫기
-	if($wmode) {
-		if(isset($w_id) && $w_id) $wr_id = implode('|',$w_id);
-		$opener_script = "opener.close_modal('".$wr_id."');";
-	} else {
-		$opener_script = "opener.document.location.href = \"".$opener_href."\";";
+	if (!defined('G5_AUTOMOVE')) {
+		// 무한스크롤 모달창 닫기
+		if ($wmode) {
+			if(isset($w_id) && $w_id) $wr_id = implode('|',$w_id);
+			$opener_script = "opener.close_modal('".$wr_id."');";
+		} else {
+			$opener_script = "opener.document.location.href = \"".$opener_href."\";";
+		}
+		
+	
+		echo "
+			<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">
+			<script>
+			alert(\"".$msg."\");
+			".$opener_script."
+			window.close();
+			</script>
+			<noscript>
+			<p>
+				\"".$msg."\"
+			</p>
+			<a href=\"".$opener_href."\">돌아가기</a>
+			</noscript>
+		";
+		exit;
 	}
-
-	echo "
-		<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">
-		<script>
-		alert(\"".$msg."\");
-		".$opener_script."
-		window.close();
-		</script>
-		<noscript>
-		<p>
-			\"".$msg."\"
-		</p>
-		<a href=\"".$opener_href."\">돌아가기</a>
-		</noscript>
-	";
-	exit;
 ?>

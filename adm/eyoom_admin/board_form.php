@@ -26,6 +26,7 @@ if($eyoom_board['bo_use_rating'] == '1') $checked['bo_use_rating'] = true; else 
 if($eyoom_board['bo_use_rating_list'] == '1') $checked['bo_use_rating_list'] = true; else $checked['bo_use_rating_list'] = false;
 if($eyoom_board['bo_use_tag'] == '1') $checked['bo_use_tag'] = true; else $checked['bo_use_tag'] = false;
 if($eyoom_board['bo_use_summernote_mo'] == '1') $checked['bo_use_summernote_mo'] = true; else $checked['bo_use_summernote_mo'] = false;
+if($eyoom_board['bo_use_automove'] == '1') $checked['bo_use_automove'] = true; else $checked['bo_use_automove'] = false;
 if($eyoom_board['bo_use_addon_emoticon'] == '1') $checked['bo_use_addon_emoticon'] = true; else $checked['bo_use_addon_emoticon'] = false;
 if($eyoom_board['bo_use_addon_video'] == '1') $checked['bo_use_addon_video'] = true; else $checked['bo_use_addon_video'] = false;
 if($eyoom_board['bo_use_addon_coding'] == '1') $checked['bo_use_addon_coding'] = true; else $checked['bo_use_addon_coding'] = false;
@@ -33,6 +34,13 @@ if($eyoom_board['bo_use_addon_soundcloud'] == '1') $checked['bo_use_addon_soundc
 if($eyoom_board['bo_use_addon_map'] == '1') $checked['bo_use_addon_map'] = true; else $checked['bo_use_addon_map'] = false;
 if($eyoom_board['bo_use_addon_cmtimg'] == '1') $checked['bo_use_addon_cmtimg'] = true; else $checked['bo_use_addon_cmtimg'] = false;
 if($eyoom_board['bo_cmtpoint_target'] == '2') $checked['bo_cmtpoint_target2'] = true; else $checked['bo_cmtpoint_target1'] = true;
+
+// 게시판 정보
+$sql = "select bo_table, bo_subject from {$g5['board_table']} where 1 order by bo_subject asc";
+$result = sql_query($sql);
+for($i=0; $row=sql_fetch_array($result); $i++) {
+	$_board[$i] = $row;
+}
 
 // EXIF 상세설정값
 if(!$eyoom_board['bo_exif_detail']) {
@@ -411,6 +419,62 @@ $frm_submit = '
                 <label for="chk_grp_tag_limit">그룹적용</label>
                 <input type="checkbox" name="chk_all_tag_limit" value="1" id="chk_all_tag_limit">
                 <label for="chk_all_tag_limit">전체적용</label>
+            </td>
+        </tr>
+        </tbody>
+        </table>
+    </div>
+</section>
+
+<section id="anc_bo_basic">
+    <h2 class="h2_frm color-green">게시물 자동 이동/복사 기능</h2>
+
+    <div class="tbl_frm01 tbl_wrap">
+        <table>
+        <caption>기능설정</caption>
+        <colgroup>
+            <col class="grid_4">
+            <col>
+            <col class="grid_3">
+        </colgroup>
+        <tbody>
+        <tr>
+            <th scope="row"><label for="bo_use_tag">게시물 자동 이동/복사 기능 사용</label></th>
+            <td>
+				<label for="bo_use_automove"><input type="checkbox" name="bo_use_automove" value="1" id="bo_use_automove" <?php echo $checked['bo_use_automove']?'checked':''; ?>> 사용</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_use_automove" value="1" id="chk_grp_use_automove">
+                <label for="chk_grp_use_automove">그룹적용</label>
+                <input type="checkbox" name="chk_all_use_automove" value="1" id="chk_all_use_automove">
+                <label for="chk_all_use_automove">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="bo_automove_cfg">이동/복사 조건</label></th>
+            <td>
+				<select name="bo_automove[type]" id="bo_automove_type">
+					<option value="hit" <?php if($bo_automove['type'] == 'hit') echo "selected";?>>조회수</option>
+					<option value="good" <?php if($bo_automove['type'] == 'good') echo "selected";?>>추천수</option>
+					<option value="nogood" <?php if($bo_automove['type'] == 'nogood') echo "selected";?>>비추천수</option>
+				</select>의 숫자가 
+				<input type="text" name="bo_automove[count]" class="frm_input" value="<?php if($bo_automove['count']) echo $bo_automove['count']; else echo 100;?>" size="5"> 이상이면 
+				<select name="bo_automove[target]" id="bo_automove_target">
+					<option value="">::게시판선택::</option>
+					<?php foreach($_board as $bo) {?>
+					<option value="<?php echo $bo['bo_table']?>" <?php if($bo_automove['target'] == $bo['bo_table']) echo "selected";?>><?php echo $bo['bo_subject'] . ' [' . $bo['bo_table'] . ']';?></option>
+					<?php }?>
+				</select> 게시판으로 
+				<select name="bo_automove[action]" id="bo_automove_action">
+					<option value="move" <?php if($bo_automove['action'] == 'move') echo "selected";?>>이동</option>
+					<option value="copy" <?php if($bo_automove['action'] == 'copy') echo "selected";?>>복사</option>
+				</select>합니다.
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_automove" value="1" id="chk_grp_automove">
+                <label for="chk_grp_automove">그룹적용</label>
+                <input type="checkbox" name="chk_all_automove" value="1" id="chk_all_automove">
+                <label for="chk_all_automove">전체적용</label>
             </td>
         </tr>
         </tbody>

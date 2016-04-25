@@ -502,4 +502,19 @@ if ($eb_version >= $eb->version_score('1.2.3')) {
 	}
 }
 
+/**
+ * EyoomBuilder_1.2.4
+ */
+if ($eb_version >= $eb->version_score('1.2.4')) {
+	// 게시물 자동 이동/복사 기능을 위한 필드 추가
+	if(!sql_query(" select bo_automove from {$g5['eyoom_board']} limit 1 ", false)) {
+		$sql = "
+			alter table `{$g5['eyoom_board']}` 
+				add `bo_use_automove` char(1) not null default '0' after `bo_use_tag`,
+				add `bo_automove` varchar(255) not null after `bo_tag_limit`
+		";
+		sql_query($sql, true);
+	}
+}
+
 ?>

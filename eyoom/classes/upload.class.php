@@ -17,10 +17,10 @@ class upload extends qfile
 	public function upload_image($key) {
 		$this->check_directory();
 		if (is_uploaded_file($_FILES[$key]['tmp_name'])) {
-			$permit = array("jpg","gif","png");
+			$permit = array("jpg","gif","png","jpeg");
 			$ext = strtolower($this->get_file_ext($_FILES[$key]['name']));
 			if (!in_array($ext,$permit)) {
-				alert($_FILES[$key]['name'] . '은(는) jpg/gif/png 파일이 아닙니다.');
+				alert($_FILES[$key]['name'] . '은(는) jpg/jpeg/gif/png 파일이 아닙니다.');
 			} else {
 				$filename = md5(time().$_FILES[$key]['name']);
 
@@ -30,6 +30,7 @@ class upload extends qfile
 				$info['o_name'] = $_FILES[$key]['tmp_name'];
 				$info['c_name'] = $filename.'.'.$ext;
 				$info['d_file'] = $dest_file;
+				$info['ext'] 	= $ext;
 				return $info;
 			}
 		} else return false;
@@ -48,9 +49,9 @@ class upload extends qfile
 		if (file_exists($upload['d_file'])) {
 			$size = getimagesize($upload['d_file']);
 			switch ($size['mime']) {
-				case "image/jpeg"	: $source = @imagecreatefromjpeg($upload['d_file']); $ext = 'jpg'; break;
-				case "image/gif"	: $source = @imagecreatefromgif($upload['d_file']); $ext = 'gif'; break;
-				case "image/png"	: $source = @imagecreatefrompng($upload['d_file']); $ext = 'png'; break;
+				case "image/jpeg"	: $source = @imagecreatefromjpeg($upload['d_file']); break;
+				case "image/gif"	: $source = @imagecreatefromgif($upload['d_file']); break;
+				case "image/png"	: $source = @imagecreatefrompng($upload['d_file']); break;
 			}
 			$width = $thumb['width'];
 			if(!$thumb['height']) {
@@ -60,7 +61,7 @@ class upload extends qfile
 			}
 			
 			$dest = @imagecreatetruecolor($width, $height);
-			$out_name = md5($upload['c_name']).'.'.$ext;
+			$out_name = md5($upload['c_name']).'.'.$upload['ext'];
 			$out_file = $this->path.$out_name;
 			@imagecopyresampled($dest, $source, 0, 0, 0, 0, $width , $height, $size[0], $size[1]);
 			@imagejpeg($dest, $out_file , 100);
@@ -68,7 +69,6 @@ class upload extends qfile
 			@imagedestroy($source);
 			if($thumb['delete'] == 'y')	@unlink($upload['d_file']);
 			$upload['t_file'] = $out_file;
-			$upload['ext'] = $ext;
 			
 			return $upload;
 
