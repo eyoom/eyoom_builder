@@ -33,14 +33,8 @@ if($eyoom_board['bo_use_addon_coding'] == '1') $checked['bo_use_addon_coding'] =
 if($eyoom_board['bo_use_addon_soundcloud'] == '1') $checked['bo_use_addon_soundcloud'] = true; else $checked['bo_use_addon_soundcloud'] = false;
 if($eyoom_board['bo_use_addon_map'] == '1') $checked['bo_use_addon_map'] = true; else $checked['bo_use_addon_map'] = false;
 if($eyoom_board['bo_use_addon_cmtimg'] == '1') $checked['bo_use_addon_cmtimg'] = true; else $checked['bo_use_addon_cmtimg'] = false;
+if($eyoom_board['bo_use_extimg'] == '1') $checked['bo_use_extimg'] = true; else $checked['bo_use_extimg'] = false;
 if($eyoom_board['bo_cmtpoint_target'] == '2') $checked['bo_cmtpoint_target2'] = true; else $checked['bo_cmtpoint_target1'] = true;
-
-// 게시판 정보
-$sql = "select bo_table, bo_subject from {$g5['board_table']} where 1 order by bo_subject asc";
-$result = sql_query($sql);
-for($i=0; $row=sql_fetch_array($result); $i++) {
-	$_board[$i] = $row;
-}
 
 // EXIF 상세설정값
 if(!$eyoom_board['bo_exif_detail']) {
@@ -209,6 +203,18 @@ $frm_submit = '
                 <label for="chk_grp_video_photo">그룹적용</label>
                 <input type="checkbox" name="chk_all_video_photo" value="1" id="chk_all_video_photo">
                 <label for="chk_all_video_photo">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="bo_use_extimg">외부이미지 썸네일기능 사용</label></th>
+            <td>
+				<label for="bo_use_extimg"><input type="checkbox" name="bo_use_extimg" value="1" id="bo_use_extimg" <?php echo $checked['bo_use_extimg']?'checked':''; ?>> 사용</label>
+            </td>
+            <td class="td_grpset">
+                <input type="checkbox" name="chk_grp_extimg" value="1" id="chk_grp_extimg">
+                <label for="chk_grp_extimg">그룹적용</label>
+                <input type="checkbox" name="chk_all_extimg" value="1" id="chk_all_extimg">
+                <label for="chk_all_extimg">전체적용</label>
             </td>
         </tr>
         <tr>
@@ -461,7 +467,7 @@ $frm_submit = '
 				<input type="text" name="bo_automove[count]" class="frm_input" value="<?php if($bo_automove['count']) echo $bo_automove['count']; else echo 100;?>" size="5"> 이상이면 
 				<select name="bo_automove[target]" id="bo_automove_target">
 					<option value="">::게시판선택::</option>
-					<?php foreach($_board as $bo) {?>
+					<?php foreach($binfo as $bo) {?>
 					<option value="<?php echo $bo['bo_table']?>" <?php if($bo_automove['target'] == $bo['bo_table']) echo "selected";?>><?php echo $bo['bo_subject'] . ' [' . $bo['bo_table'] . ']';?></option>
 					<?php }?>
 				</select> 게시판으로 

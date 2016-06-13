@@ -44,6 +44,14 @@ switch($mode) {
 				$val = !$_POST[$key] ? 'n':$_POST[$key];
 			} else if($key == 'use_tag') {
 				$val = !$_POST[$key] ? 'n':$_POST[$key];
+			} else if($key == 'use_board_control') {
+				$val = !$_POST[$key] ? 'n':$_POST[$key];
+			} else if($key == 'use_theme_info') {
+				$val = !$_POST[$key] ? 'n':$_POST[$key];
+			} else if($key == 'board_control_position') {
+				$val = !$_POST[$key] ? 'left':$_POST[$key];
+			} else if($key == 'theme_info_position') {
+				$val = !$_POST[$key] ? 'bottom':$_POST[$key];
 			} else if($key == 'tag_dpmenu_count') {
 				$val = !$_POST[$key] ? '20':$_POST[$key];
 			} else if($key == 'tag_dpmenu_sort') {

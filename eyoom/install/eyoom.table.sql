@@ -188,6 +188,7 @@ CREATE TABLE IF NOT EXISTS `g5_eyoom_board` (
   `bo_use_addon_soundcloud` char(1) NOT NULL default '0',
   `bo_use_addon_map` char(1) NOT NULL default '0',
   `bo_use_addon_cmtimg` char(1) NOT NULL default '1',
+  `bo_use_extimg` char(1) NOT NULL default '0',
   `bo_cmt_best_min` tinyint(2) NOT NULL default '10',
   `bo_cmt_best_limit` tinyint(2) NOT NULL default '5',
   `bo_tag_level` tinyint(4) NOT NULL default '2',

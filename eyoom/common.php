@@ -5,7 +5,7 @@
 	define('_EYOOM_COMMON_',true);
 
 	// Version
-	define('_EYOOM_VESION_','EyoomBuilder_1.2.4');
+	define('_EYOOM_VESION_','EyoomBuilder_1.2.5');
 
 	// GNUBOARD5 Library
 	include_once(G5_LIB_PATH.'/common.lib.php');
@@ -50,6 +50,13 @@
 		
 		// 게시물 자동 이동/복사를 위한 변수
 		(array)$bo_automove = unserialize($eyoom_board['bo_automove']);
+		
+		// 사이트 내 게시판 정보 일괄 가져오기
+		$sql = "select bo_table, bo_subject from {$g5['board_table']} where 1 order by bo_subject asc";
+		$result = sql_query($sql);
+		for($i=0; $row=sql_fetch_array($result); $i++) {
+			$binfo[$i] = $row;
+		}
 
 		// EXIF정보보기 사용시
 		if($eyoom_board['bo_use_exif'] || $is_admin == 'super') {
@@ -255,8 +262,8 @@
 	if(!empty($extend_file) && is_array($extend_file)) {
 	    natsort($extend_file);
 	
-	    foreach($extend_file as $file) {
-	        include_once(EYOOM_EXTEND_PATH.'/'.$file);
+	    foreach($extend_file as $exfile) {
+	        include_once(EYOOM_EXTEND_PATH.'/'.$exfile);
 	    }
 	}
 	unset($extend_file);

@@ -44,6 +44,15 @@ switch($act) {
 			$respond->respond_read($where);
 			$respond->respond_countdown(1);
 		}
+		
+		// 푸쉬 알람 파일 삭제
+		$push_file = G5_DATA_PATH.'/member/push/push.'.$member['mb_id'].'.php';
+		
+		// 푸쉬파일 삭제
+		if(@file_exists($push_file)) {
+			@unlink($push_file);
+		}
+		
 		$go_url = G5_BBS_URL.'/board.php?bo_table='.$row['bo_table'].'&wr_id='.$row['wr_id'];
 		$go_url .= $row['wr_cmt'] ? '#c_'.$row['wr_cmt']:'';
 		break;

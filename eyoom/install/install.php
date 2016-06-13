@@ -48,7 +48,7 @@ switch($ins_theme) {
 // eyoom 기본설정
 $eyoom = array(
 	"theme" => $theme_name,
-	"shop_theme" => "",
+	"shop_theme" => "shop_basic",
 	"theme_selector" => "n",
 	"bootstrap" => "1",
 	"outlogin_skin" => "basic",
@@ -83,12 +83,17 @@ $eyoom = array(
 	"use_gnu_shop" => "n",
 	"use_gnu_newwin" => "n",
 	"use_eyoom_menu" => "y",
+	"use_eyoom_shopmenu" => "n",
 	"use_sideview" => "y",
-	"use_switcher" => "off",
+	"use_switcher" => "",
 	"use_main_side_layout" => "y",
 	"use_sub_side_layout" => "y",
 	"use_shop_mobile" => "n",
 	"use_tag" => "n",
+	"use_board_control" => "n",
+	"use_theme_info" => "n",
+	"board_control_position" => "left",
+	"theme_info_position" => "bottom",
 	"tag_dpmenu_count" => "20",
 	"tag_dpmenu_sort" => "regdt",
 	"tag_recommend_count" => "5",
@@ -107,7 +112,9 @@ $eyoom = array(
 	"countdown" => "n",
 	"countdown_skin" => "basic",
 	"countdown_date" => "",
+	"theme_lang_type" => "",
 	"language" => "kr",
+	"theme_key" => "",
 );
 
 // eyoom 설정파일 생성

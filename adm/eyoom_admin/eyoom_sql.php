@@ -517,4 +517,34 @@ if ($eb_version >= $eb->version_score('1.2.4')) {
 	}
 }
 
+/**
+ * EyoomBuilder_1.2.5
+ */
+if ($eb_version >= $eb->version_score('1.2.5')) {
+	// 외부이미지 자동으로 가져오기 기능을 위한 필드 추가
+	if(!sql_query(" select bo_use_extimg from {$g5['eyoom_board']} limit 1 ", false)) {
+		$sql = "
+			alter table `{$g5['eyoom_board']}` add `bo_use_extimg` char(1) not null default '0' after `bo_use_addon_cmtimg`
+		";
+		sql_query($sql, true);
+	}
+	
+	// 이윰 기본설정 파일에 게시판 컨트롤 판넬 및 테마정보 판넬 관련 변수 추가
+	$config_basic = G5_DATA_PATH.'/eyoom.config.php';
+	unset($eyoom, $_eyoom);
+	include($config_basic);
+	if(is_array($eyoom)) {
+		foreach($eyoom as $key => $val) {
+			$_eyoom[$key] = $val;
+			if ($key == 'use_tag' && !isset($eyoom['use_board_control'])) {
+				$_eyoom['use_board_control'] = 'n';
+				$_eyoom['use_theme_info'] = 'n';
+				$_eyoom['board_control_position'] = 'left';
+				$_eyoom['theme_info_position'] = 'bottom';
+			}
+		}
+		$qfile->save_file('eyoom',$config_basic,$_eyoom);
+	}
+}
+
 ?>

@@ -108,6 +108,22 @@
 			$list[$key]['is_video'] = $wr_4['is_video'];
 		}
 		
+		// 외부이미지 썸네일화 하기
+		if ($eyoom_board['bo_use_list_image'] && $eyoom_board['bo_use_extimg'] && !$thumb['src']) {
+			$thumb = $eb->make_thumb_from_extra_image($board['bo_table'], $list[$key]['wr_id'], $list[$key]['wr_content'], $board['bo_gallery_width'], $board['bo_gallery_height']);
+			if($tpl_name == 'bs') {
+				if($thumb) {
+					$list[$key]['img_content'] = '<img class="img-responsive" src="'.$thumb.'">';
+					$list[$key]['img_src'] = $thumb;
+				}
+			} else {
+				if($thumb['src']) {
+					$list[$key]['img_content'] = '<img src="'.$thumb.'" width="'.$board['bo_gallery_width'].'" height="'.$board['bo_gallery_height'].'">';
+					$list[$key]['img_src'] = $thumb;
+				}
+			}
+		}
+		
 		/**
 		 * 별점기능 사용
 		 */

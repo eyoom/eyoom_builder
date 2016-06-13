@@ -47,8 +47,12 @@
 						$log_tag1 = "\n";
 						$log_tag2 = '';
 					}
-
-					$row2['wr_content'] .= "\n".$log_tag1.'[이 게시물은 '.$nick.'님에 의해 '.G5_TIME_YMDHIS.' '.$board['bo_subject'].'에서 '.($sw == 'copy' ? '복사' : '이동').' 됨]'.$log_tag2;
+					
+					if (defined('G5_AUTOMOVE')) {
+						$row2['wr_content'] .= "\n".$log_tag1.'[이 게시물은 '.$auto_type.' 조건을 충족하여 자동으로 '.G5_TIME_YMDHIS.' '.$board['bo_subject'].'에서 '.($sw == 'copy' ? '복사' : '이동').' 됨]'.$log_tag2;
+					} else {
+						$row2['wr_content'] .= "\n".$log_tag1.'[이 게시물은 '.$nick.'님에 의해 '.G5_TIME_YMDHIS.' '.$board['bo_subject'].'에서 '.($sw == 'copy' ? '복사' : '이동').' 됨]'.$log_tag2;
+					}
 				}
 
 				// 게시글 추천, 비추천수
@@ -250,10 +254,10 @@
 		sql_query(" update {$g5['board_table']} set bo_count_write = bo_count_write - '$save_count_write', bo_count_comment = bo_count_comment - '$save_count_comment' where bo_table = '$bo_table' ");
 	}
 
-	$msg = '해당 게시물을 선택한 게시판으로 '.$act.' 하였습니다.';
-	$opener_href = './board.php?bo_table='.$bo_table.'&amp;page='.$page.'&amp;'.$qstr;
-
 	if (!defined('G5_AUTOMOVE')) {
+		$msg = '해당 게시물을 선택한 게시판으로 '.$act.' 하였습니다.';
+		$opener_href = './board.php?bo_table='.$bo_table.'&amp;page='.$page.'&amp;'.$qstr;
+		
 		// 무한스크롤 모달창 닫기
 		if ($wmode) {
 			if(isset($w_id) && $w_id) $wr_id = implode('|',$w_id);
@@ -278,5 +282,22 @@
 			</noscript>
 		";
 		exit;
+	} else {
+		$msg = '조건을 충족하여 해당 게시물을 ['.$binfo['bo_subject'].']으로 '.$act.' 하였습니다.';
+		$href = './board.php?bo_table='.$tg_table;
+	
+		echo "
+			<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">
+			<script>
+			alert(\"".$msg."\");
+			document.location.href = '".$href."';
+			</script>
+			<noscript>
+			<p>
+				\"".$msg."\"
+			</p>
+			<a href=\"".$href."\">돌아가기</a>
+			</noscript>
+		";
 	}
 ?>

@@ -1014,9 +1014,11 @@ class eyoom extends qfile
 		global $w;
 		$src = preg_replace('/&nbsp;/', '', $src);
 		
+		$prefix = 'vlist';
+		
 		$video = $this->get_imgurl_from_video($src);
 		$filename = trim($this->get_filename_from_url($video['img_url']));
-		$thumb_info = '/file/' . $bo_table . '/vlist_thumb_' . $wr_id . '_' . $filename;
+		$thumb_info = '/file/' . $bo_table . '/' . $prefix . '_thumb_' . $wr_id . '_' . $filename;
 		$vlist_thumb_path = G5_DATA_PATH . $thumb_info;
 		$vlist_thumb_url = G5_DATA_URL . $thumb_info;
 		
@@ -1025,18 +1027,54 @@ class eyoom extends qfile
 				return $vlist_thumb_url;
 			} else {
 				if($video['host'] != 'ted.com') { // TED 이미지는 용량이 너무 커서 로컬에 저장하는 시간이 너무 길어서 제외
-					$local_image = G5_DATA_PATH . '/file/' . $bo_table . '/vlist_img_' . $wr_id . '_' . $filename;
+					$local_image = G5_DATA_PATH . '/file/' . $bo_table . '/' . $prefix . '_img_' . $wr_id . '_' . $filename;
 					if(file_exists($local_image)) {
-						return $this->make_thumb_video_image($bo_table, $wr_id, $filename, $width, $height);
+						return $this->make_thumb_list_image($prefix, $bo_table, $wr_id, $filename, $width, $height);
 					} else {
 						$this->save_url_image($video['img_url'], $local_image);
-						return $this->make_thumb_video_image($bo_table, $wr_id, $filename, $width, $height);
+						return $this->make_thumb_list_image($prefix, $bo_table, $wr_id, $filename, $width, $height);
 					}
 				} else {
 					return $video['img_url'];
 				}
 			}
-		} else return;
+		} else return false;
+	}
+	
+	public function make_thumb_from_extra_image($bo_table, $wr_id, $content, $width, $height) {
+		global $w;
+		
+		if(!$content) return false;
+
+		// 게시물 내용에서 이미지 추출
+		$matchs = get_editor_image($content,false);
+		if(!$matchs) return false;
+		
+		$prefix = 'extimg';
+		
+		$extra_img_url = $matchs[1][0];
+		$extra_parse_url = parse_url($extra_img_url);
+		$host = $extra_parse_url['host'];
+		if($host == $_SERVER['HTTP_HOST']) return false;
+		
+		$filename = trim($this->get_filename_from_url($extra_img_url));
+		$thumb_info = '/file/' . $bo_table . '/' . $prefix . '_thumb_' . $wr_id . '_' . $filename;
+		$list_thumb_path = G5_DATA_PATH . $thumb_info;
+		$list_thumb_url = G5_DATA_URL . $thumb_info;
+		
+		if($extra_img_url) {
+			if( file_exists($list_thumb_path) && $w != 'u') {
+				return $list_thumb_url;
+			} else {
+				$local_image = G5_DATA_PATH . '/file/' . $bo_table . '/' . $prefix . '_img_' . $wr_id . '_' . $filename;
+				if(file_exists($local_image)) {
+					return $this->make_thumb_list_image($prefix, $bo_table, $wr_id, $filename, $width, $height);
+				} else {
+					$this->save_url_image($extra_img_url, $local_image);
+					return $this->make_thumb_list_image($prefix, $bo_table, $wr_id, $filename, $width, $height);
+				}
+			}
+		} else return false;
 	}
 	
 	/**
@@ -1069,9 +1107,9 @@ class eyoom extends qfile
 	/**
 	 * 다운로드된 비디오 이미지 파일을 썸네일화
 	 */
-	public function make_thumb_video_image ($bo_table, $wr_id, $filename, $width, $height) {
+	public function make_thumb_list_image ($prefix, $bo_table, $wr_id, $filename, $width, $height) {
 		
-		$img_info = '/file/' . $bo_table . '/vlist_img_' . $wr_id . '_' . $filename;
+		$img_info = '/file/' . $bo_table . '/' . $prefix . '_img_' . $wr_id . '_' . $filename;
 		$img = G5_DATA_PATH . $img_info;
 
 		if (file_exists($img)) {
@@ -1087,8 +1125,8 @@ class eyoom extends qfile
 			}
 			
 			$dest = @imagecreatetruecolor($width, $height);
-			$out_file = G5_DATA_PATH . '/file/' . $bo_table . '/vlist_thumb_' . $wr_id . '_' . $filename;
-			$out_url = G5_DATA_URL . '/file/' . $bo_table . '/vlist_thumb_' . $wr_id . '_' . $filename;
+			$out_file = G5_DATA_PATH . '/file/' . $bo_table . '/' . $prefix . '_thumb_' . $wr_id . '_' . $filename;
+			$out_url = G5_DATA_URL . '/file/' . $bo_table . '/' . $prefix . '_thumb_' . $wr_id . '_' . $filename;
 			@imagecopyresampled($dest, $source, 0, 0, 0, 0, $width , $height, $size[0], $size[1]);
 			@imagejpeg($dest, $out_file , 100);
 			@imagedestroy($dest);

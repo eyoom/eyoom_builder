@@ -431,7 +431,6 @@ $frm_submit = '
 
 <?php echo $frm_submit; ?>
 
-
 <section id="anc_scf_info">
     <h2 class="h2_frm">[<b style='color:#f30;'><?php echo $_theme;?></b> 테마] 기타설정 </h2>
 
@@ -566,6 +565,52 @@ $frm_submit = '
             <td>
                 <label for="pos_side_layout1"><input type="radio" name="pos_side_layout" id="pos_side_layout1" value="left" <?php if($_eyoom['pos_side_layout'] == 'left') echo "checked";?>> 왼쪽</label>
 				<label for="pos_side_layout2"><input type="radio" name="pos_side_layout" id="pos_side_layout2" value="right" <?php if($_eyoom['pos_side_layout'] == 'right') echo "checked";?>> 오른쪽</label>
+            </td>
+		</tr>
+		</table>
+		<input type="hidden" name="push_sound" id="push_sound" value="push_sound_01.mp3">
+	</div>
+</section>
+
+<?php echo $frm_submit; ?>
+
+<section id="anc_scf_info">
+    <h2 class="h2_frm">[<b style='color:#f30;'><?php echo $_theme;?></b> 테마] 관리 패널 설정 </h2>
+
+    <div class="tbl_frm01 tbl_wrap">
+        <table>
+        <caption>관리 패널</caption>
+        <colgroup>
+            <col class="grid_4">
+            <col>
+        </colgroup>
+        <tbody>
+		<tr>
+            <th scope="row"><label for="use_board_control">관리자용 게시판 패널 </label></th>
+            <td>
+                <label for="use_board_control1"><input type="radio" name="use_board_control" id="use_board_control1" value="y" <?php if($_eyoom['use_board_control'] == 'y') echo "checked";?>> 사용</label>
+				<label for="use_board_control2"><input type="radio" name="use_board_control" id="use_board_control2" value="n" <?php if($_eyoom['use_board_control'] == 'n') echo "checked";?>> 사용하지 않음</label>
+            </td>
+		</tr>
+		<tr>
+            <th scope="row"><label for="board_control_position">관리자용 게시판 패널 위치 </label></th>
+            <td>
+                <label for="board_control_position1"><input type="radio" name="board_control_position" id="board_control_position1" value="left" <?php if($_eyoom['board_control_position'] == 'left') echo "checked";?>> 왼쪽</label>
+				<label for="board_control_position2"><input type="radio" name="board_control_position" id="board_control_position2" value="right" <?php if($_eyoom['board_control_position'] == 'right') echo "checked";?>> 오른쪽</label>
+            </td>
+		</tr>
+		<tr>
+            <th scope="row"><label for="use_theme_info">관리자용 테마정보 패널 </label></th>
+            <td>
+                <label for="use_theme_info1"><input type="radio" name="use_theme_info" id="use_theme_info1" value="y" <?php if($_eyoom['use_theme_info'] == 'y') echo "checked";?>> 사용</label>
+				<label for="use_theme_info2"><input type="radio" name="use_theme_info" id="use_theme_info2" value="n" <?php if($_eyoom['use_theme_info'] == 'n') echo "checked";?>> 사용하지 않음</label>
+            </td>
+		</tr>
+		<tr>
+            <th scope="row"><label for="theme_info_position">관리자용 테마정보 패널 위치 </label></th>
+            <td>
+                <label for="theme_info_position1"><input type="radio" name="theme_info_position" id="theme_info_position1" value="top" <?php if($_eyoom['theme_info_position'] == 'top') echo "checked";?>> 상단</label>
+				<label for="theme_info_position2"><input type="radio" name="theme_info_position" id="theme_info_position2" value="bottom" <?php if($_eyoom['theme_info_position'] == 'bottom') echo "checked";?>> 하단</label>
             </td>
 		</tr>
 		</table>
