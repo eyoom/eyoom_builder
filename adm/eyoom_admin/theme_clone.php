@@ -111,7 +111,7 @@ function ftheme_check(f) {
 		f.tm_mb_id.select();
 		return false;
 	}
-	if(f.tm_ordno.value == '' && f.tm_theme.value!='basic') {
+	if(f.tm_ordno.value == '' && f.tm_theme.value!='basic' && f.tm_theme.value!='basic2' && f.tm_theme.value!='pc_basic2') {
 		alert('테마 주문번호는 필수항목입니다.');
 		f.tm_ordno.focus();
 		f.tm_ordno.select();

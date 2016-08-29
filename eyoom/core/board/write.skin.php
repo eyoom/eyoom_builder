@@ -46,8 +46,9 @@
 		$wr_link[$i]['link_val'] = $write['wr_link'.$i]; 
 	}
 
+	// $file 변수 중복 제거 후, 첨부파일 갯수 세팅
 	$wr_file = array();
-	if($file == "sms5.extend.php" || $file == "xeyoom.extend.php") unset($file);
+	if(in_array($file, $eb->get_subdir_filename(G5_EXTEND_PATH))) unset($file);
 	for ($i=0; $is_file && $i<$file_count; $i++) {
 		$wr_file[$i]['file'] = $file[$i]['file'];
 		$wr_file[$i]['size'] = $file[$i]['size'];

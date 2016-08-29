@@ -169,12 +169,12 @@
 			}
 		}
 
-		// 이윰 common 파일
-		@include_once(EYOOM_PATH.'/common.php');
-		
 		// 템플릿 클래스 오프젝트 생성
 		include_once(EYOOM_CLASS_PATH.'/template.class.php');
 		$tpl = new Template($theme);
+
+		// 이윰 common 파일
+		@include_once(EYOOM_PATH.'/common.php');
 
 		// 스킨화작업이 어려운 파일은 File Hooking
 		if($exchange_file = $tpl->exchange_file()) {

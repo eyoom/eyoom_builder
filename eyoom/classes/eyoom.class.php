@@ -1464,6 +1464,17 @@ class eyoom extends qfile
 
 		return $result_array;
 	}
+	
+	public function get_subdir_filename($dir) {
+		$filename = array();
+		$tmp = dir($dir);
+		while ($entry = $tmp->read()) {
+		    if (preg_match("/(\.php)$/i", $entry))
+		        $filename[] = $entry;
+		}
+		
+		return $filename;
+	}
 
 	// 10진수를 62진수 변환 - PHP스쿨 마냐님 소스 : http://www.phpschool.com/link/tipntech/79695 참조
 	public function base62_encode($val, $base=62) {

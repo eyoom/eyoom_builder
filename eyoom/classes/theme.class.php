@@ -590,21 +590,34 @@ class theme extends qfile
 
 	// 이윰메뉴 서브페이지 정보 가져오기
 	private function eyoom_subpage_info($theme) {
-		global $g5, $tpl, $it_id, $is_admin, $ca_id, $eyoom, $lang_theme, $sca;
+		global $g5, $tpl, $it_id, $is_admin, $ca_id, $eyoom, $lang_theme, $sca, $board;
 		$url = $this->compare_host_from_link($_SERVER['REQUEST_URI']);
 		$info = $this->get_meinfo_link($url);
 		
 		$_sca = $this->get_sca_from_link($info['me_link']);
 		if($_sca) {
 			$where = " me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}' and me_sca='{$_sca}' ";
-		}else {
-			$where = " me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}' ";
+		} else {
+			if (!$board['bo_use_category']) {
+				$where = " me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}' ";
+			} else {
+				$where = " me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}' and me_sca='' ";
+			}
 		}
 		
 		if($it_id) $where .= " and me_link='{$info['me_link']}' ";
 
 		$sql = "select * from {$g5['eyoom_menu']} where $where order by me_code desc";
 		$data = sql_fetch($sql,false);
+		
+		if ($_sca && !$data['me_id']) {
+			$where = " me_theme='{$theme}' and me_type='{$info['me_type']}' and me_pid='{$info['me_pid']}' and me_sca='' ";
+			
+			if($it_id) $where .= " and me_link='{$info['me_link']}' ";
+	
+			$sql = "select * from {$g5['eyoom_menu']} where $where order by me_code desc";
+			$data = sql_fetch($sql,false);
+		}
 
 		if($data['me_id']) {
 			$me_path = explode(" > ",$data['me_path']);
